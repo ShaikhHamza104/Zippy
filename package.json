@@ -9,6 +9,7 @@
     "build": "pnpm --filter @zippy/client build",
     "lint": "pnpm -r lint",
     "test": "pnpm -r test",
+    "seed": "pnpm --filter @zippy/server seed",
     "prepare": "husky"
   },
   "devDependencies": {
