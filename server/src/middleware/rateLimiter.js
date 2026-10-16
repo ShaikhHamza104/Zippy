@@ -30,7 +30,10 @@ export const authRateLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   handler: rateLimitHandler,
-  skip: () => env.NODE_ENV === 'test',
+  skip: () =>
+    env.NODE_ENV === 'test' ||
+    process.env.ENABLE_RATE_LIMIT === 'false' ||
+    process.env.BENCHMARK_MODE === 'true',
 });
 
 /**
@@ -42,5 +45,8 @@ export const generalApiLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   handler: rateLimitHandler,
-  skip: () => env.NODE_ENV === 'test',
+  skip: () =>
+    env.NODE_ENV === 'test' ||
+    process.env.ENABLE_RATE_LIMIT === 'false' ||
+    process.env.BENCHMARK_MODE === 'true',
 });

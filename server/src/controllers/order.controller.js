@@ -66,8 +66,24 @@ export const checkout = async (req, res, next) => {
       });
     }
 
-    // 3. Retrieve user's cart
-    const cart = await Cart.findOne({ userId });
+    // 3. Retrieve user's cart (or merge guest cart if items are in guest session)
+    let cart = await Cart.findOne({ userId });
+    const sessionId = req.headers['x-session-id'];
+    if ((!cart || cart.items.length === 0) && sessionId) {
+      const guestCart = await Cart.findOne({ sessionId });
+      if (guestCart && guestCart.items.length > 0) {
+        if (!cart) {
+          cart = await Cart.create({ userId, items: [] });
+        }
+        cart.items = guestCart.items;
+        if (guestCart.couponCode && !cart.couponCode) {
+          cart.couponCode = guestCart.couponCode;
+        }
+        await cart.save();
+        await Cart.deleteOne({ _id: guestCart._id });
+      }
+    }
+
     if (!cart || cart.items.length === 0) {
       return res.status(400).json({
         success: false,

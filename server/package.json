@@ -8,6 +8,7 @@
     "start": "node src/server.js",
     "lint": "eslint src/ tests/",
     "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "prisma:status": "prisma migrate status",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
@@ -39,6 +40,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
+    "@vitest/coverage-v8": "3.2.7",
     "eslint": "^9.21.0",
     "globals": "^16.0.0",
     "pino-pretty": "^13.0.0",

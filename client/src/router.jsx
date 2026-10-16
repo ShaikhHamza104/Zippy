@@ -1,5 +1,5 @@
 // client/src/router.jsx
-import { lazy } from 'react';
+import { lazy, Suspense } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 import { ProtectedRoute } from './components/auth/ProtectedRoute.jsx';
 import { RoleRoute } from './components/auth/RoleRoute.jsx';
@@ -35,144 +35,164 @@ const AdminCouponsPage = lazy(() => import('./pages/admin/AdminCouponsPage.jsx')
 const AdminBannersPage = lazy(() => import('./pages/admin/AdminBannersPage.jsx'));
 const AdminAuditLogsPage = lazy(() => import('./pages/admin/AdminAuditLogsPage.jsx'));
 
-export const router = createBrowserRouter([
-  // 1. Customer Storefront App
-  {
-    path: '/',
-    element: <RootLayout />,
-    children: [
-      {
-        index: true,
-        element: <HomePage />,
-      },
-      {
-        path: 'categories',
-        element: <ProductsPage />,
-      },
-      {
-        path: 'categories/:slug',
-        element: <ProductsPage />,
-      },
-      {
-        path: 'products',
-        element: <ProductsPage />,
-      },
-      {
-        path: 'products/:slug',
-        element: <ProductDetailPage />,
-      },
-      {
-        path: 'search',
-        element: <SearchPage />,
-      },
-      // Auth routes
-      {
-        path: 'login',
-        element: <LoginPage />,
-      },
-      {
-        path: 'register',
-        element: <RegisterPage />,
-      },
-      {
-        path: 'forgot-password',
-        element: <ForgotPasswordPage />,
-      },
-      {
-        path: 'reset-password',
-        element: <ResetPasswordPage />,
-      },
-      // Protected routes
-      {
-        path: 'profile',
-        element: (
-          <ProtectedRoute>
-            <ProfilePage />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: 'checkout',
-        element: (
-          <ProtectedRoute>
-            <CheckoutPage />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: 'orders',
-        element: (
-          <ProtectedRoute>
-            <OrdersListPage />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: 'orders/:orderId',
-        element: (
-          <ProtectedRoute>
-            <OrderDetailPage />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: 'orders/:orderId/success',
-        element: (
-          <ProtectedRoute>
-            <OrderSuccessPage />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: '*',
-        element: <NotFoundPage />,
-      },
-    ],
-  },
+export const router = createBrowserRouter(
+  [
+    // 1. Customer Storefront App
+    {
+      path: '/',
+      element: <RootLayout />,
+      children: [
+        {
+          index: true,
+          element: <HomePage />,
+        },
+        {
+          path: 'categories',
+          element: <ProductsPage />,
+        },
+        {
+          path: 'categories/:slug',
+          element: <ProductsPage />,
+        },
+        {
+          path: 'products',
+          element: <ProductsPage />,
+        },
+        {
+          path: 'products/:slug',
+          element: <ProductDetailPage />,
+        },
+        {
+          path: 'search',
+          element: <SearchPage />,
+        },
+        // Auth routes
+        {
+          path: 'login',
+          element: <LoginPage />,
+        },
+        {
+          path: 'register',
+          element: <RegisterPage />,
+        },
+        {
+          path: 'forgot-password',
+          element: <ForgotPasswordPage />,
+        },
+        {
+          path: 'reset-password',
+          element: <ResetPasswordPage />,
+        },
+        // Protected routes
+        {
+          path: 'profile',
+          element: (
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: 'checkout',
+          element: (
+            <ProtectedRoute>
+              <CheckoutPage />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: 'orders',
+          element: (
+            <ProtectedRoute>
+              <OrdersListPage />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: 'orders/:orderId',
+          element: (
+            <ProtectedRoute>
+              <OrderDetailPage />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: 'orders/:orderId/success',
+          element: (
+            <ProtectedRoute>
+              <OrderSuccessPage />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: '*',
+          element: <NotFoundPage />,
+        },
+      ],
+    },
 
-  // 2. Isolated Admin Backoffice App (Code-Split & Guarded)
+    // 2. Isolated Admin Backoffice App (Code-Split & Guarded)
+    {
+      path: '/admin',
+      element: (
+        <RoleRoute allowedRoles={['ADMIN', 'SUPER_ADMIN']}>
+          <Suspense
+            fallback={
+              <div className="min-h-screen flex items-center justify-center bg-slate-900 text-white font-bold text-sm">
+                Loading Zippy Admin...
+              </div>
+            }
+          >
+            <AdminLayout />
+          </Suspense>
+        </RoleRoute>
+      ),
+      children: [
+        {
+          index: true,
+          element: <AdminDashboardPage />,
+        },
+        {
+          path: 'dashboard',
+          element: <AdminDashboardPage />,
+        },
+        {
+          path: 'products',
+          element: <AdminProductsPage />,
+        },
+        {
+          path: 'categories',
+          element: <AdminCategoriesPage />,
+        },
+        {
+          path: 'orders',
+          element: <AdminOrdersPage />,
+        },
+        {
+          path: 'customers',
+          element: <AdminCustomersPage />,
+        },
+        {
+          path: 'coupons',
+          element: <AdminCouponsPage />,
+        },
+        {
+          path: 'banners',
+          element: <AdminBannersPage />,
+        },
+        {
+          path: 'audit-logs',
+          element: <AdminAuditLogsPage />,
+        },
+      ],
+    },
+  ],
   {
-    path: '/admin',
-    element: (
-      <RoleRoute allowedRoles={['ADMIN', 'SUPER_ADMIN']}>
-        <AdminLayout />
-      </RoleRoute>
-    ),
-    children: [
-      {
-        index: true,
-        element: <AdminDashboardPage />,
-      },
-      {
-        path: 'products',
-        element: <AdminProductsPage />,
-      },
-      {
-        path: 'categories',
-        element: <AdminCategoriesPage />,
-      },
-      {
-        path: 'orders',
-        element: <AdminOrdersPage />,
-      },
-      {
-        path: 'customers',
-        element: <AdminCustomersPage />,
-      },
-      {
-        path: 'coupons',
-        element: <AdminCouponsPage />,
-      },
-      {
-        path: 'banners',
-        element: <AdminBannersPage />,
-      },
-      {
-        path: 'audit-logs',
-        element: <AdminAuditLogsPage />,
-      },
-    ],
-  },
-]);
+    future: {
+      v7_startTransition: true,
+      v7_relativeSplatPath: true,
+    },
+  }
+);
 
 export default router;

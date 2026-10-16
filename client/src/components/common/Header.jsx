@@ -230,7 +230,7 @@ export const Header = () => {
             {/* Admin Portal Shortcut if Admin */}
             {isAdmin && (
               <Link
-                to="/admin/dashboard"
+                to="/admin"
                 className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-amber-700 bg-amber-50 hover:bg-amber-100 rounded-lg transition-colors border border-amber-200"
                 aria-label="Admin Dashboard"
               >

@@ -9,6 +9,9 @@
     "build": "pnpm --filter @zippy/client build",
     "lint": "pnpm -r lint",
     "test": "pnpm -r test",
+    "test:coverage": "pnpm -r test:coverage",
+    "test:e2e": "playwright test",
+    "test:load": "node scripts/load-test.js",
     "seed": "pnpm --filter @zippy/server seed",
     "prisma:status": "pnpm --filter @zippy/server prisma:status",
     "prepare": "husky"
@@ -16,6 +19,8 @@
   "devDependencies": {
     "@commitlint/cli": "^19.7.1",
     "@commitlint/config-conventional": "^19.7.1",
+    "@playwright/test": "^1.64.1",
+    "autocannon": "^8.0.0",
     "concurrently": "^9.1.2",
     "husky": "^9.1.7",
     "lint-staged": "^15.4.3",
