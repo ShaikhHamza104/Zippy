@@ -1,5 +1,6 @@
 import { env } from '../config/env.js';
 import { logger } from '../config/logger.js';
+import { errorTracker } from '../utils/errorTracker.js';
 
 export const errorHandler = (err, req, res, _next) => {
   if (res.headersSent) {
@@ -21,13 +22,24 @@ export const errorHandler = (err, req, res, _next) => {
 
   const requestId = req?.id || null;
 
-  logger.error({
-    err,
-    requestId,
-    method: req?.method,
-    url: req?.originalUrl,
-    statusCode,
-  });
+  // Track 5xx and critical exceptions via errorTracker
+  if (statusCode >= 500) {
+    errorTracker.captureException(err, {
+      requestId,
+      method: req?.method,
+      url: req?.originalUrl,
+      statusCode,
+      user: req?.user,
+    });
+  } else {
+    logger.warn({
+      err: err.message,
+      requestId,
+      method: req?.method,
+      url: req?.originalUrl,
+      statusCode,
+    });
+  }
 
   res.status(statusCode).json({
     status: statusCode >= 500 ? 'error' : 'fail',

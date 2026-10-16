@@ -8,3 +8,8 @@ allowBuilds:
   '@scarf/scarf': true
   esbuild: true
   prisma: true
+
+overrides:
+  tinypool: '>=2.1.2'
+  postcss-selector-parser: '>=7.1.6'
+  deepmerge-ts: '>=8.0.0'

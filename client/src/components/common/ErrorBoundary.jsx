@@ -2,6 +2,7 @@
 import React from 'react';
 import { AlertOctagon, RefreshCw } from 'lucide-react';
 import { Button } from '../ui/Button.jsx';
+import { clientErrorTracker } from '../../services/errorTracker.js';
 
 export class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -14,8 +15,8 @@ export class ErrorBoundary extends React.Component {
   }
 
   componentDidCatch(error, errorInfo) {
-    // In production, send to error monitoring (e.g. Sentry)
-    console.error('Unhandled render error caught by ErrorBoundary:', error, errorInfo);
+    // Send unhandled render error to error tracking adapter
+    clientErrorTracker.captureException(error, errorInfo);
   }
 
   handleReset = () => {

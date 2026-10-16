@@ -1,0 +1,73 @@
+# .github/dependabot.yml
+version: 2
+updates:
+  # 1. Monorepo Root Dependencies
+  - package-ecosystem: 'npm'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+      time: '04:00'
+      timezone: 'Asia/Kolkata'
+    open-pull-requests-limit: 10
+    reviewers:
+      - 'zippy-core-team'
+    commit-message:
+      prefix: 'chore(deps)'
+      include: 'scope'
+
+  # 2. Backend Server Packages
+  - package-ecosystem: 'npm'
+    directory: '/server'
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+      time: '04:00'
+      timezone: 'Asia/Kolkata'
+    open-pull-requests-limit: 10
+    reviewers:
+      - 'zippy-backend-team'
+    commit-message:
+      prefix: 'chore(deps-server)'
+      include: 'scope'
+
+  # 3. Frontend Client Packages
+  - package-ecosystem: 'npm'
+    directory: '/client'
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+      time: '04:00'
+      timezone: 'Asia/Kolkata'
+    open-pull-requests-limit: 10
+    reviewers:
+      - 'zippy-frontend-team'
+    commit-message:
+      prefix: 'chore(deps-client)'
+      include: 'scope'
+
+  # 4. GitHub Actions Workflows
+  - package-ecosystem: 'github-actions'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+      time: '04:00'
+      timezone: 'Asia/Kolkata'
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: 'ci(actions)'
+      include: 'scope'
+
+  # 5. Docker Containers
+  - package-ecosystem: 'docker'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+      time: '04:00'
+      timezone: 'Asia/Kolkata'
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: 'chore(docker)'
+      include: 'scope'

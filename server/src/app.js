@@ -1,3 +1,4 @@
+import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express from 'express';
@@ -20,6 +21,31 @@ const app = express();
 
 // Request identifier middleware
 app.use(requestIdMiddleware);
+
+// Request timeout protection (30s against slowloris attacks)
+app.use((req, res, next) => {
+  req.setTimeout(30000, () => {
+    if (!res.headersSent) {
+      res.status(504).json({
+        status: 'error',
+        message: 'Request timeout exceeded',
+        requestId: req.id,
+      });
+    }
+  });
+  next();
+});
+
+// HTTP response compression (threshold: 1KB)
+app.use(
+  compression({
+    threshold: 1024,
+    filter: (req, res) => {
+      if (req.headers['x-no-compression']) return false;
+      return compression.filter(req, res);
+    },
+  })
+);
 
 // Security headers with cross-origin resource policy allowing media assets
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
