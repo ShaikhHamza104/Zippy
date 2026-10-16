@@ -12,6 +12,8 @@ import { notFoundHandler } from './middleware/notFoundHandler.js';
 import { requestIdMiddleware } from './middleware/requestId.js';
 import healthRoutes from './routes/health.routes.js';
 import v1Routes from './routes/v1/index.js';
+import swaggerUi from 'swagger-ui-express';
+import { swaggerSpec } from './docs/swagger.js';
 
 const app = express();
 
@@ -70,6 +72,20 @@ app.use('/', healthRoutes);
 
 // Versioned API v1 endpoints
 app.use('/api/v1', v1Routes);
+
+// OpenAPI/Swagger API documentation (toggleable in production)
+const isSwaggerEnabled = env.NODE_ENV !== 'production' || process.env.ENABLE_SWAGGER === 'true';
+if (isSwaggerEnabled) {
+  app.use(
+    '/api/docs',
+    swaggerUi.serve,
+    swaggerUi.setup(swaggerSpec, {
+      customSiteTitle: 'Zippy API Documentation',
+      customCss: '.swagger-ui .topbar { display: none }',
+    })
+  );
+  app.get('/api/docs.json', (_req, res) => res.json(swaggerSpec));
+}
 
 // 404 Not Found handler
 app.use(notFoundHandler);
