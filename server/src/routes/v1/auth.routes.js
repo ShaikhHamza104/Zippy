@@ -15,6 +15,66 @@ import {
 
 const router = Router();
 
+// Authentication API discovery endpoint
+router.get('/', (_req, res) => {
+  res.status(200).json({
+    status: 'success',
+    message: 'Zippy Authentication API v1 operational',
+    endpoints: {
+      register: {
+        method: 'POST',
+        path: '/api/v1/auth/register',
+        description: 'Customer self-registration',
+      },
+      login: {
+        method: 'POST',
+        path: '/api/v1/auth/login',
+        description: 'Authenticate user & issue tokens',
+      },
+      logout: {
+        method: 'POST',
+        path: '/api/v1/auth/logout',
+        description: 'Revoke session & clear cookie',
+      },
+      refresh: {
+        method: 'POST',
+        path: '/api/v1/auth/refresh',
+        description: 'Rotate refresh token & get access token',
+      },
+      forgotPassword: {
+        method: 'POST',
+        path: '/api/v1/auth/forgot-password',
+        description: 'Request password reset instructions',
+      },
+      resetPassword: {
+        method: 'POST',
+        path: '/api/v1/auth/reset-password',
+        description: 'Reset password using token',
+      },
+      changePassword: {
+        method: 'POST',
+        path: '/api/v1/auth/change-password',
+        description: 'Change password (authenticated)',
+      },
+      verifyEmail: {
+        method: 'GET / POST',
+        path: '/api/v1/auth/verify-email',
+        description: 'Verify customer email address',
+      },
+      me: {
+        method: 'GET',
+        path: '/api/v1/auth/me',
+        description: 'Current authenticated user profile',
+      },
+      createAdmin: {
+        method: 'POST',
+        path: '/api/v1/auth/create-admin',
+        description: 'Create admin user (SUPER_ADMIN only)',
+      },
+    },
+  });
+});
+
 // Public registration & authentication
 router.post('/register', authRateLimiter, validateBody(registerSchema), authController.register);
 
