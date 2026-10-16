@@ -1,22 +1,18 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+// client/src/App.jsx
+import React from 'react';
+import { QueryClientProvider } from '@tanstack/react-query';
 import { RouterProvider } from 'react-router-dom';
+import { queryClient } from './services/queryClient.js';
 import { router } from './router.jsx';
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      refetchOnWindowFocus: false,
-      staleTime: 1000 * 60 * 5, // 5 minutes
-      retry: 1,
-    },
-  },
-});
+import { ErrorBoundary } from './components/common/ErrorBoundary.jsx';
 
 export const App = () => {
   return (
-    <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
-    </QueryClientProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 };
 

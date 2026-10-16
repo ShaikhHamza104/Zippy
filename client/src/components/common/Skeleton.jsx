@@ -1,3 +1,2 @@
-export const Skeleton = ({ className = '', ...props }) => {
-  return <div className={`animate-pulse bg-gray-200 rounded ${className}`} {...props} />;
-};
+// client/src/components/common/Skeleton.jsx
+export { Skeleton, default } from '../ui/Skeleton.jsx';
