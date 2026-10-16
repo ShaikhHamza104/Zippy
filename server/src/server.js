@@ -64,7 +64,7 @@ process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
 process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 
 process.on('unhandledRejection', (reason) => {
-  logger.error({ reason }, 'Unhandled Promise Rejection');
+  logger.error({ err: reason }, 'Unhandled Promise Rejection');
   gracefulShutdown('unhandledRejection');
 });
 

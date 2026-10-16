@@ -46,7 +46,8 @@ export const sendEmail = async ({ to, subject, html, text }) => {
   }
 
   // Development & Test fallback: Log to server logger
-  logger.info({ to, subject, preview: text || html }, '[DEV / TEST EMAIL] Notification generated');
+  const preview = (text || html || '').slice(0, 500);
+  logger.info({ to, subject, preview }, '[DEV / TEST EMAIL] Notification generated');
   return { isDevLogged: true };
 };
 

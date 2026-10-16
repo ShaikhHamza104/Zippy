@@ -207,6 +207,20 @@ Stop-Process -Id $serverJob.Id -Force
 2. **TDZ Circular Dependency in Security Guards:**
    - _Issue:_ In early iterations, logger imports inside environment guards triggered circular evaluation during module initialization.
    - _Fix:_ Used standard structured console warnings inside early security guards and structured Pino logging throughout runtime modules.
+3. **Connection Forcibly Closed in Development Mode During Manual Testing:**
+   - _Issue:_ During manual testing in `NODE_ENV=development`, sending HTTP requests (such as `POST /api/v1/auth/register`) or visiting endpoints caused client sockets to drop with `Unable to read data from the transport connection: An existing connection was forcibly closed by the remote host`. This was not caught by Vitest test suites because `NODE_ENV=test` suppresses `pinoHttp`, disables `pino-pretty` worker thread transports, and bypasses rate limiters.
+   - _Root Causes:_
+     1. **Uncaught Async Exceptions & Socket Termination:** In Express 4, asynchronous handler exceptions without explicit `next(err)` forwarding escape Express and trigger Node's `unhandledRejection` handler, which initiated `server.close()` and abrupt process termination mid-request.
+     2. **Pino Worker Thread Serialization:** Under `NODE_ENV=development`, Pino uses a worker thread (`pino-pretty`). Without explicit `serializers: { err: pino.stdSerializers.err, req, res }`, Error objects with non-enumerable properties or custom attributes could fail cloning across the worker thread boundary.
+     3. **Unprotected Email Delivery in Registration:** If email transport (SMTP) timed out or encountered delivery errors, throwing directly aborted registration after the MySQL user record was committed.
+     4. **Missing Discovery Endpoint:** Navigating to `/api/v1/auth` in a browser returned a 404 error.
+   - _Fixes:_
+     1. Configured standard serializers in `server/src/config/logger.js` (`err`, `req`, `res`).
+     2. Hardened all controller handlers (including `me` and `register`) with complete `try...catch (err) { next(err); }` forwarding.
+     3. Made email verification dispatch non-fatal during registration, logging errors cleanly while returning the registered session.
+     4. Configured `mongoSanitize({ allowDots: true, replaceWith: '_' })` in `app.js`.
+     5. Added `GET /api/v1/auth` discovery route returning HTTP 200 with an interactive catalog of authentication endpoints.
+     6. Verified live in `NODE_ENV=development` with native PowerShell across all endpoints (`/register`, `/login`, `/me`, `/refresh`, `/logout`).
 
 ---
 

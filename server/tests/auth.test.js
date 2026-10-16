@@ -66,6 +66,18 @@ describe('Phase 3: Authentication and Security Core Test Suite', () => {
     await prisma.$disconnect();
   });
 
+  describe('0. API Discovery Route', () => {
+    it('returns 200 with available authentication endpoints map', async () => {
+      const res = await request(app).get('/api/v1/auth');
+      expect(res.status).toBe(200);
+      expect(res.body.status).toBe('success');
+      expect(res.body.endpoints).toBeDefined();
+      expect(res.body.endpoints.register.method).toBe('POST');
+      expect(res.body.endpoints.login.method).toBe('POST');
+      expect(res.body.endpoints.me.method).toBe('GET');
+    });
+  });
+
   describe('1. Customer Registration & Password Policy', () => {
     it('successfully registers a customer, sets role CUSTOMER, and issues refresh cookie', async () => {
       const res = await request(app)

@@ -2,6 +2,7 @@
 import crypto from 'node:crypto';
 import jwt from 'jsonwebtoken';
 import { prisma } from '../database/prisma.js';
+import { logger } from '../config/logger.js';
 import { sendPasswordResetEmail, sendVerificationEmail } from '../services/email.service.js';
 import { recordAuditLog } from '../utils/auditLogger.js';
 import { recordLoginLog } from '../utils/loginLogger.js';
@@ -101,10 +102,18 @@ export const register = async (req, res, next) => {
 
     // 6. Generate email verification token and trigger email dispatch
     const verificationToken = generateEmailVerificationToken(user);
-    await sendVerificationEmail(user.email, {
-      verificationToken,
-      name: user.name,
-    });
+    try {
+      await sendVerificationEmail(user.email, {
+        verificationToken,
+        name: user.name,
+      });
+    } catch (emailErr) {
+      // Non-fatal: log error so customer registration still succeeds even if email transport experiences an issue
+      logger.error(
+        { err: emailErr, email: user.email },
+        'Failed to deliver customer verification email during registration'
+      );
+    }
 
     // 7. Issue session: Access token + rotating refresh token in cookie
     const accessToken = generateAccessToken(user);
@@ -794,13 +803,17 @@ export const verifyEmail = async (req, res, next) => {
 /**
  * Get Current User Profile (me)
  */
-export const me = async (req, res) => {
-  res.status(200).json({
-    success: true,
-    data: {
-      user: sanitizeUser(req.user),
-    },
-  });
+export const me = async (req, res, next) => {
+  try {
+    res.status(200).json({
+      success: true,
+      data: {
+        user: sanitizeUser(req.user),
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
 };
 
 /**

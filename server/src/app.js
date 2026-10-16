@@ -50,7 +50,12 @@ app.use(express.json({ limit: '10kb' }));
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 
 // Sanitize query/body against NoSQL injection
-app.use(mongoSanitize());
+app.use(
+  mongoSanitize({
+    allowDots: true,
+    replaceWith: '_',
+  })
+);
 
 // Pino HTTP request logging (suppressed during unit test runs)
 if (env.NODE_ENV !== 'test') {
