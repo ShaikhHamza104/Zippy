@@ -5,6 +5,7 @@ import { BottomNav } from '../components/common/BottomNav.jsx';
 import { Footer } from '../components/common/Footer.jsx';
 import { Header } from '../components/common/Header.jsx';
 import { PincodeModal } from '../components/common/PincodeModal.jsx';
+import { CartDrawer } from '../components/cart/CartDrawer.jsx';
 import { Skeleton } from '../components/ui/Skeleton.jsx';
 import { ToastContainer } from '../components/ui/Toast.jsx';
 
@@ -37,6 +38,7 @@ export const RootLayout = () => {
       <Footer />
 
       {/* Global Modals & Overlays */}
+      <CartDrawer />
       <PincodeModal />
       <ToastContainer />
     </div>

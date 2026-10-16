@@ -1,107 +1,253 @@
-import { ArrowRight, Clock, Sparkles, Zap } from 'lucide-react';
+// client/src/pages/HomePage.jsx
+import React from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
-
-const sampleCategories = [
-  { id: '1', name: 'Dairy, Bread & Eggs', icon: '🥛', color: 'bg-amber-50 text-amber-700' },
-  { id: '2', name: 'Fresh Fruits & Veggies', icon: '🥑', color: 'bg-green-50 text-green-700' },
-  { id: '3', name: 'Snacks & Munchies', icon: '🍿', color: 'bg-orange-50 text-orange-700' },
-  { id: '4', name: 'Beverages & Juices', icon: '🧃', color: 'bg-blue-50 text-blue-700' },
-  { id: '5', name: 'Atta, Rice & Dals', icon: '🌾', color: 'bg-yellow-50 text-yellow-800' },
-  { id: '6', name: 'Instant & Frozen Food', icon: '🍜', color: 'bg-red-50 text-red-700' },
-];
+import { ArrowRight, Clock, Sparkles, Zap, TrendingUp, ShieldCheck } from 'lucide-react';
+import { apiFetch } from '../services/api.js';
+import { ProductCard } from '../components/product/ProductCard.jsx';
+import { Skeleton } from '../components/ui/Skeleton.jsx';
 
 export const HomePage = () => {
+  const { data: homeData, isLoading } = useQuery({
+    queryKey: ['homeFeed'],
+    queryFn: async () => {
+      const res = await apiFetch('/api/v1/home');
+      return res?.data;
+    },
+    staleTime: 60 * 1000,
+  });
+
+  const banners = homeData?.banners || [];
+  const categories = homeData?.categories || [];
+  const trendingProducts = homeData?.trendingProducts || [];
+  const featuredSections = homeData?.featuredSections || [];
+
   return (
-    <div className="space-y-8">
-      {/* Hero Delivery Banner */}
-      <section className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-brand-600 to-brand-700 text-white p-6 sm:p-10 shadow-sm">
-        <div className="relative z-10 max-w-2xl space-y-4">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-sm text-xs font-bold uppercase tracking-wide">
-            <Sparkles className="w-3.5 h-3.5 text-accent-500 fill-accent-500" />
-            <span>Lightning Fast Delivery</span>
-          </div>
+    <div className="space-y-10 pb-8">
+      {/* 1. Hero Lightning Delivery Header & Static Promotional Banners */}
+      <section className="space-y-4">
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-brand-600 via-brand-700 to-emerald-800 text-white p-6 sm:p-10 shadow-sm">
+          <div className="relative z-10 max-w-2xl space-y-3.5">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-sm text-xs font-bold uppercase tracking-wide">
+              <Sparkles className="w-3.5 h-3.5 text-accent-400 fill-accent-400" />
+              <span>10-Minute Dark Store Delivery</span>
+            </div>
 
-          <h1 className="text-3xl sm:text-5xl font-black tracking-tight leading-tight">
-            Groceries delivered in{' '}
-            <span className="text-accent-500 underline decoration-white/40">10 minutes</span>
-          </h1>
+            <h1 className="text-3xl sm:text-5xl font-black tracking-tight leading-tight">
+              Groceries & Fresh Food delivered in{' '}
+              <span className="text-accent-400 underline decoration-white/40">10 minutes</span>
+            </h1>
 
-          <p className="text-brand-100 text-sm sm:text-base font-medium max-w-lg">
-            Fresh vegetables, dairy essentials, snacks, and household staples picked with care and
-            brought straight to your doorstep.
-          </p>
+            <p className="text-emerald-100 text-sm sm:text-base font-medium max-w-lg">
+              Farm-fresh dairy, crisp vegetables, snacks, and daily household staples delivered
+              straight to your kitchen counter.
+            </p>
 
-          <div className="pt-2 flex flex-wrap items-center gap-4">
-            <Link
-              to="/categories"
-              className="inline-flex items-center gap-2 bg-white text-brand-700 font-extrabold px-6 py-3 rounded-2xl text-sm shadow hover:bg-brand-50 transition-all focus:outline-none focus:ring-2 focus:ring-white"
-            >
-              <span>Explore Categories</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-            <div className="flex items-center gap-2 text-xs font-semibold text-brand-100">
-              <Clock className="w-4 h-4 text-accent-500" />
-              <span>Instant packing from nearest dark store</span>
+            <div className="pt-2 flex flex-wrap items-center gap-4">
+              <Link
+                to="/products"
+                className="inline-flex items-center gap-2 bg-white text-brand-800 font-black px-6 py-3 rounded-2xl text-sm shadow-md hover:bg-emerald-50 transition-all focus:outline-none focus:ring-2 focus:ring-white"
+              >
+                <span>Shop All Essentials</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+              <div className="flex items-center gap-2 text-xs font-semibold text-emerald-100">
+                <Clock className="w-4 h-4 text-accent-400" />
+                <span>Instant dispatch from nearest dark store</span>
+              </div>
             </div>
           </div>
+
+          {/* Decorative watermark icon */}
+          <div className="absolute right-2 -bottom-10 opacity-10 pointer-events-none select-none">
+            <Zap className="w-72 h-72" />
+          </div>
         </div>
 
-        {/* Decorative lightning background watermark */}
-        <div className="absolute right-4 -bottom-10 opacity-10 pointer-events-none select-none">
-          <Zap className="w-72 h-72" />
-        </div>
+        {/* Static Promotional Banners Grid (No autoplay carousels) */}
+        {banners.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {banners.map((banner) => (
+              <div
+                key={banner._id || banner.id}
+                className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-amber-500 to-brand-600 text-white p-5 flex flex-col justify-between shadow-sm min-h-[140px]"
+              >
+                <div>
+                  <span className="text-[10px] uppercase font-black tracking-wider bg-black/20 px-2 py-0.5 rounded-full inline-block mb-1.5">
+                    Limited Deal
+                  </span>
+                  <h3 className="text-lg font-black leading-snug line-clamp-1">{banner.title}</h3>
+                  <p className="text-xs text-amber-100 font-medium line-clamp-1">
+                    {banner.subtitle || 'Best price guaranteed on daily essentials'}
+                  </p>
+                </div>
+                {banner.linkUrl && (
+                  <Link
+                    to={banner.linkUrl}
+                    className="inline-flex items-center gap-1 text-xs font-bold text-white hover:underline pt-2"
+                  >
+                    <span>Claim Offer</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
       </section>
 
-      {/* Categories Section */}
+      {/* 2. Shop by Category Grid */}
       <section className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-xl font-black text-gray-900 tracking-tight">Shop by Category</h2>
-            <p className="text-xs text-gray-500 font-medium">Everything your home needs today</p>
+            <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+              Shop by Category
+            </h2>
+            <p className="text-xs text-slate-500 font-medium">
+              Explore everything your pantry needs
+            </p>
           </div>
           <Link
             to="/categories"
-            className="text-xs font-bold text-brand-600 hover:text-brand-700 flex items-center gap-1"
+            className="text-xs font-bold text-brand-700 hover:text-brand-800 flex items-center gap-1"
           >
-            <span>See all</span>
-            <ArrowRight className="w-3 h-3" />
+            <span>All categories</span>
+            <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 sm:gap-4">
-          {sampleCategories.map((cat) => (
-            <div
-              key={cat.id}
-              className="group p-4 bg-white rounded-2xl border border-gray-100 hover:border-brand-200 hover:shadow-sm transition-all text-center flex flex-col items-center justify-center cursor-pointer"
-            >
-              <div
-                className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mb-2.5 transition-transform group-hover:scale-110 ${cat.color}`}
+        {isLoading ? (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <Skeleton key={i} className="h-28 rounded-2xl" />
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 sm:gap-4">
+            {categories.map((cat) => (
+              <Link
+                key={cat._id || cat.slug}
+                to={`/categories/${cat.slug}`}
+                className="group p-4 bg-white rounded-2xl border border-slate-100 hover:border-brand-300 hover:shadow-floating transition-all text-center flex flex-col items-center justify-center cursor-pointer select-none"
               >
-                {cat.icon}
-              </div>
-              <span className="text-xs font-bold text-gray-800 line-clamp-2 leading-tight">
-                {cat.name}
-              </span>
-            </div>
-          ))}
-        </div>
+                <div className="w-14 h-14 rounded-2xl bg-emerald-50 text-2xl flex items-center justify-center mb-2.5 transition-transform group-hover:scale-110">
+                  {cat.icon || '🛒'}
+                </div>
+                <span className="text-xs font-bold text-slate-800 line-clamp-2 leading-tight group-hover:text-brand-700 transition-colors">
+                  {cat.name}
+                </span>
+              </Link>
+            ))}
+          </div>
+        )}
       </section>
 
-      {/* Delivery Guarantee Card */}
-      <section className="bg-brand-50 border border-brand-100 rounded-2xl p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
+      {/* 3. Trending Essentials Product Rail */}
+      <section className="space-y-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="p-1.5 bg-amber-50 text-amber-600 rounded-lg">
+              <TrendingUp className="w-4 h-4" />
+            </span>
+            <div>
+              <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+                Trending Essentials
+              </h2>
+              <p className="text-xs text-slate-500 font-medium">
+                Most ordered items in your neighborhood
+              </p>
+            </div>
+          </div>
+          <Link
+            to="/products?sort=popular"
+            className="text-xs font-bold text-brand-700 hover:text-brand-800 flex items-center gap-1"
+          >
+            <span>View all</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
+
+        {isLoading ? (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <Skeleton key={i} className="h-64 rounded-2xl" />
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
+            {trendingProducts.map((product) => (
+              <ProductCard key={product._id} product={product} />
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* 4. Featured Category Product Rails */}
+      {featuredSections.map((section) => (
+        <section key={section.categoryId || section.categorySlug} className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="text-xl">{section.categoryIcon || '🛍️'}</span>
+              <div>
+                <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+                  {section.categoryName}
+                </h2>
+                <p className="text-xs text-slate-500 font-medium">Fresh stock sourced directly</p>
+              </div>
+            </div>
+            <Link
+              to={`/categories/${section.categorySlug}`}
+              className="text-xs font-bold text-brand-700 hover:text-brand-800 flex items-center gap-1"
+            >
+              <span>See more</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4">
+            {section.products?.map((product) => (
+              <ProductCard key={product._id} product={product} />
+            ))}
+          </div>
+        </section>
+      ))}
+
+      {/* 5. Quick-Commerce Guarantees */}
+      <section className="bg-emerald-50/70 border border-emerald-100 rounded-3xl p-6 sm:p-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="flex items-start gap-3">
           <div className="w-10 h-10 rounded-xl bg-brand-600 text-white flex items-center justify-center shrink-0">
             <Zap className="w-5 h-5 fill-current" />
           </div>
           <div>
-            <h3 className="text-sm font-black text-brand-900">Why choose Zippy?</h3>
-            <p className="text-xs text-brand-700">
-              No minimum order, guaranteed fresh expiry dates, and real-time live rider tracking.
+            <h3 className="text-sm font-black text-slate-900">10-Minute Dispatch</h3>
+            <p className="text-xs text-slate-600 mt-0.5">
+              Automated picking inside hyper-local micro fulfillment dark stores.
             </p>
           </div>
         </div>
-        <div className="text-xs font-bold text-brand-800 bg-white px-3 py-1.5 rounded-lg border border-brand-200">
-          Dark-store direct
+
+        <div className="flex items-start gap-3">
+          <div className="w-10 h-10 rounded-xl bg-brand-600 text-white flex items-center justify-center shrink-0">
+            <ShieldCheck className="w-5 h-5" />
+          </div>
+          <div>
+            <h3 className="text-sm font-black text-slate-900">Zero Spoilage Guarantee</h3>
+            <p className="text-xs text-slate-600 mt-0.5">
+              Temperature-controlled cold-chain for farm milk, curd, and organic veggies.
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-start gap-3">
+          <div className="w-10 h-10 rounded-xl bg-brand-600 text-white flex items-center justify-center shrink-0">
+            <Sparkles className="w-5 h-5" />
+          </div>
+          <div>
+            <h3 className="text-sm font-black text-slate-900">Free Delivery Over ₹199</h3>
+            <p className="text-xs text-slate-600 mt-0.5">
+              No hidden surge charges or packaging fees. Simple, honest pricing.
+            </p>
+          </div>
         </div>
       </section>
     </div>
