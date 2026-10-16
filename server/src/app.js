@@ -14,14 +14,15 @@ import healthRoutes from './routes/health.routes.js';
 import v1Routes from './routes/v1/index.js';
 import swaggerUi from 'swagger-ui-express';
 import { swaggerSpec } from './docs/swagger.js';
+import { UPLOAD_ROOT } from './services/storage.service.js';
 
 const app = express();
 
 // Request identifier middleware
 app.use(requestIdMiddleware);
 
-// Security headers
-app.use(helmet());
+// Security headers with cross-origin resource policy allowing media assets
+app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 
 // CORS configuration
 const allowedOrigins = env.CORS_ORIGIN.split(',').map((origin) => origin.trim());
@@ -74,6 +75,9 @@ if (env.NODE_ENV !== 'test') {
 
 // Health and readiness endpoints
 app.use('/', healthRoutes);
+
+// Static uploads serving
+app.use('/uploads', express.static(UPLOAD_ROOT, { maxAge: '7d', immutable: true }));
 
 // Versioned API v1 endpoints
 app.use('/api/v1', v1Routes);

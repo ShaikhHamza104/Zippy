@@ -64,6 +64,9 @@ const envSchema = z.object({
   RAZORPAY_KEY_ID: z.string().optional().default(''),
   RAZORPAY_KEY_SECRET: z.string().optional().default(''),
   RAZORPAY_WEBHOOK_SECRET: z.string().optional().default(''),
+  STORAGE_PROVIDER: z.enum(['local', 's3', 'cloudinary']).default('local'),
+  UPLOAD_DIR: z.string().default('uploads'),
+  STORAGE_BASE_URL: z.string().optional().default(''),
 });
 
 const parsed = envSchema.safeParse(process.env);

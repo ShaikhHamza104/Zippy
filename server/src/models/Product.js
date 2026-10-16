@@ -154,7 +154,9 @@ productSchema.pre('validate', function (next) {
     this.totalStock = this.variants.reduce((acc, curr) => acc + (curr.stock || 0), 0);
     this.primaryPrice = this.variants[0].price;
     this.primaryMrp = this.variants[0].mrp;
-    this.isAvailable = this.totalStock > 0;
+    if (this.isAvailable !== false) {
+      this.isAvailable = this.totalStock > 0;
+    }
   }
   next();
 });

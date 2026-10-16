@@ -426,5 +426,111 @@ export const swaggerSpec = {
         responses: { 200: { description: 'Payment verified' } },
       },
     },
+    '/api/v1/admin/dashboard': {
+      get: {
+        summary: 'Admin dashboard overview and KPI metrics',
+        tags: ['Admin'],
+        security: [{ BearerAuth: [] }],
+        responses: { 200: { description: 'Dashboard metrics and low stock alerts' } },
+      },
+    },
+    '/api/v1/admin/products': {
+      get: {
+        summary: 'List products with admin pagination and filters',
+        tags: ['Admin Products'],
+        security: [{ BearerAuth: [] }],
+        responses: { 200: { description: 'Admin product list' } },
+      },
+      post: {
+        summary: 'Create new catalog product and invalidate cache',
+        tags: ['Admin Products'],
+        security: [{ BearerAuth: [] }],
+        responses: { 201: { description: 'Product created' } },
+      },
+    },
+    '/api/v1/admin/products/{id}/stock': {
+      patch: {
+        summary: 'Explicit inventory and stock adjustment with cache invalidation',
+        tags: ['Admin Products'],
+        security: [{ BearerAuth: [] }],
+        responses: { 200: { description: 'Stock updated' } },
+      },
+    },
+    '/api/v1/admin/upload': {
+      post: {
+        summary: 'Upload and Sharp-process JPEG/PNG/WebP image',
+        tags: ['Admin Media'],
+        security: [{ BearerAuth: [] }],
+        responses: { 201: { description: 'Image processed and saved' } },
+      },
+    },
+    '/api/v1/admin/orders': {
+      get: {
+        summary: 'List orders with admin filters',
+        tags: ['Admin Orders'],
+        security: [{ BearerAuth: [] }],
+        responses: { 200: { description: 'Admin order list' } },
+      },
+    },
+    '/api/v1/admin/customers': {
+      get: {
+        summary: 'List registered customers',
+        tags: ['Admin Customers'],
+        security: [{ BearerAuth: [] }],
+        responses: { 200: { description: 'Customer list' } },
+      },
+    },
+    '/api/v1/admin/customers/{id}/block': {
+      patch: {
+        summary: 'Block or unblock customer account and revoke refresh tokens',
+        tags: ['Admin Customers'],
+        security: [{ BearerAuth: [] }],
+        responses: { 200: { description: 'Customer status updated' } },
+      },
+    },
+    '/api/v1/admin/coupons': {
+      get: {
+        summary: 'List all discount coupons with usage stats',
+        tags: ['Admin Coupons'],
+        security: [{ BearerAuth: [] }],
+        responses: { 200: { description: 'Coupon list' } },
+      },
+      post: {
+        summary: 'Create promotional coupon',
+        tags: ['Admin Coupons'],
+        security: [{ BearerAuth: [] }],
+        responses: { 201: { description: 'Coupon created' } },
+      },
+    },
+    '/api/v1/admin/banners': {
+      get: {
+        summary: 'List promotional hero banners',
+        tags: ['Admin Banners'],
+        security: [{ BearerAuth: [] }],
+        responses: { 200: { description: 'Banner list' } },
+      },
+      post: {
+        summary: 'Create promotional hero banner',
+        tags: ['Admin Banners'],
+        security: [{ BearerAuth: [] }],
+        responses: { 201: { description: 'Banner created' } },
+      },
+    },
+    '/api/v1/admin/audit-logs': {
+      get: {
+        summary: 'Paginated administrative audit log ledger',
+        tags: ['Admin Logs'],
+        security: [{ BearerAuth: [] }],
+        responses: { 200: { description: 'Audit logs list' } },
+      },
+    },
+    '/api/v1/admin/login-logs': {
+      get: {
+        summary: 'Paginated customer and admin authentication log ledger',
+        tags: ['Admin Logs'],
+        security: [{ BearerAuth: [] }],
+        responses: { 200: { description: 'Login logs list' } },
+      },
+    },
   },
 };

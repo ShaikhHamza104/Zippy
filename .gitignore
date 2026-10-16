@@ -33,3 +33,10 @@ Thumbs.db
 # Temporary / Scratch
 tmp/
 temp/
+
+# Uploaded media assets
+uploads/*
+!uploads/.gitkeep
+server/uploads/*
+!server/uploads/.gitkeep
+

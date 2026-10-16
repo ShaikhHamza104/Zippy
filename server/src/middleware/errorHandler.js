@@ -6,7 +6,14 @@ export const errorHandler = (err, req, res, _next) => {
     return _next(err);
   }
 
-  const statusCode = err.statusCode || err.status || 500;
+  let statusCode = err.statusCode || err.status;
+  if (!statusCode) {
+    if (err.name === 'MulterError' || err.code === 'INVALID_FILE_TYPE') {
+      statusCode = 400;
+    } else {
+      statusCode = 500;
+    }
+  }
   const message =
     statusCode === 500 && env.NODE_ENV === 'production'
       ? 'Internal Server Error'

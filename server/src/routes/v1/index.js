@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import addressRoutes from './address.routes.js';
+import adminRoutes from './admin.routes.js';
 import authRoutes from './auth.routes.js';
 import cartRoutes from './cart.routes.js';
 import categoryRoutes from './category.routes.js';
@@ -32,6 +33,9 @@ router.use('/coupons', couponRoutes);
 router.use('/orders', orderRoutes);
 router.use('/payments', paymentRoutes);
 
+// Mount administrative and backoffice domain routes (Phase 6)
+router.use('/admin', adminRoutes);
+
 router.get('/', (_req, res) => {
   res.status(200).json({
     status: 'success',
@@ -52,6 +56,7 @@ router.get('/', (_req, res) => {
       coupons: '/api/v1/coupons',
       orders: '/api/v1/orders',
       payments: '/api/v1/payments',
+      admin: '/api/v1/admin',
       docs: '/api/docs',
     },
   });
