@@ -1,5 +1,7 @@
+import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express from 'express';
+import mongoSanitize from 'express-mongo-sanitize';
 import helmet from 'helmet';
 import hpp from 'hpp';
 import { pinoHttp } from 'pino-http';
@@ -35,12 +37,18 @@ app.use(
   })
 );
 
+// Cookie parsing middleware (required for reading refresh tokens)
+app.use(cookieParser());
+
 // Prevent HTTP Parameter Pollution
 app.use(hpp());
 
 // Body parsers with safe payload size limit
 app.use(express.json({ limit: '10kb' }));
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
+
+// Sanitize query/body against NoSQL injection
+app.use(mongoSanitize());
 
 // Pino HTTP request logging (suppressed during unit test runs)
 if (env.NODE_ENV !== 'test') {
