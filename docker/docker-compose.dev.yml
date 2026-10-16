@@ -1,0 +1,27 @@
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: zippy-mysql-dev
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-zippy_dev}
+      MYSQL_USER: ${MYSQL_USER:-zippy_user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - '3306:3306'
+    volumes:
+      - zippy_mysql_data:/var/lib/mysql
+
+  mongodb:
+    image: mongo:8.0
+    container_name: zippy-mongo-dev
+    restart: unless-stopped
+    ports:
+      - '27017:27017'
+    volumes:
+      - zippy_mongo_data:/data/db
+
+volumes:
+  zippy_mysql_data:
+  zippy_mongo_data:

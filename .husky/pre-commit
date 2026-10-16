@@ -1,0 +1,2 @@
+export PATH="$PATH:/c/Users/DELL/AppData/Roaming/npm:$APPDATA/npm"
+pnpm exec lint-staged
