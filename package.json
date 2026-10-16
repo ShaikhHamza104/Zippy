@@ -10,6 +10,7 @@
     "lint": "pnpm -r lint",
     "test": "pnpm -r test",
     "seed": "pnpm --filter @zippy/server seed",
+    "prisma:status": "pnpm --filter @zippy/server prisma:status",
     "prepare": "husky"
   },
   "devDependencies": {

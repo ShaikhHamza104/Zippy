@@ -264,7 +264,7 @@ erDiagram
    - Created `server/src/database/mongo.js` with automated retry logic (5 attempts) and graceful teardown.
 5. **Idempotent Seed Script:**
    - Authored `server/src/database/seed.js` executed via `pnpm seed` or `pnpm --filter @zippy/server seed`.
-   - Populated Super Admin (`admin@zippy.local`) using bcrypt (cost 12) with credentials read safely from `.env`.
+   - Populated Super Admin (`admin@zippy.com`) using bcrypt (cost 12) with credentials read safely from `.env`.
    - Populated 3 promotional coupons (`WELCOME50`, `ZIPPY100`, `FREESHIP`).
    - Populated 8 grocery categories.
    - Populated 64 realistic grocery products across all categories with multiple unit variants, realistic prices, images, and inventory stock.
@@ -283,8 +283,10 @@ erDiagram
 - `package.json` - Added root `seed` script.
 - `pnpm-workspace.yaml` - Approved build scripts for `@prisma/client`, `@prisma/engines`, and `prisma`.
 - `server/package.json` - Added `@prisma/client`, `mongoose`, `bcryptjs`, `prisma`, and database scripts.
+- `server/prisma.config.js` - Prisma CLI configuration loading the root `.env` dynamically across commands.
 - `server/prisma/schema.prisma` - Complete MySQL relational schema.
 - `server/prisma/migrations/20261016142012_init_mysql_schema/migration.sql` - Generated migration SQL.
+- `server/src/config/securityGuards.js` - Production password and domain validation guard for Super Admin.
 - `server/src/database/prisma.js` - Prisma client singleton.
 - `server/src/database/mongo.js` - Mongoose connection manager with retry.
 - `server/src/database/seed.js` - Comprehensive idempotent seed script.
@@ -347,7 +349,7 @@ _Expected: 8 categories, 64 products, 3 banners, and text search results matchin
 pnpm run test
 ```
 
-_Expected: All 12 tests pass across `@zippy/server` and `@zippy/client`._
+_Expected: All 17 tests pass across `@zippy/server` (15 tests) and `@zippy/client` (2 tests)._
 
 ### 5. Verify Idempotent Seed
 
@@ -374,22 +376,35 @@ _Expected: Seed runs and reports verified counts without errors._
 
 ---
 
-## Issues Faced and Fixes
+## Phase 2 Cleanup
 
-1. **Prisma Root `.env` Resolution in Monorepo:**
-   - _Issue:_ When executing `prisma migrate dev` inside `server/`, Prisma looks for `.env` in the current directory (`server/.env`).
-   - _Fix:_ Created an NTFS hard link linking `server/.env` directly to root `.env`, keeping credentials synchronized while ensuring Git ignores both paths.
-2. **Prisma Engine Script Approval in pnpm v12:**
-   - _Issue:_ pnpm v12 blocked `@prisma/client`, `@prisma/engines`, and `prisma` native postinstall scripts.
-   - _Fix:_ Added Prisma packages to `allowBuilds` in `pnpm-workspace.yaml` and executed `pnpm approve-builds --all`.
+Following Phase 2 verification, three cleanup and hardening fixes were completed:
+
+1. **Stray MongoDB Collections Removed (Fix 1):**
+   - Dropped lingering collections `_init` and `init` from MongoDB database `zippy_dev`.
+   - Verified that no runtime code, seed script, or test suite creates these collections.
+   - Confirmed with `db.getCollectionNames()` that only 5 canonical collections exist: `banners`, `carts`, `categories`, `products`, `reviews`.
+
+2. **Super Admin Credentials & Production Safety Guards (Fix 2):**
+   - Configured super admin email (`admin@zippy.com`) and password (`<password from .env>`), managed strictly through root `.env` (`SUPER_ADMIN_EMAIL`, `SUPER_ADMIN_PASSWORD`). Updated `.env.example` with non-sensitive template placeholders.
+   - Updated the existing MySQL `SUPER_ADMIN` record without duplicate row insertion, maintaining relational consistency.
+   - Implemented `validateSuperAdminCredentials` in `server/src/config/securityGuards.js`. When `NODE_ENV=production`, server startup and seeding refuse to execute if the password is under 12 characters, found in common dictionary lists, or if the email domain is `.local` or `.test`. In non-production environments, an informative warning is logged.
+   - Validated super admin authentication via bcrypt comparison against the stored hash and verified that exactly 1 super admin record exists.
+
+3. **Consolidated Root Environment Resolution (Fix 3):**
+   - Removed the NTFS hard link `server/.env`.
+   - Created `server/prisma.config.js` to dynamically load root `.env` via `path.resolve(__dirname, '../.env')` using `dotenv.config()`.
+   - Configured server runtime in `server/src/config/env.js` to explicitly load root `.env` from its absolute file path.
+   - Added `"prisma:status"` npm script and confirmed that `pnpm prisma:status`, `pnpm seed`, `pnpm test`, and `pnpm dev` function seamlessly from both repository root and `server/`.
+   - Verified that no `.env` files exist within `server/` and that the root `.env` is securely ignored by git.
 
 ---
 
 ## Security Notes
 
 1. **Zero Secrets in Source Control:**
-   - Database credentials and super admin seed passwords exist solely in `.env`.
-   - `.env` and `server/.env` are validated as excluded via `git check-ignore`.
+   - Database credentials and super admin seed passwords exist solely in the root `.env`.
+   - The root `.env` is verified as excluded via `git check-ignore`; no `.env` files reside in sub-packages or source control.
    - `.env.example` provides non-sensitive template placeholders.
 2. **Bcrypt Password Hashing:**
    - The super admin user's password is encrypted using `bcryptjs` with a work factor cost of 12 before being persisted into MySQL. Plaintext passwords are never stored or logged.

@@ -3,6 +3,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { z } from 'zod';
 
+import { validateSuperAdminSecurity } from './securityGuards.js';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -27,5 +29,12 @@ if (!parsed.success) {
   );
   process.exit(1);
 }
+
+// Guard super admin credentials against weak passwords / test domains in production
+validateSuperAdminSecurity(
+  process.env.SUPER_ADMIN_EMAIL,
+  process.env.SUPER_ADMIN_PASSWORD,
+  parsed.data.NODE_ENV
+);
 
 export const env = parsed.data;

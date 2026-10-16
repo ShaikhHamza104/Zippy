@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { logger } from '../config/logger.js';
+import { validateSuperAdminSecurity } from '../config/securityGuards.js';
 import { Banner, Category, Product, Review } from '../models/index.js';
 import { connectMongoDB, disconnectMongoDB } from './mongo.js';
 import { prisma } from './prisma.js';
@@ -959,7 +960,7 @@ async function seed() {
   logger.info('=============================================');
 
   // 1. Seed MySQL Super Admin
-  const adminEmail = process.env.SUPER_ADMIN_EMAIL || 'admin@zippy.local';
+  const adminEmail = process.env.SUPER_ADMIN_EMAIL || 'admin@zippy.com';
   const adminPassword = process.env.SUPER_ADMIN_PASSWORD;
   const adminName = process.env.SUPER_ADMIN_NAME || 'Hamza Shaikh';
 
@@ -967,28 +968,55 @@ async function seed() {
     throw new Error('SUPER_ADMIN_PASSWORD environment variable is missing.');
   }
 
-  logger.info(`Seeding Super Admin user: ${adminEmail}...`);
+  // Security guard against weak credentials in production
+  validateSuperAdminSecurity(adminEmail, adminPassword, process.env.NODE_ENV || 'development');
+
+  logger.info(`Seeding / Updating Super Admin user (${adminEmail})...`);
   const passwordHash = await bcrypt.hash(adminPassword, 12);
 
-  const superAdmin = await prisma.user.upsert({
-    where: { email: adminEmail },
-    update: {
-      name: adminName,
-      role: 'SUPER_ADMIN',
-      passwordHash,
-      emailVerified: true,
-      isBlocked: false,
-    },
-    create: {
-      email: adminEmail,
-      name: adminName,
-      role: 'SUPER_ADMIN',
-      passwordHash,
-      emailVerified: true,
-      isBlocked: false,
-    },
+  // Check if a SUPER_ADMIN already exists (to update email/hash without creating duplicates)
+  const existingSuperAdmin = await prisma.user.findFirst({
+    where: { role: 'SUPER_ADMIN' },
   });
-  logger.info(`Super Admin verified in MySQL: ID=${superAdmin.id}, Role=${superAdmin.role}`);
+
+  let superAdmin;
+  if (existingSuperAdmin) {
+    superAdmin = await prisma.user.update({
+      where: { id: existingSuperAdmin.id },
+      data: {
+        email: adminEmail,
+        name: adminName,
+        passwordHash,
+        emailVerified: true,
+        isBlocked: false,
+      },
+    });
+    logger.info(
+      `Existing Super Admin updated in MySQL: ID=${superAdmin.id}, Email=${superAdmin.email}, Role=${superAdmin.role}`
+    );
+  } else {
+    superAdmin = await prisma.user.upsert({
+      where: { email: adminEmail },
+      update: {
+        name: adminName,
+        role: 'SUPER_ADMIN',
+        passwordHash,
+        emailVerified: true,
+        isBlocked: false,
+      },
+      create: {
+        email: adminEmail,
+        name: adminName,
+        role: 'SUPER_ADMIN',
+        passwordHash,
+        emailVerified: true,
+        isBlocked: false,
+      },
+    });
+    logger.info(
+      `Super Admin created in MySQL: ID=${superAdmin.id}, Email=${superAdmin.email}, Role=${superAdmin.role}`
+    );
+  }
 
   // 2. Seed MySQL Sample Coupons
   logger.info('Seeding sample promotional coupons into MySQL...');
