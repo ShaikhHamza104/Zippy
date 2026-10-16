@@ -325,5 +325,106 @@ export const swaggerSpec = {
         },
       },
     },
+    '/api/v1/cart': {
+      get: {
+        summary: 'Get active cart with recomputed prices and delivery fee',
+        tags: ['Cart'],
+        responses: { 200: { description: 'Active cart details' } },
+      },
+      delete: {
+        summary: 'Clear cart',
+        tags: ['Cart'],
+        responses: { 200: { description: 'Cart cleared' } },
+      },
+    },
+    '/api/v1/cart/items': {
+      post: {
+        summary: 'Add or increment item in cart',
+        tags: ['Cart'],
+        responses: {
+          200: { description: 'Item added' },
+          400: { description: 'Insufficient stock' },
+        },
+      },
+    },
+    '/api/v1/cart/coupon': {
+      post: {
+        summary: 'Apply coupon code to cart',
+        tags: ['Cart'],
+        responses: {
+          200: { description: 'Coupon applied' },
+          400: { description: 'Invalid coupon' },
+        },
+      },
+      delete: {
+        summary: 'Remove coupon from cart',
+        tags: ['Cart'],
+        responses: { 200: { description: 'Coupon removed' } },
+      },
+    },
+    '/api/v1/cart/merge': {
+      post: {
+        summary: 'Merge guest cart into authenticated customer cart',
+        tags: ['Cart'],
+        security: [{ BearerAuth: [] }],
+        responses: { 200: { description: 'Cart merged' } },
+      },
+    },
+    '/api/v1/addresses': {
+      get: {
+        summary: 'List user delivery addresses',
+        tags: ['Addresses'],
+        security: [{ BearerAuth: [] }],
+        responses: { 200: { description: 'List of addresses' } },
+      },
+      post: {
+        summary: 'Create shipping address',
+        tags: ['Addresses'],
+        security: [{ BearerAuth: [] }],
+        responses: { 201: { description: 'Address created' } },
+      },
+    },
+    '/api/v1/coupons': {
+      get: {
+        summary: 'List currently valid public coupons',
+        tags: ['Coupons'],
+        responses: { 200: { description: 'Active coupons list' } },
+      },
+    },
+    '/api/v1/orders/checkout': {
+      post: {
+        summary: 'Atomic checkout and order creation (Cross-DB)',
+        tags: ['Orders'],
+        security: [{ BearerAuth: [] }],
+        responses: {
+          201: { description: 'Order created' },
+          409: { description: 'Insufficient stock' },
+        },
+      },
+    },
+    '/api/v1/orders': {
+      get: {
+        summary: 'List customer orders',
+        tags: ['Orders'],
+        security: [{ BearerAuth: [] }],
+        responses: { 200: { description: 'List of orders' } },
+      },
+    },
+    '/api/v1/orders/{orderId}/cancel': {
+      post: {
+        summary: 'Cancel order and release stock',
+        tags: ['Orders'],
+        security: [{ BearerAuth: [] }],
+        responses: { 200: { description: 'Order cancelled, stock released' } },
+      },
+    },
+    '/api/v1/payments/verify': {
+      post: {
+        summary: 'Verify Razorpay payment signature',
+        tags: ['Payments'],
+        security: [{ BearerAuth: [] }],
+        responses: { 200: { description: 'Payment verified' } },
+      },
+    },
   },
 };

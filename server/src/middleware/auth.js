@@ -150,3 +150,38 @@ export const requireCsrfHeader = (req, res, next) => {
 
   next();
 };
+
+/**
+ * Optional authentication middleware: attaches req.user if valid token present,
+ * but allows guest requests to proceed without returning 401.
+ */
+export const optionalAuth = async (req, res, next) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return next();
+    }
+
+    const token = authHeader.split(' ')[1];
+    if (!token) {
+      return next();
+    }
+
+    try {
+      const payload = verifyAccessToken(token);
+      const user = await prisma.user.findUnique({
+        where: { id: payload.sub },
+      });
+
+      if (user && !user.isBlocked && !user.deletedAt) {
+        req.user = user;
+      }
+    } catch {
+      // Ignored for optional auth: request proceeds as guest
+    }
+
+    next();
+  } catch (err) {
+    next(err);
+  }
+};
