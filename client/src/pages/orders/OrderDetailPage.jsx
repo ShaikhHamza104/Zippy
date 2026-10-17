@@ -2,17 +2,10 @@
 import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { CheckCircle2, Clock, MapPin, XCircle, ArrowLeft, ShoppingBag, Star } from 'lucide-react';
+import { CheckCircle2, MapPin, XCircle, ArrowLeft, ShoppingBag, Star } from 'lucide-react';
 import { apiFetch } from '../../services/api.js';
 import { useUIStore } from '../../stores/uiStore.js';
 import { Button, Badge, Skeleton, Modal } from '../../components/ui/index.js';
-
-const STATUS_STEPS = [
-  { key: 'PLACED', label: 'Order Placed', desc: 'Received at dark store' },
-  { key: 'PACKED', label: 'Order Packed', desc: 'Bag sealed by picker' },
-  { key: 'OUT_FOR_DELIVERY', label: 'Out for Delivery', desc: 'Rider on the way' },
-  { key: 'DELIVERED', label: 'Delivered', desc: 'Safely dropped off' },
-];
 
 export const OrderDetailPage = () => {
   const { orderId } = useParams();
@@ -28,11 +21,6 @@ export const OrderDetailPage = () => {
     queryFn: async () => {
       const res = await apiFetch(`/api/v1/orders/${orderId}`);
       return res?.data?.order;
-    },
-    refetchInterval: (query) => {
-      const status = query.state.data?.status;
-      // Poll every 8s while order is active, stop when terminal
-      return status === 'DELIVERED' || status === 'CANCELLED' ? false : 8000;
     },
   });
 
@@ -90,7 +78,6 @@ export const OrderDetailPage = () => {
 
   const isCancelled = order.status === 'CANCELLED';
   const canCancel = order.status === 'PLACED' || order.status === 'PACKED';
-  const currentStepIndex = STATUS_STEPS.findIndex((s) => s.key === order.status);
   const deliveryAddress = order.deliveryAddressSnapshot || {};
 
   return (
@@ -116,9 +103,9 @@ export const OrderDetailPage = () => {
         )}
       </div>
 
-      {/* Status Progress Timeline */}
-      <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 p-6 sm:p-8 shadow-xs space-y-6">
-        <div className="flex flex-wrap items-center justify-between gap-2 pb-4 border-b border-slate-100 dark:border-slate-800">
+      {/* Order Status & Details Header */}
+      <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 p-6 sm:p-8 shadow-xs space-y-4">
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h1 className="text-xl font-black text-slate-900 dark:text-slate-100 tracking-tight">
               Order #{order.orderNumber}
@@ -135,9 +122,17 @@ export const OrderDetailPage = () => {
             </p>
           </div>
 
-          <Badge variant={isCancelled ? 'danger' : 'success'} size="md">
-            {order.status.replace(/_/g, ' ')}
-          </Badge>
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-bold text-slate-500 dark:text-slate-400">
+              Order Status:
+            </span>
+            <Badge
+              variant={isCancelled ? 'danger' : order.status === 'DELIVERED' ? 'success' : 'brand'}
+              size="md"
+            >
+              {order.status.replace(/_/g, ' ')}
+            </Badge>
+          </div>
         </div>
 
         {isCancelled ? (
@@ -153,46 +148,16 @@ export const OrderDetailPage = () => {
             </div>
           </div>
         ) : (
-          <div className="py-2">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 relative">
-              {STATUS_STEPS.map((step, idx) => {
-                const isPassed = idx <= currentStepIndex;
-                const isCurrent = idx === currentStepIndex;
-                return (
-                  <div key={step.key} className="flex flex-col items-center text-center space-y-2">
-                    <div
-                      className={`w-10 h-10 rounded-2xl flex items-center justify-center font-bold transition-all ${
-                        isCurrent
-                          ? 'bg-brand-600 text-white ring-4 ring-brand-500/20 shadow-sm'
-                          : isPassed
-                            ? 'bg-emerald-100 dark:bg-emerald-950/60 text-brand-700 dark:text-brand-300'
-                            : 'bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500'
-                      }`}
-                    >
-                      {isPassed ? (
-                        <CheckCircle2 className="w-5 h-5" />
-                      ) : (
-                        <Clock className="w-5 h-5" />
-                      )}
-                    </div>
-                    <div>
-                      <h4
-                        className={`text-xs font-bold ${
-                          isPassed
-                            ? 'text-slate-900 dark:text-slate-100'
-                            : 'text-slate-400 dark:text-slate-500'
-                        }`}
-                      >
-                        {step.label}
-                      </h4>
-                      <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5">
-                        {step.desc}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+          <div className="p-4 bg-slate-50 dark:bg-slate-800/60 rounded-2xl border border-slate-100 dark:border-slate-700/60 flex items-center justify-between text-xs">
+            <span className="text-slate-600 dark:text-slate-300 font-medium">
+              Fulfillment Status
+            </span>
+            <span className="font-bold text-slate-900 dark:text-slate-100">
+              {order.status === 'PLACED' && 'Order Placed & Confirmed'}
+              {order.status === 'PACKED' && 'Order Packed'}
+              {order.status === 'OUT_FOR_DELIVERY' && 'Dispatched'}
+              {order.status === 'DELIVERED' && 'Delivered'}
+            </span>
           </div>
         )}
       </div>

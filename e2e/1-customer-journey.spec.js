@@ -106,17 +106,17 @@ test.describe('Phase 11: End-to-End Customer Journey', () => {
     await expect(placeOrderBtn).toBeEnabled();
     await placeOrderBtn.click();
 
-    // 7. Order Confirmation & Tracking
+    // 7. Order Confirmation
     await expect(page).toHaveURL(/\/orders\/[a-f0-9-]+\/success/, { timeout: 15000 });
-    await expect(page.getByText('Arriving in 10 Minutes!')).toBeVisible();
+    await expect(page.getByText('Order Placed Successfully!')).toBeVisible();
     await expect(page.getByText('Order Confirmed')).toBeVisible();
 
-    // Click "Track Live Delivery"
-    await page.click('a:has-text("Track Live Delivery")');
+    // Click "View Order Details"
+    await page.click('a:has-text("View Order Details")');
 
-    // 8. Order Tracking Screen
+    // 8. Order Details Screen
     await expect(page).toHaveURL(/\/orders\/[a-f0-9-]+$/);
-    await expect(page.getByText('Order Placed')).toBeVisible();
-    await expect(page.getByText('Received at dark store')).toBeVisible();
+    await expect(page.getByText('Order #')).toBeVisible();
+    await expect(page.getByText('Order Placed & Confirmed')).toBeVisible();
   });
 });

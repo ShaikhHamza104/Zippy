@@ -32,7 +32,7 @@ export const OrdersListPage = () => {
           My Orders
         </h1>
         <p className="text-xs text-slate-500 dark:text-slate-400 font-medium mt-0.5">
-          View your order history and track active 10-minute grocery deliveries.
+          View your order history and details.
         </p>
       </div>
 
@@ -113,7 +113,7 @@ export const OrdersListPage = () => {
                     to={`/orders/${ord.id}`}
                     className="inline-flex items-center gap-1 text-xs font-bold text-brand-700 dark:text-brand-400 hover:text-brand-800 dark:hover:text-brand-300 pt-1"
                   >
-                    <span>Track Order</span>
+                    <span>View Details</span>
                     <ChevronRight className="w-4 h-4" />
                   </Link>
                 </div>

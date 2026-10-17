@@ -47,23 +47,20 @@ export const OrderSuccessPage = () => {
             Order Confirmed
           </span>
           <h1 className="text-2xl font-black text-slate-900 dark:text-slate-100 mt-2">
-            Arriving in 10 Minutes!
+            Order Placed Successfully!
           </h1>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Order #{order?.orderNumber || orderId} has been sent to our local dark store for
-            immediate packing.
+            Order #{order?.orderNumber || orderId} has been received and confirmed.
           </p>
         </div>
 
         {/* Delivery Details Card */}
         <div className="bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl p-4 text-left space-y-3 text-xs">
           <div className="flex items-center justify-between pb-2 border-b border-slate-200/60 dark:border-slate-700">
-            <span className="text-slate-500 dark:text-slate-400 font-medium">
-              Estimated Arrival
-            </span>
+            <span className="text-slate-500 dark:text-slate-400 font-medium">Order Status</span>
             <span className="font-extrabold text-brand-700 dark:text-brand-400 flex items-center gap-1">
-              <Clock className="w-3.5 h-3.5" />
-              10-12 Mins
+              <CheckCircle2 className="w-3.5 h-3.5" />
+              Confirmed
             </span>
           </div>
 
@@ -94,7 +91,7 @@ export const OrderSuccessPage = () => {
         <div className="space-y-2.5 pt-2">
           <Link to={`/orders/${orderId}`} className="block">
             <Button variant="primary" size="lg" className="w-full text-sm font-black">
-              <span>Track Live Delivery</span>
+              <span>View Order Details</span>
               <ArrowRight className="w-4 h-4 ml-1" />
             </Button>
           </Link>
