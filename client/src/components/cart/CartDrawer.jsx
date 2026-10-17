@@ -138,7 +138,13 @@ export const CartDrawer = () => {
                 <p className="text-xs text-slate-500 dark:text-slate-400 max-w-xs mb-6">
                   Good food is always just 10 minutes away. Fill your basket with daily essentials!
                 </p>
-                <Button variant="primary" onClick={() => toggleCartDrawer(false)}>
+                <Button
+                  variant="primary"
+                  onClick={() => {
+                    toggleCartDrawer(false);
+                    navigate('/products');
+                  }}
+                >
                   Start Shopping
                 </Button>
               </div>

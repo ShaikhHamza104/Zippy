@@ -1,6 +1,6 @@
 // client/src/router.jsx
 import { lazy, Suspense } from 'react';
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { ProtectedRoute } from './components/auth/ProtectedRoute.jsx';
 import { RoleRoute } from './components/auth/RoleRoute.jsx';
 import { RouteErrorBoundary } from './components/common/RouteErrorBoundary.jsx';
@@ -67,6 +67,10 @@ export const router = createBrowserRouter(
         {
           path: 'search',
           element: <SearchPage />,
+        },
+        {
+          path: 'cart',
+          element: <Navigate to="/products" replace />,
         },
         // Auth routes
         {
