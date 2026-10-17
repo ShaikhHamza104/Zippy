@@ -3,6 +3,7 @@ import { lazy, Suspense } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 import { ProtectedRoute } from './components/auth/ProtectedRoute.jsx';
 import { RoleRoute } from './components/auth/RoleRoute.jsx';
+import { RouteErrorBoundary } from './components/common/RouteErrorBoundary.jsx';
 
 const RootLayout = lazy(() => import('./layouts/RootLayout.jsx'));
 const HomePage = lazy(() => import('./pages/HomePage.jsx'));
@@ -41,6 +42,7 @@ export const router = createBrowserRouter(
     {
       path: '/',
       element: <RootLayout />,
+      errorElement: <RouteErrorBoundary />,
       children: [
         {
           index: true,
@@ -134,6 +136,7 @@ export const router = createBrowserRouter(
     // 2. Isolated Admin Backoffice App (Code-Split & Guarded)
     {
       path: '/admin',
+      errorElement: <RouteErrorBoundary />,
       element: (
         <RoleRoute allowedRoles={['ADMIN', 'SUPER_ADMIN']}>
           <Suspense

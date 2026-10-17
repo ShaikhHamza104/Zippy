@@ -1,11 +1,12 @@
 // client/src/pages/admin/AdminAuditLogsPage.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router-dom';
 import {
   ShieldAlert,
   ShieldCheck,
   Search,
+  X,
   RefreshCw,
   Key,
   CheckCircle,
@@ -42,6 +43,11 @@ export const AdminAuditLogsPage = () => {
     setSearchParams(newParams);
   };
 
+  // Keep inputVal in sync if URL query parameter changes
+  useEffect(() => {
+    setInputVal(filterQuery);
+  }, [filterQuery]);
+
   // Search Filter Submit
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -51,6 +57,24 @@ export const AdminAuditLogsPage = () => {
     } else {
       newParams.delete('q');
     }
+    newParams.set('page', '1');
+    setSearchParams(newParams);
+  };
+
+  // Clear search immediately
+  const handleClearSearch = () => {
+    setInputVal('');
+    const newParams = new URLSearchParams(searchParams);
+    newParams.delete('q');
+    newParams.set('page', '1');
+    setSearchParams(newParams);
+  };
+
+  // Reset filter
+  const handleResetFilters = () => {
+    setInputVal('');
+    const newParams = new URLSearchParams();
+    newParams.set('tab', activeTab);
     newParams.set('page', '1');
     setSearchParams(newParams);
   };
@@ -169,8 +193,7 @@ export const AdminAuditLogsPage = () => {
       {/* Search Bar */}
       <Card className="p-3 shadow-xs">
         <form onSubmit={handleSearchSubmit} className="flex items-center gap-2">
-          <div className="relative flex-1">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+          <div className="flex-1">
             <Input
               type="text"
               placeholder={
@@ -180,12 +203,37 @@ export const AdminAuditLogsPage = () => {
               }
               value={inputVal}
               onChange={(e) => setInputVal(e.target.value)}
-              className="pl-9 h-10 text-xs"
+              leftIcon={<Search className="w-4 h-4 text-slate-400" />}
+              rightIcon={
+                inputVal ? (
+                  <button
+                    type="button"
+                    onClick={handleClearSearch}
+                    className="p-1 rounded-full text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors"
+                    title="Clear filter"
+                    aria-label="Clear filter input"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                ) : null
+              }
+              className="h-10 text-xs"
             />
           </div>
           <Button type="submit" variant="primary" size="sm" className="h-10">
             Filter
           </Button>
+          {filterQuery && (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="h-10 text-xs whitespace-nowrap"
+              onClick={handleResetFilters}
+            >
+              Reset
+            </Button>
+          )}
         </form>
       </Card>
 

@@ -1,10 +1,11 @@
 // client/src/pages/admin/AdminOrdersPage.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router-dom';
 import {
   ShoppingBag,
   Search,
+  X,
   Eye,
   RefreshCw,
   Clock,
@@ -97,6 +98,11 @@ export const AdminOrdersPage = () => {
     enabled: !!selectedOrderId && isDetailModalOpen,
   });
 
+  // Keep search input in sync if URL query parameter changes
+  useEffect(() => {
+    setSearchInput(search);
+  }, [search]);
+
   // Handle Search Submit
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -108,6 +114,21 @@ export const AdminOrdersPage = () => {
     }
     newParams.set('page', '1');
     setSearchParams(newParams);
+  };
+
+  // Clear search immediately
+  const handleClearSearch = () => {
+    setSearchInput('');
+    const newParams = new URLSearchParams(searchParams);
+    newParams.delete('search');
+    newParams.set('page', '1');
+    setSearchParams(newParams);
+  };
+
+  // Reset all filters & search
+  const handleResetFilters = () => {
+    setSearchInput('');
+    setSearchParams({});
   };
 
   // Handle Status Filter
@@ -239,19 +260,43 @@ export const AdminOrdersPage = () => {
         {/* Search Input Bar */}
         <Card className="p-3 shadow-xs">
           <form onSubmit={handleSearchSubmit} className="flex items-center gap-2">
-            <div className="relative flex-1">
-              <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+            <div className="flex-1">
               <Input
                 type="text"
                 placeholder="Search by Order #, customer name, email, or phone..."
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
-                className="pl-9 h-10 text-xs"
+                leftIcon={<Search className="w-4 h-4 text-slate-400" />}
+                rightIcon={
+                  searchInput ? (
+                    <button
+                      type="button"
+                      onClick={handleClearSearch}
+                      className="p-1 rounded-full text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors"
+                      title="Clear search"
+                      aria-label="Clear search input"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  ) : null
+                }
+                className="h-10 text-xs"
               />
             </div>
             <Button type="submit" variant="primary" size="sm" className="h-10">
               Search
             </Button>
+            {(search || statusFilter) && (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="h-10 text-xs whitespace-nowrap"
+                onClick={handleResetFilters}
+              >
+                Reset Filters
+              </Button>
+            )}
           </form>
         </Card>
       </div>
@@ -271,10 +316,7 @@ export const AdminOrdersPage = () => {
               title="No orders found"
               description="No orders match your filter criteria or search keyword."
               actionLabel="Clear Filters"
-              onAction={() => {
-                setSearchInput('');
-                setSearchParams({});
-              }}
+              onAction={handleResetFilters}
             />
           </div>
         ) : (

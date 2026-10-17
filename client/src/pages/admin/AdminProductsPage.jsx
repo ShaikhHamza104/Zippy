@@ -1,11 +1,12 @@
 // client/src/pages/admin/AdminProductsPage.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router-dom';
 import {
   Package,
   Plus,
   Search,
+  X,
   Edit2,
   Trash2,
   Upload,
@@ -101,6 +102,11 @@ export const AdminProductsPage = () => {
   const products = productsData?.data?.products || [];
   const pagination = productsData?.pagination || { page: 1, totalPages: 1, total: 0 };
 
+  // Keep search input in sync if URL query parameter changes
+  useEffect(() => {
+    setSearchInput(search);
+  }, [search]);
+
   // Handle Search Submit
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -112,6 +118,21 @@ export const AdminProductsPage = () => {
     }
     newParams.set('page', '1');
     setSearchParams(newParams);
+  };
+
+  // Clear search immediately
+  const handleClearSearch = () => {
+    setSearchInput('');
+    const newParams = new URLSearchParams(searchParams);
+    newParams.delete('search');
+    newParams.set('page', '1');
+    setSearchParams(newParams);
+  };
+
+  // Reset all filters & search
+  const handleResetFilters = () => {
+    setSearchInput('');
+    setSearchParams({});
   };
 
   // Handle Category Filter Change
@@ -459,18 +480,31 @@ export const AdminProductsPage = () => {
           onSubmit={handleSearchSubmit}
           className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center"
         >
-          <div className="sm:col-span-5 relative">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+          <div className="sm:col-span-5">
             <Input
               type="text"
               placeholder="Search by product name, brand, SKU..."
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
-              className="pl-9 h-10 text-xs"
+              leftIcon={<Search className="w-4 h-4 text-slate-400" />}
+              rightIcon={
+                searchInput ? (
+                  <button
+                    type="button"
+                    onClick={handleClearSearch}
+                    className="p-1 rounded-full text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors"
+                    title="Clear search"
+                    aria-label="Clear search input"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                ) : null
+              }
+              className="h-10 text-xs"
             />
           </div>
 
-          <div className="sm:col-span-4">
+          <div className="sm:col-span-3">
             <select
               value={categoryFilter}
               onChange={(e) => handleCategoryChange(e.target.value)}
@@ -485,7 +519,7 @@ export const AdminProductsPage = () => {
             </select>
           </div>
 
-          <div className="sm:col-span-3">
+          <div className="sm:col-span-2">
             <select
               value={isAvailableFilter}
               onChange={(e) => handleAvailabilityChange(e.target.value)}
@@ -495,6 +529,24 @@ export const AdminProductsPage = () => {
               <option value="true">Available Only</option>
               <option value="false">Unavailable / Archived</option>
             </select>
+          </div>
+
+          <div className="sm:col-span-2 flex items-center gap-2">
+            <Button type="submit" variant="primary" size="sm" className="h-10 flex-1">
+              Search
+            </Button>
+            {(search || categoryFilter || isAvailableFilter !== '') && (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="h-10 text-xs px-2.5 whitespace-nowrap"
+                onClick={handleResetFilters}
+                title="Reset all filters"
+              >
+                Reset
+              </Button>
+            )}
           </div>
         </form>
       </Card>
@@ -514,10 +566,7 @@ export const AdminProductsPage = () => {
               title="No products found"
               description="No catalog items match your search criteria or filters."
               actionLabel="Clear Filters"
-              onAction={() => {
-                setSearchInput('');
-                setSearchParams({});
-              }}
+              onAction={handleResetFilters}
             />
           </div>
         ) : (

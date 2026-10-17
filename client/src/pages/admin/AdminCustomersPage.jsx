@@ -1,10 +1,11 @@
 // client/src/pages/admin/AdminCustomersPage.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router-dom';
 import {
   Users,
   Search,
+  X,
   ShieldCheck,
   Eye,
   RefreshCw,
@@ -77,6 +78,11 @@ export const AdminCustomersPage = () => {
     enabled: !!selectedCustomerId && isDetailModalOpen,
   });
 
+  // Keep search input in sync if URL query parameter changes
+  useEffect(() => {
+    setSearchInput(search);
+  }, [search]);
+
   // Handle Search
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -88,6 +94,21 @@ export const AdminCustomersPage = () => {
     }
     newParams.set('page', '1');
     setSearchParams(newParams);
+  };
+
+  // Clear search immediately
+  const handleClearSearch = () => {
+    setSearchInput('');
+    const newParams = new URLSearchParams(searchParams);
+    newParams.delete('search');
+    newParams.set('page', '1');
+    setSearchParams(newParams);
+  };
+
+  // Reset all filters & search
+  const handleResetFilters = () => {
+    setSearchInput('');
+    setSearchParams({});
   };
 
   // Handle Block Filter
@@ -187,18 +208,31 @@ export const AdminCustomersPage = () => {
           onSubmit={handleSearchSubmit}
           className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center"
         >
-          <div className="sm:col-span-8 relative">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+          <div className="sm:col-span-6">
             <Input
               type="text"
               placeholder="Search by customer name, email address, or phone..."
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
-              className="pl-9 h-10 text-xs"
+              leftIcon={<Search className="w-4 h-4 text-slate-400" />}
+              rightIcon={
+                searchInput ? (
+                  <button
+                    type="button"
+                    onClick={handleClearSearch}
+                    className="p-1 rounded-full text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors"
+                    title="Clear search"
+                    aria-label="Clear search input"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                ) : null
+              }
+              className="h-10 text-xs"
             />
           </div>
 
-          <div className="sm:col-span-4">
+          <div className="sm:col-span-3">
             <select
               value={isBlockedFilter}
               onChange={(e) => handleBlockFilterChange(e.target.value)}
@@ -208,6 +242,24 @@ export const AdminCustomersPage = () => {
               <option value="false">Active Customers Only</option>
               <option value="true">Blocked Customers Only</option>
             </select>
+          </div>
+
+          <div className="sm:col-span-3 flex items-center gap-2">
+            <Button type="submit" variant="primary" size="sm" className="h-10 flex-1">
+              Search
+            </Button>
+            {(search || isBlockedFilter !== '') && (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="h-10 text-xs px-2.5 whitespace-nowrap"
+                onClick={handleResetFilters}
+                title="Reset all filters"
+              >
+                Reset
+              </Button>
+            )}
           </div>
         </form>
       </Card>
@@ -227,10 +279,7 @@ export const AdminCustomersPage = () => {
               title="No customers found"
               description="No registered customers matched your search query."
               actionLabel="Clear Filters"
-              onAction={() => {
-                setSearchInput('');
-                setSearchParams({});
-              }}
+              onAction={handleResetFilters}
             />
           </div>
         ) : (
