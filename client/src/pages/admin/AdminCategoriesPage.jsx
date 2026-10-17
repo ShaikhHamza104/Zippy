@@ -82,6 +82,10 @@ export const AdminCategoriesPage = () => {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    // Instant local blob preview so the image is immediately visible
+    const localBlob = URL.createObjectURL(file);
+    setFormData((prev) => ({ ...prev, image: localBlob }));
+
     const uploadData = new FormData();
     uploadData.append('image', file);
 
@@ -204,6 +208,32 @@ export const AdminCategoriesPage = () => {
         type: 'error',
         title: 'Action failed',
         message: err.message || 'Unable to toggle category.',
+      });
+    },
+  });
+
+  // Mutation: Permanently Delete Category
+  const deleteCategoryPermanentlyMutation = useMutation({
+    mutationFn: async (id) => {
+      return apiFetch(`/api/v1/admin/categories/${id}?hard=true`, {
+        method: 'DELETE',
+      });
+    },
+    onSuccess: (res) => {
+      queryClient.invalidateQueries({ queryKey: ['adminCategories'] });
+      queryClient.invalidateQueries({ queryKey: ['adminCategoriesList'] });
+      queryClient.invalidateQueries({ queryKey: ['homeFeed'] });
+      addToast({
+        type: 'success',
+        title: 'Category deleted',
+        message: res?.message || 'Category permanently deleted.',
+      });
+    },
+    onError: (err) => {
+      addToast({
+        type: 'error',
+        title: 'Action failed',
+        message: err.message || 'Unable to delete category.',
       });
     },
   });
@@ -352,19 +382,45 @@ export const AdminCategoriesPage = () => {
                           <span className="hidden md:inline">Edit</span>
                         </button>
 
+                        {/* Toggle Active Status */}
                         <button
                           type="button"
                           onClick={() => {
-                            if (window.confirm(`Toggle status for category "${cat.name}"?`)) {
+                            if (
+                              window.confirm(
+                                `${cat.isActive ? 'Deactivate' : 'Activate'} category "${cat.name}"?`
+                              )
+                            ) {
                               toggleCategoryMutation.mutate(cat._id);
                             }
                           }}
                           className={`p-1.5 rounded-lg transition-colors font-bold text-xs inline-flex items-center gap-1 ${
                             cat.isActive
-                              ? 'text-slate-500 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40'
-                              : 'text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/40'
+                              ? 'text-amber-600 dark:text-amber-400 hover:text-amber-700 hover:bg-amber-50 dark:hover:bg-amber-950/40'
+                              : 'text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-950/40'
                           }`}
                           title={cat.isActive ? 'Deactivate Category' : 'Activate Category'}
+                        >
+                          <RefreshCw className="w-3.5 h-3.5" />
+                          <span className="hidden lg:inline">
+                            {cat.isActive ? 'Deactivate' : 'Activate'}
+                          </span>
+                        </button>
+
+                        {/* Permanent Delete */}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (
+                              window.confirm(
+                                `Permanently delete category "${cat.name}"? This cannot be undone.`
+                              )
+                            ) {
+                              deleteCategoryPermanentlyMutation.mutate(cat._id);
+                            }
+                          }}
+                          className="p-1.5 rounded-lg text-rose-500 hover:text-rose-700 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors font-bold text-xs inline-flex items-center gap-1"
+                          title="Permanently Delete Category"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>

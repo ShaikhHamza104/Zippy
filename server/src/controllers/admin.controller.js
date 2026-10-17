@@ -208,12 +208,10 @@ export const getAdminProductById = async (req, res, next) => {
   try {
     const { id } = req.params;
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          error: { code: 'INVALID_ID', message: 'Invalid product ObjectId' },
-        });
+      return res.status(400).json({
+        success: false,
+        error: { code: 'INVALID_ID', message: 'Invalid product ObjectId' },
+      });
     }
 
     const product = await Product.findById(id).populate('categoryId', 'name slug icon').lean();
@@ -235,12 +233,10 @@ export const createAdminProduct = async (req, res, next) => {
 
     const category = await Category.findById(payload.categoryId);
     if (!category) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          error: { code: 'INVALID_CATEGORY', message: 'Referenced category does not exist' },
-        });
+      return res.status(400).json({
+        success: false,
+        error: { code: 'INVALID_CATEGORY', message: 'Referenced category does not exist' },
+      });
     }
 
     const slug =
@@ -252,12 +248,10 @@ export const createAdminProduct = async (req, res, next) => {
 
     const existing = await Product.findOne({ slug });
     if (existing) {
-      return res
-        .status(409)
-        .json({
-          success: false,
-          error: { code: 'SLUG_CONFLICT', message: `Product slug "${slug}" already exists` },
-        });
+      return res.status(409).json({
+        success: false,
+        error: { code: 'SLUG_CONFLICT', message: `Product slug "${slug}" already exists` },
+      });
     }
 
     const product = new Product({
@@ -292,12 +286,10 @@ export const updateAdminProduct = async (req, res, next) => {
   try {
     const { id } = req.params;
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          error: { code: 'INVALID_ID', message: 'Invalid product ObjectId' },
-        });
+      return res.status(400).json({
+        success: false,
+        error: { code: 'INVALID_ID', message: 'Invalid product ObjectId' },
+      });
     }
 
     const product = await Product.findById(id);
@@ -312,12 +304,10 @@ export const updateAdminProduct = async (req, res, next) => {
     if (payload.categoryId) {
       const category = await Category.findById(payload.categoryId);
       if (!category) {
-        return res
-          .status(400)
-          .json({
-            success: false,
-            error: { code: 'INVALID_CATEGORY', message: 'Referenced category does not exist' },
-          });
+        return res.status(400).json({
+          success: false,
+          error: { code: 'INVALID_CATEGORY', message: 'Referenced category does not exist' },
+        });
       }
       payload.categorySlug = category.slug;
     }
@@ -349,12 +339,10 @@ export const deleteAdminProduct = async (req, res, next) => {
   try {
     const { id } = req.params;
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          error: { code: 'INVALID_ID', message: 'Invalid product ObjectId' },
-        });
+      return res.status(400).json({
+        success: false,
+        error: { code: 'INVALID_ID', message: 'Invalid product ObjectId' },
+      });
     }
 
     const product = await Product.findById(id);
@@ -394,12 +382,10 @@ export const updateAdminProductStock = async (req, res, next) => {
     const { sku, stock, adjustment } = req.body;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          error: { code: 'INVALID_ID', message: 'Invalid product ObjectId' },
-        });
+      return res.status(400).json({
+        success: false,
+        error: { code: 'INVALID_ID', message: 'Invalid product ObjectId' },
+      });
     }
 
     const product = await Product.findById(id);
@@ -412,12 +398,10 @@ export const updateAdminProductStock = async (req, res, next) => {
     // Locate target variant
     let variant = sku ? product.variants.find((v) => v.sku === sku) : product.variants[0];
     if (!variant) {
-      return res
-        .status(404)
-        .json({
-          success: false,
-          error: { code: 'VARIANT_NOT_FOUND', message: `Variant with SKU "${sku}" not found` },
-        });
+      return res.status(404).json({
+        success: false,
+        error: { code: 'VARIANT_NOT_FOUND', message: `Variant with SKU "${sku}" not found` },
+      });
     }
 
     const previousStock = variant.stock;
@@ -488,12 +472,10 @@ export const createAdminCategory = async (req, res, next) => {
 
     const existing = await Category.findOne({ slug });
     if (existing) {
-      return res
-        .status(409)
-        .json({
-          success: false,
-          error: { code: 'SLUG_CONFLICT', message: `Category slug "${slug}" already exists` },
-        });
+      return res.status(409).json({
+        success: false,
+        error: { code: 'SLUG_CONFLICT', message: `Category slug "${slug}" already exists` },
+      });
     }
 
     const category = new Category({ ...payload, slug });
@@ -523,12 +505,10 @@ export const updateAdminCategory = async (req, res, next) => {
   try {
     const { id } = req.params;
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          error: { code: 'INVALID_ID', message: 'Invalid category ObjectId' },
-        });
+      return res.status(400).json({
+        success: false,
+        error: { code: 'INVALID_ID', message: 'Invalid category ObjectId' },
+      });
     }
 
     const category = await Category.findByIdAndUpdate(id, req.body, {
@@ -566,35 +546,57 @@ export const deleteAdminCategory = async (req, res, next) => {
   try {
     const { id } = req.params;
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          error: { code: 'INVALID_ID', message: 'Invalid category ObjectId' },
-        });
+      return res.status(400).json({
+        success: false,
+        error: { code: 'INVALID_ID', message: 'Invalid category ObjectId' },
+      });
     }
 
-    const category = await Category.findByIdAndUpdate(id, { isActive: false }, { new: true });
+    const category = await Category.findById(id);
     if (!category) {
       return res
         .status(404)
         .json({ success: false, error: { code: 'NOT_FOUND', message: 'Category not found' } });
     }
 
+    if (req.query.hard === 'true') {
+      await Category.findByIdAndDelete(id);
+      cache.flush();
+
+      await recordAuditLog({
+        userId: req.user.id,
+        action: 'DELETE_CATEGORY',
+        entityType: 'CATEGORY',
+        entityId: id,
+        details: { name: category.name, action: 'permanently_deleted' },
+        ipAddress: req.ip,
+      });
+
+      return res.status(200).json({
+        success: true,
+        message: 'Category permanently deleted',
+        data: null,
+      });
+    }
+
+    const newStatus = !category.isActive;
+    category.isActive = newStatus;
+    await category.save();
+
     cache.flush();
 
     await recordAuditLog({
       userId: req.user.id,
-      action: 'DELETE_CATEGORY',
+      action: newStatus ? 'ACTIVATE_CATEGORY' : 'DEACTIVATE_CATEGORY',
       entityType: 'CATEGORY',
       entityId: category._id,
-      details: { name: category.name, action: 'soft_deactivated' },
+      details: { name: category.name, action: newStatus ? 'activated' : 'soft_deactivated' },
       ipAddress: req.ip,
     });
 
     res.status(200).json({
       success: true,
-      message: 'Category deactivated successfully',
+      message: `Category ${newStatus ? 'activated' : 'deactivated'} successfully`,
       data: { category },
     });
   } catch (err) {
@@ -986,12 +988,10 @@ export const toggleBlockCustomer = async (req, res, next) => {
     }
 
     if (user.role === 'SUPER_ADMIN') {
-      return res
-        .status(403)
-        .json({
-          success: false,
-          error: { code: 'FORBIDDEN', message: 'SUPER_ADMIN accounts cannot be blocked' },
-        });
+      return res.status(403).json({
+        success: false,
+        error: { code: 'FORBIDDEN', message: 'SUPER_ADMIN accounts cannot be blocked' },
+      });
     }
 
     const updatedUser = await prisma.$transaction(async (tx) => {
@@ -1068,12 +1068,10 @@ export const createAdminCoupon = async (req, res, next) => {
       where: { code: payload.code.toUpperCase() },
     });
     if (existing) {
-      return res
-        .status(409)
-        .json({
-          success: false,
-          error: { code: 'CODE_EXISTS', message: `Coupon "${payload.code}" already exists` },
-        });
+      return res.status(409).json({
+        success: false,
+        error: { code: 'CODE_EXISTS', message: `Coupon "${payload.code}" already exists` },
+      });
     }
 
     const coupon = await prisma.coupon.create({
@@ -1206,12 +1204,10 @@ export const updateAdminBanner = async (req, res, next) => {
   try {
     const { id } = req.params;
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          error: { code: 'INVALID_ID', message: 'Invalid banner ObjectId' },
-        });
+      return res.status(400).json({
+        success: false,
+        error: { code: 'INVALID_ID', message: 'Invalid banner ObjectId' },
+      });
     }
 
     const banner = await Banner.findByIdAndUpdate(id, req.body, { new: true, runValidators: true });
@@ -1246,12 +1242,10 @@ export const deleteAdminBanner = async (req, res, next) => {
   try {
     const { id } = req.params;
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          error: { code: 'INVALID_ID', message: 'Invalid banner ObjectId' },
-        });
+      return res.status(400).json({
+        success: false,
+        error: { code: 'INVALID_ID', message: 'Invalid banner ObjectId' },
+      });
     }
 
     const banner = await Banner.findByIdAndDelete(id);

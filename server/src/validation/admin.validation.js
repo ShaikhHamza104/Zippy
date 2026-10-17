@@ -12,9 +12,22 @@ const productVariantSchema = z.object({
   sku: z.string({ required_error: 'Variant SKU is required' }).trim().min(2).toUpperCase(),
 });
 
+const isValidImagePath = (val) =>
+  typeof val === 'string' &&
+  (val.startsWith('http://') ||
+    val.startsWith('https://') ||
+    val.startsWith('/uploads/') ||
+    val.startsWith('data:image/'));
+
 // Product image schema
 const productImageSchema = z.object({
-  url: z.string({ required_error: 'Image URL is required' }).url('Invalid image URL'),
+  url: z
+    .string({ required_error: 'Image URL is required' })
+    .trim()
+    .min(1, 'Image URL cannot be empty')
+    .refine(isValidImagePath, {
+      message: 'Invalid image URL. Must be http(s) URL or /uploads path',
+    }),
   alt: z.string().trim().optional().default(''),
   isPrimary: z.boolean().optional().default(false),
 });
@@ -65,7 +78,13 @@ export const adminCategoryCreateSchema = z
   .object({
     name: z.string({ required_error: 'Category name is required' }).trim().min(2).max(100),
     slug: z.string().trim().toLowerCase().optional(),
-    image: z.string({ required_error: 'Category image URL is required' }).url('Invalid image URL'),
+    image: z
+      .string({ required_error: 'Category image URL is required' })
+      .trim()
+      .min(1, 'Category image URL cannot be empty')
+      .refine(isValidImagePath, {
+        message: 'Invalid image URL. Must be http(s) URL or /uploads path',
+      }),
     description: z.string().trim().optional().default(''),
     icon: z.string().trim().optional().default('📦'),
     displayOrder: z.coerce.number().int().optional().default(0),
@@ -77,7 +96,13 @@ export const adminCategoryUpdateSchema = z
   .object({
     name: z.string().trim().min(2).max(100).optional(),
     slug: z.string().trim().toLowerCase().optional(),
-    image: z.string().url('Invalid image URL').optional(),
+    image: z
+      .string()
+      .trim()
+      .refine((val) => !val || isValidImagePath(val), {
+        message: 'Invalid image URL. Must be http(s) URL or /uploads path',
+      })
+      .optional(),
     description: z.string().trim().optional(),
     icon: z.string().trim().optional(),
     displayOrder: z.coerce.number().int().optional(),
@@ -123,7 +148,13 @@ export const adminCouponUpdateSchema = z
 export const adminBannerCreateSchema = z
   .object({
     title: z.string({ required_error: 'Banner title is required' }).trim().min(2).max(150),
-    imageUrl: z.string({ required_error: 'Banner image URL is required' }).url('Invalid image URL'),
+    imageUrl: z
+      .string({ required_error: 'Banner image URL is required' })
+      .trim()
+      .min(1, 'Banner image URL cannot be empty')
+      .refine(isValidImagePath, {
+        message: 'Invalid image URL. Must be http(s) URL or /uploads path',
+      }),
     linkUrl: z.string().trim().optional().default('/categories'),
     badgeText: z.string().trim().optional().default('SUPER SAVINGS'),
     displayOrder: z.coerce.number().int().optional().default(0),
@@ -136,7 +167,13 @@ export const adminBannerCreateSchema = z
 export const adminBannerUpdateSchema = z
   .object({
     title: z.string().trim().min(2).max(150).optional(),
-    imageUrl: z.string().url('Invalid image URL').optional(),
+    imageUrl: z
+      .string()
+      .trim()
+      .refine((val) => !val || isValidImagePath(val), {
+        message: 'Invalid image URL. Must be http(s) URL or /uploads path',
+      })
+      .optional(),
     linkUrl: z.string().trim().optional(),
     badgeText: z.string().trim().optional(),
     displayOrder: z.coerce.number().int().optional(),

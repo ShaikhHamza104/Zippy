@@ -81,6 +81,10 @@ export const AdminBannersPage = () => {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    // Instant local blob preview
+    const localBlob = URL.createObjectURL(file);
+    setFormData((prev) => ({ ...prev, imageUrl: localBlob }));
+
     const uploadData = new FormData();
     uploadData.append('image', file);
 

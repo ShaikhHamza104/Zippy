@@ -150,6 +150,18 @@ export const AdminProductsPage = () => {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    // Instant local blob preview
+    const localBlob = URL.createObjectURL(file);
+    setFormData((prev) => {
+      const imgs = [...prev.images];
+      if (!imgs[0] || !imgs[0].url) {
+        imgs[0] = { url: localBlob, alt: prev.name || '', isPrimary: true };
+      } else {
+        imgs.push({ url: localBlob, alt: prev.name || '', isPrimary: false });
+      }
+      return { ...prev, images: imgs };
+    });
+
     const uploadData = new FormData();
     uploadData.append('image', file);
 
@@ -164,7 +176,11 @@ export const AdminProductsPage = () => {
         const uploadedUrl = res.data.url;
         setFormData((prev) => {
           const imgs = [...prev.images];
-          if (!imgs[0] || !imgs[0].url) {
+          // Replace the localBlob preview with the uploaded URL
+          const targetIdx = imgs.findIndex((img) => img.url === localBlob);
+          if (targetIdx !== -1) {
+            imgs[targetIdx] = { ...imgs[targetIdx], url: uploadedUrl };
+          } else if (!imgs[0] || !imgs[0].url) {
             imgs[0] = { url: uploadedUrl, alt: prev.name || '', isPrimary: true };
           } else {
             imgs.push({ url: uploadedUrl, alt: prev.name || '', isPrimary: false });
