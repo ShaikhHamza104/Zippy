@@ -51,7 +51,10 @@ app.use(
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 
 // CORS configuration
-const allowedOrigins = env.CORS_ORIGIN.split(',').map((origin) => origin.trim());
+const allowedOrigins = [
+  ...env.CORS_ORIGIN.split(',').map((origin) => origin.trim()),
+  ...(env.CLIENT_URL ? [env.CLIENT_URL.trim()] : []),
+].filter(Boolean);
 app.use(
   cors({
     origin: (origin, callback) => {

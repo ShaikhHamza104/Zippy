@@ -149,16 +149,22 @@ The production stack supports automated TLS termination with HTTP-to-HTTPS (301)
 #### A. Initial SSL Certificate Issuance
 
 ```bash
-# 1. Create shared ACME challenge directory
+# 1. Create shared ACME challenge directory on host
 sudo mkdir -p /var/www/certbot
 
-# 2. Obtain initial SSL certificate using Certbot standalone (or webroot)
-sudo certbot certonly --standalone \
-  --preferred-challenges http \
+# 2. Start Nginx container to serve the ACME challenge path
+docker compose -f docker-compose.prod.yml up -d client
+
+# 3. Obtain initial SSL certificate using Certbot webroot mode
+sudo certbot certonly --webroot \
+  -w /var/www/certbot \
   -d zippy.yourdomain.com \
   --email security-admin@yourdomain.com \
   --agree-tos \
   --non-interactive
+
+# (Alternative) If port 80 is not bound by any web server, standalone mode can be used:
+# sudo certbot certonly --standalone -d zippy.yourdomain.com --email security-admin@yourdomain.com --agree-tos --non-interactive
 ```
 
 _Note: Once issued, certificates reside in `/etc/letsencrypt/live/zippy.yourdomain.com/` (`fullchain.pem`, `privkey.pem`, `chain.pem`) which mount into the Nginx container._
@@ -179,15 +185,19 @@ The Nginx container automatically populates `docker/nginx/templates/default.conf
 - **Port 80:** ACME challenge path (`/.well-known/acme-challenge/`) open for Certbot renewals, with 301 redirection for all other HTTP traffic to HTTPS.
 - **Port 443:** TLSv1.2 & TLSv1.3 modern ciphers, HSTS (`max-age=15768000`), secure proxy forwarding to the Express API, and cached SPA asset serving.
 
-#### C. Automated SSL Renewal Cron Job
+#### C. Automated SSL Renewal Cron Job & Dry-Run Verification
 
-Let's Encrypt certificates expire every 90 days. Schedule an automated renewal check twice daily:
+Let's Encrypt certificates expire every 90 days. First, verify the renewal process with a dry-run test:
 
 ```bash
-# Add renewal job to root crontab
+# 1. Test the renewal workflow (verifies challenge path and permissions without altering certs)
+sudo certbot renew --webroot -w /var/www/certbot --dry-run
+# Expected output: "Congratulations, all simulated renewals succeeded"
+
+# 2. Add automated renewal cron job (runs twice daily, reloads Nginx upon renewal)
 sudo crontab -e
 
-# Renewal command:
+# Add cron entry:
 0 3 * * * certbot renew --webroot -w /var/www/certbot --quiet && docker compose -f /opt/zippy/docker-compose.prod.yml exec -T client nginx -s reload
 ```
 
@@ -246,8 +256,8 @@ docker compose -f docker-compose.prod.yml ps
 ### Step 3.5: Verify Deployment Health
 
 ```bash
-# 1. Test backend health check endpoint
-curl -f http://localhost:5000/health
+# 1. Test backend health check through Nginx reverse proxy (port 5000 is internal to Docker network)
+curl -f http://localhost/health
 # Response: {"status":"UP","uptime":...,"timestamp":...}
 
 # 2. Test public HTTPS endpoint
@@ -263,7 +273,9 @@ For zero-server-management deployments, deploy Zippy on Render or Railway.
 
 ### 4.1 Deployment on Render (render.com)
 
-1. **Prerequisite:** Create a free MongoDB Atlas cluster and a managed MySQL database (e.g. Aiven, PlanetScale, or Render PostgreSQL with Prisma adaptation).
+1. **Prerequisite:** Create a free MongoDB Atlas cluster and a managed MySQL-compatible database:
+   - **Recommended:** [TiDB Serverless](https://tidbcloud.com) (100% MySQL 8.0 protocol compatible, generous free tier: 5 GiB row storage + 50M Request Units/month free forever, no credit card required).
+   - **Alternative:** [Aiven for MySQL](https://aiven.io) (1 GB free plan) or [Clever Cloud MySQL](https://www.clever-cloud.com) (Free DEV tier).
 2. **Backend Web Service (`@zippy/server`):**
    - **Environment:** Docker
    - **Dockerfile Path:** `./server/Dockerfile`

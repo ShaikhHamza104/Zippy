@@ -55,6 +55,7 @@ const envSchema = z.object({
     if (val === 'false' || val === false) return false;
     return undefined;
   }, z.boolean().optional()),
+  COOKIE_SAMESITE: z.enum(['lax', 'strict', 'none']).optional(),
   CLIENT_URL: z.string().default('http://localhost:5173'),
   SMTP_HOST: z.string().optional().default(''),
   SMTP_PORT: z.coerce.number().default(587),

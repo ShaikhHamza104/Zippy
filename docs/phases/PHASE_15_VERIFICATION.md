@@ -65,7 +65,7 @@ All four core verification gates were executed against the codebase:
 - **Code & Config Fix:**
   - Added `"engines": { "node": ">=24.0.0", "pnpm": ">=12.0.0" }` to root `package.json`, `server/package.json`, and `client/package.json`.
   - Updated `server/Dockerfile` and `client/Dockerfile` base builder/runner images from `node:20-alpine` to `node:24-alpine`.
-  - Updated `.github/workflows/ci.yml` all 4 jobs from `node-version: 20` to `node-version: 24`.
+  - Updated `.github/workflows/ci.yml` all Node jobs from `node-version: 20` to `node-version: 24` across the 5-job pipeline (`lint`, `security-audit`, `test`, `build`, `deploy`).
   - Updated `README.md`, `docs/DEPLOYMENT.md`, `docs/phases/PHASE_11_TESTING.md`, `docs/phases/PHASE_12_DEPLOYMENT.md`, and `docs/phases/PHASE_13_APPLICATION_FLOW.md`.
 
 #### 3. Test Counts & Per-File Breakdown
@@ -141,7 +141,7 @@ All four core verification gates were executed against the codebase:
 | `client/package.json`                          | Added `engines` requirement (`node: >=24.0.0`, `pnpm: >=12.0.0`)                          |
 | `server/Dockerfile`                            | Updated base image from `node:20-alpine` to `node:24-alpine`                              |
 | `client/Dockerfile`                            | Updated base image from `node:20-alpine` to `node:24-alpine`, added `templates` copy      |
-| `.github/workflows/ci.yml`                     | Updated Node.js runtime from `v20` to `v24` across all 4 pipeline jobs                    |
+| `.github/workflows/ci.yml`                     | Updated Node.js runtime from `v20` to `v24` across 5-job pipeline                         |
 | `docker-compose.prod.yml`                      | Added Nginx HTTPS env vars (`DOMAIN_NAME`, `SSL_CERT_PATH`, `SSL_KEY_PATH`, etc.)         |
 | `docker/nginx/default.conf`                    | Updated default virtual host with proxy headers and commented HTTP-to-HTTPS redirect      |
 | `docker/nginx/templates/default.conf.template` | Created env-driven Nginx template with TLS termination and Let's Encrypt renewal support  |
@@ -234,5 +234,5 @@ pnpm test:e2e
 With Phase 15 verification and documentation cleanup complete, the entire Zippy quick-commerce platform is fully verified, consistent, and deployment-ready:
 
 1. **Production Deployment:** Follow the updated runbook in [`docs/DEPLOYMENT.md`](file:///d:/Zippy/docs/DEPLOYMENT.md) to launch Zippy on a Linux VPS or managed container platform (Render/Railway).
-2. **Continuous Integration:** Merge changes into `main` and observe GitHub Actions CI pipeline executing all 4 automated jobs on Node 24.
+2. **Continuous Integration:** Merge changes into `main` and observe GitHub Actions CI pipeline executing all 5 orchestrated jobs (4 quality gates on Node 24 + 1 production deployment release job).
 3. **Optional Enhancements:** As outlined in the Future Roadmap ([docs/APPLICATION_FLOW.md](file:///d:/Zippy/docs/APPLICATION_FLOW.md)), future iterations can integrate Redis cluster caching (`rate-limit-redis`), dedicated delivery partner mobile apps, and WebSocket-driven delivery rider geolocation tracking.

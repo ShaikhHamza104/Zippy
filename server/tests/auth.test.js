@@ -10,6 +10,7 @@ import { hashPassword } from '../src/utils/password.js';
 import {
   generateAccessToken,
   generatePasswordResetToken,
+  getRefreshTokenCookieOptions,
   hashToken,
   REFRESH_TOKEN_COOKIE_NAME,
 } from '../src/utils/tokens.js';
@@ -657,6 +658,62 @@ describe('Phase 3: Authentication and Security Core Test Suite', () => {
       });
       expect(res.status).toBe(400);
       expect(res.body.error.code).toBe('INVALID_VERIFICATION_TOKEN');
+    });
+  });
+
+  describe('10. Cross-Domain Deployment & Cookie SameSite Configuration', () => {
+    it('returns standard httpOnly and path configuration in cookie options', () => {
+      const options = getRefreshTokenCookieOptions();
+      expect(options.httpOnly).toBe(true);
+      expect(options.path).toBe('/api/v1/auth');
+      expect(['lax', 'none', 'strict']).toContain(options.sameSite);
+      expect(typeof options.secure).toBe('boolean');
+    });
+
+    it('honors COOKIE_SAMESITE=none when secure is enabled for cross-domain hosting', () => {
+      const origSameSite = env.COOKIE_SAMESITE;
+      const origSecure = env.COOKIE_SECURE;
+
+      try {
+        env.COOKIE_SAMESITE = 'none';
+        env.COOKIE_SECURE = true;
+
+        const options = getRefreshTokenCookieOptions();
+        expect(options.sameSite).toBe('none');
+        expect(options.secure).toBe(true);
+      } finally {
+        env.COOKIE_SAMESITE = origSameSite;
+        env.COOKIE_SECURE = origSecure;
+      }
+    });
+
+    it('falls back to lax if COOKIE_SAMESITE=none but cookie is insecure (safeguard against browser drop)', () => {
+      const origSameSite = env.COOKIE_SAMESITE;
+      const origSecure = env.COOKIE_SECURE;
+      const origNodeEnv = env.NODE_ENV;
+
+      try {
+        env.COOKIE_SAMESITE = 'none';
+        env.COOKIE_SECURE = false;
+        env.NODE_ENV = 'development';
+
+        const options = getRefreshTokenCookieOptions();
+        expect(options.sameSite).toBe('lax');
+      } finally {
+        env.COOKIE_SAMESITE = origSameSite;
+        env.COOKIE_SECURE = origSecure;
+        env.NODE_ENV = origNodeEnv;
+      }
+    });
+
+    it('permits cross-origin CORS requests with credentials from allowed client origins', async () => {
+      const res = await request(app)
+        .options('/api/v1/auth/login')
+        .set('Origin', 'http://localhost:5173')
+        .set('Access-Control-Request-Method', 'POST');
+
+      expect(res.headers['access-control-allow-origin']).toBe('http://localhost:5173');
+      expect(res.headers['access-control-allow-credentials']).toBe('true');
     });
   });
 });

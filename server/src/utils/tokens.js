@@ -12,15 +12,27 @@ export const EMAIL_VERIFICATION_EXPIRY = '24h'; // 24 hours
 /**
  * Returns cookie options for the refresh token.
  * Secure flag is driven by environment (true in production, false for local dev).
+ * SameSite is driven by COOKIE_SAMESITE (defaults to 'lax', supports 'none' for cross-domain deployments).
+ * Note: If sameSite is 'none', secure MUST be true per browser specifications.
  * @returns {import('express').CookieOptions}
  */
-export const getRefreshTokenCookieOptions = () => ({
-  httpOnly: true,
-  secure: isCookieSecure(),
-  sameSite: 'lax',
-  path: '/api/v1/auth',
-  maxAge: REFRESH_TOKEN_DAYS * 24 * 60 * 60 * 1000,
-});
+export const getRefreshTokenCookieOptions = () => {
+  const secure = isCookieSecure();
+  let sameSite = env.COOKIE_SAMESITE || 'lax';
+
+  // Cross-site cookies (SameSite=None) strictly require the Secure flag in all modern browsers
+  if (sameSite === 'none' && !secure) {
+    sameSite = 'lax';
+  }
+
+  return {
+    httpOnly: true,
+    secure,
+    sameSite,
+    path: '/api/v1/auth',
+    maxAge: REFRESH_TOKEN_DAYS * 24 * 60 * 60 * 1000,
+  };
+};
 
 /**
  * Generates a short-lived (15 min) JWT access token.
