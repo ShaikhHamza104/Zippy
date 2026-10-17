@@ -1,11 +1,12 @@
 // client/src/components/auth/RoleRoute.jsx
 import React from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../../stores/authStore.js';
 import { Skeleton } from '../ui/Skeleton.jsx';
 
 export const RoleRoute = ({ allowedRoles = [], children }) => {
   const { user, isAuthenticated, isLoading } = useAuthStore();
+  const location = useLocation();
 
   if (isLoading) {
     return (
@@ -17,7 +18,7 @@ export const RoleRoute = ({ allowedRoles = [], children }) => {
   }
 
   if (!isAuthenticated || !user) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
   // Super Admin bypasses all role constraints

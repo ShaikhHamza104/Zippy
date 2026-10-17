@@ -56,7 +56,9 @@ export const LoginPage = () => {
         message: 'Successfully logged in to your Zippy account.',
       });
 
-      navigate(from, { replace: true });
+      const defaultDest = user.role === 'ADMIN' || user.role === 'SUPER_ADMIN' ? '/admin' : '/';
+      const destination = location.state?.from?.pathname || defaultDest;
+      navigate(destination, { replace: true });
     } catch (err) {
       setServerError(err.message || 'Invalid email or password. Please try again.');
     }
