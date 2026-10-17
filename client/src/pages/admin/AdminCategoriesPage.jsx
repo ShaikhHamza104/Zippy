@@ -10,8 +10,10 @@ import {
   RefreshCw,
   CheckCircle,
   XCircle,
+  AlertTriangle,
 } from 'lucide-react';
 import { apiFetch } from '../../services/api.js';
+import { resolveImageUrl, isLocalDiskPath } from '../../utils/imageUrl.js';
 import { useUIStore } from '../../stores/uiStore.js';
 import {
   Button,
@@ -284,7 +286,7 @@ export const AdminCategoriesPage = () => {
                       <div className="flex items-center gap-3">
                         {cat.image ? (
                           <img
-                            src={cat.image}
+                            src={resolveImageUrl(cat.image)}
                             alt={cat.name}
                             className="w-10 h-10 rounded-xl object-cover bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shrink-0"
                             onError={(e) => {
@@ -448,19 +450,29 @@ export const AdminCategoriesPage = () => {
               </label>
             </div>
             <Input
-              type="url"
+              type="text"
               required
               value={formData.image}
               onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-              placeholder="https://... category banner image"
+              placeholder="https://... or click Upload Image"
               className="text-xs h-10"
             />
-            {formData.image && (
+            {isLocalDiskPath(formData.image) && (
+              <p className="mt-1.5 text-[11px] text-amber-600 dark:text-amber-400 font-medium flex items-center gap-1">
+                <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+                Local file path detected. Click <strong>Upload Image</strong> above so your browser
+                can upload it.
+              </p>
+            )}
+            {formData.image && resolveImageUrl(formData.image) && (
               <div className="mt-2 flex items-center gap-2">
                 <img
-                  src={formData.image}
+                  src={resolveImageUrl(formData.image)}
                   alt="Preview"
                   className="w-12 h-12 rounded-lg object-cover border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                  }}
                 />
                 <span className="text-[11px] text-slate-400 dark:text-slate-500">Preview</span>
               </div>

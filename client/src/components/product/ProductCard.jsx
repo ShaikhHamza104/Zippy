@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Star, Zap } from 'lucide-react';
 import { AddToCartButton } from '../common/AddToCartButton.jsx';
 import { cn } from '../../utils/cn.js';
+import { resolveImageUrl } from '../../utils/imageUrl.js';
 
 export const ProductCard = ({ product, className }) => {
   const [selectedVariantIndex, setSelectedVariantIndex] = useState(0);
@@ -50,10 +51,14 @@ export const ProductCard = ({ product, className }) => {
             aria-label={`View details for ${product.name}`}
           >
             <img
-              src={primaryImg}
+              src={resolveImageUrl(primaryImg)}
               alt={product.name}
               loading="lazy"
               className="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-200"
+              onError={(e) => {
+                e.target.src =
+                  'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=400&q=80';
+              }}
             />
           </Link>
 

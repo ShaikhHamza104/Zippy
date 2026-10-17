@@ -22,8 +22,6 @@ export const LoginPage = () => {
   const { addToast } = useUIStore();
   const [serverError, setServerError] = useState('');
 
-  const from = location.state?.from?.pathname || '/';
-
   const {
     register,
     handleSubmit,

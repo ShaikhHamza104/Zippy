@@ -7,6 +7,7 @@ import { apiFetch } from '../services/api.js';
 import { AddToCartButton } from '../components/common/AddToCartButton.jsx';
 import { Button, Skeleton } from '../components/ui/index.js';
 import { useUIStore } from '../stores/uiStore.js';
+import { resolveImageUrl } from '../utils/imageUrl.js';
 
 export const ProductDetailPage = () => {
   const { slug } = useParams();
@@ -74,9 +75,9 @@ export const ProductDetailPage = () => {
   const discountPercent = mrp > price ? Math.round(((mrp - price) / mrp) * 100) : 0;
 
   const images = product.images?.length
-    ? product.images.map((img) => img.url)
+    ? product.images.map((img) => resolveImageUrl(img.url))
     : [
-        product.image ||
+        resolveImageUrl(product.image) ||
           'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=600&q=80',
       ];
 

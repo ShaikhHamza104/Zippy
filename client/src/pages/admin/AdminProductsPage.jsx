@@ -14,8 +14,10 @@ import {
   ArrowUpDown,
   RefreshCw,
   PlusCircle,
+  AlertTriangle,
 } from 'lucide-react';
 import { apiFetch } from '../../services/api.js';
+import { resolveImageUrl, isLocalDiskPath } from '../../utils/imageUrl.js';
 import { useUIStore } from '../../stores/uiStore.js';
 import {
   Button,
@@ -531,7 +533,7 @@ export const AdminProductsPage = () => {
                       <td className="px-5 py-3.5">
                         <div className="flex items-center gap-3">
                           <img
-                            src={primaryImg}
+                            src={resolveImageUrl(primaryImg)}
                             alt={prod.name}
                             className="w-11 h-11 rounded-xl object-cover bg-slate-100 dark:bg-slate-800 shrink-0 border border-slate-200 dark:border-slate-700"
                             onError={(e) => {
@@ -798,36 +800,48 @@ export const AdminProductsPage = () => {
             </div>
 
             {formData.images.map((img, idx) => (
-              <div key={idx} className="flex items-center gap-2">
-                <Input
-                  type="url"
-                  placeholder="https://... image URL"
-                  value={img.url}
-                  onChange={(e) => {
-                    const next = [...formData.images];
-                    next[idx].url = e.target.value;
-                    setFormData({ ...formData, images: next });
-                  }}
-                  className="text-xs h-9 flex-1"
-                />
-                {img.url && (
-                  <img
-                    src={img.url}
-                    alt="Preview"
-                    className="w-9 h-9 rounded-lg object-cover border border-slate-200"
-                  />
-                )}
-                {formData.images.length > 1 && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const next = formData.images.filter((_, i) => i !== idx);
+              <div key={idx} className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <Input
+                    type="text"
+                    placeholder="https://... or click Upload Image"
+                    value={img.url}
+                    onChange={(e) => {
+                      const next = [...formData.images];
+                      next[idx].url = e.target.value;
                       setFormData({ ...formData, images: next });
                     }}
-                    className="text-rose-500 hover:text-rose-700 p-1"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
+                    className="text-xs h-9 flex-1"
+                  />
+                  {img.url && resolveImageUrl(img.url) && (
+                    <img
+                      src={resolveImageUrl(img.url)}
+                      alt="Preview"
+                      className="w-9 h-9 rounded-lg object-cover border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                      }}
+                    />
+                  )}
+                  {formData.images.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const next = formData.images.filter((_, i) => i !== idx);
+                        setFormData({ ...formData, images: next });
+                      }}
+                      className="text-rose-500 hover:text-rose-700 p-1"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  )}
+                </div>
+                {isLocalDiskPath(img.url) && (
+                  <p className="text-[11px] text-amber-600 dark:text-amber-400 font-medium flex items-center gap-1">
+                    <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+                    Local file path detected. Click <strong>Upload Image</strong> above so your
+                    browser can upload it.
+                  </p>
                 )}
               </div>
             ))}
