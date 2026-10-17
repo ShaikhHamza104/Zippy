@@ -1,0 +1,13 @@
+node_modules
+.pnpm-store
+.env
+.env.*
+logs
+*.log
+coverage
+tests
+uploads/*
+!uploads/.gitkeep
+tmp
+temp
+.DS_Store

@@ -1,0 +1,46 @@
+# Git and VCS
+.git
+.gitignore
+.github
+
+# Dependencies and Package Stores
+node_modules
+.pnpm-store
+
+# Environment variables
+.env
+.env.*
+!.env.example
+!.env.development
+!.env.production.example
+
+# Logs and system artifacts
+logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Build and Testing artifacts
+dist
+build
+coverage
+playwright-report
+test-results
+e2e
+tests
+
+# Temporary and local uploads
+tmp
+temp
+server/uploads/*
+!server/uploads/.gitkeep
+uploads/*
+!uploads/.gitkeep
+backups/*
+!backups/.gitkeep
+
+# OS and Editor metadata
+.DS_Store
+Thumbs.db
+.vscode
+.idea
