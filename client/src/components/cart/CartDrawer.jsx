@@ -209,7 +209,7 @@ export const CartDrawer = () => {
                           {coupon.code}
                         </span>
                         <span className="text-xs text-brand-700 dark:text-brand-300 font-bold">
-                          -₹{discount} OFF
+                          -₹{discount || coupon.discountAmount || 0} OFF
                         </span>
                       </div>
                       <button
@@ -222,24 +222,39 @@ export const CartDrawer = () => {
                       </button>
                     </div>
                   ) : (
-                    <form onSubmit={handleApplyCoupon} className="flex gap-2">
-                      <Input
-                        type="text"
-                        placeholder="e.g. WELCOME50"
-                        value={couponInput}
-                        onChange={(e) => setCouponInput(e.target.value)}
-                        className="uppercase text-xs"
-                      />
-                      <Button
-                        type="submit"
-                        variant="secondary"
-                        size="md"
-                        isLoading={isApplyingCoupon}
-                        disabled={!couponInput.trim()}
-                      >
-                        Apply
-                      </Button>
-                    </form>
+                    <div className="space-y-2">
+                      <form onSubmit={handleApplyCoupon} className="flex gap-2">
+                        <Input
+                          type="text"
+                          placeholder="e.g. WELCOME50"
+                          value={couponInput}
+                          onChange={(e) => setCouponInput(e.target.value)}
+                          className="uppercase text-xs"
+                        />
+                        <Button
+                          type="submit"
+                          variant="secondary"
+                          size="md"
+                          isLoading={isApplyingCoupon}
+                          disabled={!couponInput.trim()}
+                        >
+                          Apply
+                        </Button>
+                      </form>
+                      <div className="flex items-center gap-1.5 flex-wrap text-[11px] text-slate-500 dark:text-slate-400">
+                        <span>Try:</span>
+                        {['WELCOME50', 'ZIPPY100', 'FREESHIP'].map((code) => (
+                          <button
+                            key={code}
+                            type="button"
+                            onClick={() => setCouponInput(code)}
+                            className="px-1.5 py-0.5 rounded bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 font-bold text-brand-700 dark:text-brand-300 hover:border-brand-500 transition-colors"
+                          >
+                            {code}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
                   )}
                 </div>
 

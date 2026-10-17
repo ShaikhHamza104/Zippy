@@ -1,6 +1,5 @@
-// client/src/pages/ProductsPage.jsx
 import React, { useState } from 'react';
-import { useParams, useSearchParams, Link } from 'react-router-dom';
+import { useParams, useSearchParams, Link, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { SlidersHorizontal, ArrowUpDown, Check, RefreshCw } from 'lucide-react';
 import { apiFetch } from '../services/api.js';
@@ -8,6 +7,7 @@ import { ProductCard } from '../components/product/ProductCard.jsx';
 import { Button, Skeleton, EmptyState } from '../components/ui/index.js';
 
 export const ProductsPage = () => {
+  const navigate = useNavigate();
   const { slug } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -79,6 +79,9 @@ export const ProductsPage = () => {
   const handleResetFilters = () => {
     setPage(1);
     setSearchParams({});
+    if (slug) {
+      navigate('/products');
+    }
   };
 
   return (
@@ -168,7 +171,7 @@ export const ProductsPage = () => {
               <SlidersHorizontal className="w-3.5 h-3.5 text-brand-600 dark:text-brand-400" />
               Filters
             </span>
-            {(inStock || minPrice || maxPrice) && (
+            {(inStock || minPrice || maxPrice || slug) && (
               <button
                 type="button"
                 onClick={handleResetFilters}
@@ -199,10 +202,10 @@ export const ProductsPage = () => {
               Price Range
             </span>
             {[
-              { label: 'Under ₹50', min: '0', max: '50' },
+              { label: 'Under ₹50', min: '0', max: '49' },
               { label: '₹50 to ₹150', min: '50', max: '150' },
-              { label: '₹150 to ₹300', min: '150', max: '300' },
-              { label: 'Above ₹300', min: '300', max: '5000' },
+              { label: '₹151 to ₹300', min: '151', max: '300' },
+              { label: 'Above ₹300', min: '301', max: '5000' },
             ].map((rng) => {
               const isSelected = minPrice === rng.min && maxPrice === rng.max;
               return (

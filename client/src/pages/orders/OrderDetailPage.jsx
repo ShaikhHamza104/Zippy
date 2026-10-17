@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { CheckCircle2, Clock, MapPin, XCircle, ArrowLeft, ShoppingBag } from 'lucide-react';
+import { CheckCircle2, Clock, MapPin, XCircle, ArrowLeft, ShoppingBag, Star } from 'lucide-react';
 import { apiFetch } from '../../services/api.js';
 import { useUIStore } from '../../stores/uiStore.js';
 import { Button, Badge, Skeleton, Modal } from '../../components/ui/index.js';
@@ -221,12 +221,30 @@ export const OrderDetailPage = () => {
                     </div>
                   )}
                   <div>
-                    <h4 className="font-bold text-slate-900 dark:text-slate-100">
-                      {it.productName}
-                    </h4>
-                    <span className="text-slate-400 dark:text-slate-400 font-medium">
+                    {it.productId ? (
+                      <Link
+                        to={`/products/${it.productId}`}
+                        className="font-bold text-slate-900 dark:text-slate-100 hover:text-brand-600 dark:hover:text-brand-400 transition-colors block"
+                      >
+                        {it.productName}
+                      </Link>
+                    ) : (
+                      <h4 className="font-bold text-slate-900 dark:text-slate-100">
+                        {it.productName}
+                      </h4>
+                    )}
+                    <span className="text-slate-400 dark:text-slate-400 font-medium block">
                       {it.unit} • ₹{it.price} each
                     </span>
+                    {it.productId && (
+                      <Link
+                        to={`/products/${it.productId}`}
+                        className="text-[11px] font-bold text-brand-700 dark:text-brand-400 hover:underline inline-flex items-center gap-1 mt-0.5"
+                      >
+                        <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+                        <span>Rate & Review</span>
+                      </Link>
+                    )}
                   </div>
                 </div>
 

@@ -1,6 +1,7 @@
 // server/src/controllers/product.controller.js
 import mongoose from 'mongoose';
 import { Product, Review } from '../models/index.js';
+import { invalidateCatalogCache } from '../utils/cache.js';
 
 /**
  * Get products with pagination, category filter, price range, brand, stock, and sorting.
@@ -142,6 +143,83 @@ export const getProductBySlugOrId = async (req, res, next) => {
         product: {
           ...product,
           reviews,
+        },
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+/**
+ * Submit or update rating & review for a product.
+ */
+export const addProductReview = async (req, res, next) => {
+  try {
+    const { slugOrId } = req.params;
+    const { rating, comment } = req.body;
+    const userId = req.user?.id;
+    const userName = req.user?.name || req.user?.email?.split('@')[0] || 'Customer';
+
+    if (!rating || Number(rating) < 1 || Number(rating) > 5) {
+      return res.status(400).json({
+        success: false,
+        error: {
+          code: 'INVALID_RATING',
+          message: 'Rating must be an integer between 1 and 5.',
+        },
+      });
+    }
+
+    const query = mongoose.isValidObjectId(slugOrId)
+      ? { $or: [{ _id: slugOrId }, { slug: slugOrId }] }
+      : { slug: slugOrId };
+
+    const product = await Product.findOne(query);
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        error: {
+          code: 'PRODUCT_NOT_FOUND',
+          message: `Product "${slugOrId}" not found.`,
+        },
+      });
+    }
+
+    // Upsert user's review for this product
+    const review = await Review.findOneAndUpdate(
+      { productId: product._id, userId },
+      {
+        productId: product._id,
+        userId,
+        userName,
+        rating: Math.round(Number(rating)),
+        comment: comment?.trim() || '',
+        isVerifiedPurchase: true,
+      },
+      { upsert: true, new: true, runValidators: true }
+    );
+
+    // Recalculate average rating & review count for product
+    const allReviews = await Review.find({ productId: product._id }).lean();
+    const count = allReviews.length;
+    const avg = count > 0 ? allReviews.reduce((sum, r) => sum + r.rating, 0) / count : 0;
+
+    product.reviewCount = count;
+    product.ratingAverage = Math.round(avg * 10) / 10;
+    await product.save();
+
+    // Invalidate catalog cache
+    invalidateCatalogCache();
+
+    res.status(200).json({
+      success: true,
+      message: 'Thank you! Your rating and review have been recorded.',
+      data: {
+        review,
+        product: {
+          ratingAverage: product.ratingAverage,
+          reviewCount: product.reviewCount,
         },
       },
     });

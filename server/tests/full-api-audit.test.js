@@ -188,8 +188,21 @@ describe('Phase 14: Exhaustive 60+ API Endpoint & Security Verification Suite', 
   afterAll(async () => {
     // Cleanup MongoDB documents created for this test
     if (testCategory) await Category.deleteOne({ _id: testCategory._id });
+    await Category.deleteMany({
+      $or: [
+        { name: { $regex: /^Bakery Admin/i } },
+        { slug: { $regex: /^bakery-admin/i } },
+        { name: { $regex: /^Audit Category/i } },
+      ],
+    });
     if (testProduct) await Product.deleteOne({ _id: testProduct._id });
     if (testRaceProduct) await Product.deleteOne({ _id: testRaceProduct._id });
+    await Product.deleteMany({
+      name: {
+        $regex:
+          /^(Admin Test Product|Dedicated Race Product|E2E Organic Alphonso Mangoes|Audit Product)/i,
+      },
+    });
     if (testBanner) await Banner.deleteOne({ _id: testBanner._id });
 
     // Cleanup MySQL records

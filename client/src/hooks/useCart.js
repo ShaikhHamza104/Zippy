@@ -24,16 +24,42 @@ export const useCart = () => {
     staleTime: 30 * 1000, // 30 seconds
   });
 
-  const cart = cartData || {
-    items: [],
-    subtotal: 0,
-    totalMrp: 0,
-    discount: 0,
-    deliveryFee: 15,
-    grandTotal: 0,
-    coupon: null,
-    isFreeDelivery: false,
-    amountNeededForFreeDelivery: 199,
+  const pricing = cartData?.pricing || {};
+  const subtotal = cartData?.subtotal ?? pricing.subtotal ?? 0;
+  const totalMrp = cartData?.totalMrp ?? pricing.totalMrp ?? (subtotal || 0);
+  const discount = cartData?.discount ?? pricing.discountAmount ?? 0;
+  const deliveryFee =
+    cartData?.deliveryFee !== undefined
+      ? cartData.deliveryFee
+      : pricing.deliveryFee !== undefined
+        ? pricing.deliveryFee
+        : subtotal >= 199 || subtotal === 0
+          ? 0
+          : 15;
+  const grandTotal =
+    cartData?.grandTotal ?? pricing.totalAmount ?? Math.max(0, subtotal - discount + deliveryFee);
+  const coupon = cartData?.coupon || cartData?.appliedCoupon || null;
+  const isFreeDelivery = deliveryFee === 0 && subtotal > 0;
+  const amountNeededForFreeDelivery =
+    cartData?.amountNeededForFreeDelivery ??
+    pricing.amountNeededForFreeDelivery ??
+    Math.max(0, 199 - subtotal);
+  const totalSavings =
+    cartData?.totalSavings ?? pricing.totalSavings ?? Math.max(0, totalMrp - subtotal + discount);
+
+  const cart = {
+    items: cartData?.items || [],
+    subtotal,
+    totalMrp,
+    discount,
+    deliveryFee,
+    grandTotal,
+    coupon,
+    isFreeDelivery,
+    amountNeededForFreeDelivery,
+    totalSavings,
+    pricing,
+    ...cartData,
   };
 
   // Add Item Mutation
@@ -123,10 +149,12 @@ export const useCart = () => {
     },
     onSuccess: (data) => {
       queryClient.setQueryData(CART_QUERY_KEY, data);
+      const savedAmount =
+        data.discount ?? data.pricing?.discountAmount ?? data.appliedCoupon?.discountAmount ?? 0;
       addToast({
         type: 'success',
         title: 'Coupon applied!',
-        message: `Saved ₹${data.discount || 0} with coupon`,
+        message: `Saved ₹${savedAmount} with coupon`,
       });
     },
     onError: (err) => {
@@ -169,14 +197,15 @@ export const useCart = () => {
   return {
     cart,
     items: cart.items || [],
-    subtotal: cart.subtotal || 0,
-    totalMrp: cart.totalMrp || 0,
-    discount: cart.discount || 0,
-    deliveryFee: cart.deliveryFee !== undefined ? cart.deliveryFee : 15,
-    grandTotal: cart.grandTotal || 0,
-    coupon: cart.coupon || null,
-    isFreeDelivery: Boolean(cart.isFreeDelivery),
-    amountNeededForFreeDelivery: cart.amountNeededForFreeDelivery || 0,
+    subtotal,
+    totalMrp,
+    discount,
+    deliveryFee,
+    grandTotal,
+    coupon,
+    isFreeDelivery,
+    amountNeededForFreeDelivery,
+    totalSavings,
     totalItemCount,
     isLoading,
     isError,

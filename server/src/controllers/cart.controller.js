@@ -141,6 +141,19 @@ export const calculateCartBreakdown = async (rawItems = [], couponCode = null, u
     items: enrichedItems,
     invalidItems,
     itemCount: enrichedItems.reduce((acc, curr) => acc + curr.quantity, 0),
+    subtotal: Math.round(subtotal * 100) / 100,
+    totalMrp: Math.round(totalMrp * 100) / 100,
+    deliveryFee,
+    discount: discountAmount,
+    discountAmount,
+    totalAmount,
+    grandTotal: totalAmount,
+    totalSavings,
+    appliedCoupon,
+    coupon: appliedCoupon,
+    isFreeDelivery: deliveryFee === 0 && subtotal > 0,
+    freeDeliveryThreshold: FREE_DELIVERY_THRESHOLD,
+    amountNeededForFreeDelivery: Math.max(0, FREE_DELIVERY_THRESHOLD - subtotal),
     pricing: {
       subtotal: Math.round(subtotal * 100) / 100,
       totalMrp: Math.round(totalMrp * 100) / 100,
@@ -151,7 +164,6 @@ export const calculateCartBreakdown = async (rawItems = [], couponCode = null, u
       freeDeliveryThreshold: FREE_DELIVERY_THRESHOLD,
       amountNeededForFreeDelivery: Math.max(0, FREE_DELIVERY_THRESHOLD - subtotal),
     },
-    appliedCoupon,
   };
 };
 

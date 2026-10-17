@@ -1,17 +1,25 @@
 // client/src/pages/ProductDetailPage.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
-import { Star, Zap, Share2, ArrowLeft } from 'lucide-react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Star, Zap, Share2, ArrowLeft, MessageSquarePlus } from 'lucide-react';
 import { apiFetch } from '../services/api.js';
 import { AddToCartButton } from '../components/common/AddToCartButton.jsx';
 import { Button, Skeleton } from '../components/ui/index.js';
 import { useUIStore } from '../stores/uiStore.js';
+import { useAuthStore } from '../stores/authStore.js';
 import { resolveImageUrl } from '../utils/imageUrl.js';
 
 export const ProductDetailPage = () => {
   const { slug } = useParams();
+  const queryClient = useQueryClient();
+  const { user, isAuthenticated } = useAuthStore();
   const { deliveryPincode, togglePincodeModal, addToast } = useUIStore();
+
+  const [rating, setRating] = useState(5);
+  const [hoverRating, setHoverRating] = useState(0);
+  const [comment, setComment] = useState('');
+  const [isFormOpen, setIsFormOpen] = useState(false);
 
   const {
     data: productData,
@@ -30,6 +38,48 @@ export const ProductDetailPage = () => {
   const variants = product?.variants || [];
   const [selectedVariantIndex, setSelectedVariantIndex] = useState(0);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+
+  const userExistingReview = product?.reviews?.find((r) => r.userId === user?.id);
+
+  useEffect(() => {
+    if (userExistingReview) {
+      setRating(userExistingReview.rating || 5);
+      setComment(userExistingReview.comment || '');
+    }
+  }, [userExistingReview]);
+
+  const submitReviewMutation = useMutation({
+    mutationFn: async ({ rating, comment }) => {
+      const targetId = product.slug || product._id;
+      const res = await apiFetch(`/api/v1/products/${targetId}/reviews`, {
+        method: 'POST',
+        body: JSON.stringify({ rating, comment }),
+      });
+      return res;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['product', slug] });
+      queryClient.invalidateQueries({ queryKey: ['products'] });
+      setIsFormOpen(false);
+      addToast({
+        type: 'success',
+        title: 'Rating submitted!',
+        message: 'Thank you for your rating & review.',
+      });
+    },
+    onError: (err) => {
+      addToast({
+        type: 'error',
+        title: 'Could not submit rating',
+        message: err.message || 'Please sign in or try again.',
+      });
+    },
+  });
+
+  const handleSubmitReview = (e) => {
+    e.preventDefault();
+    submitReviewMutation.mutate({ rating, comment });
+  };
 
   if (isLoading) {
     return (
@@ -328,7 +378,7 @@ export const ProductDetailPage = () => {
 
       {/* Customer Reviews Section */}
       <section className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 p-6 sm:p-8 space-y-6">
-        <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800 gap-3">
           <div>
             <h3 className="text-lg font-black text-slate-900 dark:text-slate-100">
               Customer Ratings & Reviews
@@ -337,13 +387,115 @@ export const ProductDetailPage = () => {
               Verified buyer feedback from instant orders
             </p>
           </div>
-          {Number(product.ratingAverage) > 0 && (
-            <div className="flex items-center gap-1.5 text-base font-black text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/60 px-3 py-1.5 rounded-xl">
-              <Star className="w-5 h-5 fill-amber-500 text-amber-500" />
-              <span>{Number(product.ratingAverage).toFixed(1)} / 5</span>
-            </div>
-          )}
+          <div className="flex items-center gap-3">
+            {Number(product.ratingAverage) > 0 && (
+              <div className="flex items-center gap-1.5 text-base font-black text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/60 px-3 py-1.5 rounded-xl">
+                <Star className="w-5 h-5 fill-amber-500 text-amber-500" />
+                <span>{Number(product.ratingAverage).toFixed(1)} / 5</span>
+              </div>
+            )}
+            {isAuthenticated ? (
+              <Button
+                variant={isFormOpen ? 'secondary' : 'outline'}
+                size="sm"
+                onClick={() => setIsFormOpen(!isFormOpen)}
+                className="gap-1.5"
+              >
+                <MessageSquarePlus className="w-4 h-4" />
+                <span>{userExistingReview ? 'Edit Your Review' : 'Rate Product'}</span>
+              </Button>
+            ) : (
+              <Link to="/login">
+                <Button variant="outline" size="sm" className="gap-1.5">
+                  <Star className="w-4 h-4" />
+                  <span>Sign in to Rate</span>
+                </Button>
+              </Link>
+            )}
+          </div>
         </div>
+
+        {/* Rating Submission Form */}
+        {isFormOpen && isAuthenticated && (
+          <form
+            onSubmit={handleSubmitReview}
+            className="bg-slate-50 dark:bg-slate-800/80 rounded-2xl border border-slate-200 dark:border-slate-700 p-4 sm:p-5 space-y-4"
+          >
+            <div className="flex items-center justify-between">
+              <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+                {userExistingReview ? 'Update Your Rating & Review' : 'Rate & Review This Product'}
+              </h4>
+              <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+                Posting as {user?.name || user?.email}
+              </span>
+            </div>
+
+            {/* Interactive Stars */}
+            <div className="space-y-1">
+              <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 block">
+                Tap to rate:
+              </span>
+              <div className="flex items-center gap-1.5">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <button
+                    key={star}
+                    type="button"
+                    onMouseEnter={() => setHoverRating(star)}
+                    onMouseLeave={() => setHoverRating(0)}
+                    onClick={() => setRating(star)}
+                    className="p-1 hover:scale-110 transition-transform focus:outline-none"
+                    aria-label={`${star} star`}
+                  >
+                    <Star
+                      className={`w-7 h-7 transition-colors ${
+                        (hoverRating || rating) >= star
+                          ? 'fill-amber-400 text-amber-400'
+                          : 'text-slate-300 dark:text-slate-600'
+                      }`}
+                    />
+                  </button>
+                ))}
+                <span className="ml-2 text-xs font-bold text-slate-800 dark:text-slate-200">
+                  {hoverRating || rating} out of 5 stars
+                </span>
+              </div>
+            </div>
+
+            {/* Comment Textarea */}
+            <div className="space-y-1">
+              <label
+                htmlFor="review-comment"
+                className="text-xs font-semibold text-slate-700 dark:text-slate-300 block"
+              >
+                Review comments (optional):
+              </label>
+              <textarea
+                id="review-comment"
+                rows={3}
+                placeholder="Share your thoughts about this product (e.g. freshness, taste, packaging)..."
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                maxLength={1000}
+                className="w-full text-xs p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 resize-none"
+              />
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex items-center justify-end gap-2 pt-1">
+              <Button type="button" variant="ghost" size="sm" onClick={() => setIsFormOpen(false)}>
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                variant="primary"
+                size="sm"
+                isLoading={submitReviewMutation.isPending}
+              >
+                {userExistingReview ? 'Update Review' : 'Submit Rating'}
+              </Button>
+            </div>
+          </form>
+        )}
 
         {product.reviews?.length > 0 ? (
           <div className="divide-y divide-slate-100 dark:divide-slate-800">
