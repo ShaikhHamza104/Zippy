@@ -78,7 +78,17 @@ export const OrderDetailPage = () => {
 
   const isCancelled = order.status === 'CANCELLED';
   const canCancel = order.status === 'PLACED' || order.status === 'PACKED';
-  const deliveryAddress = order.deliveryAddressSnapshot || {};
+  const rawAddress = order.deliveryAddressSnapshot || order.deliveryAddress || {};
+  const deliveryAddress =
+    typeof rawAddress === 'string'
+      ? (() => {
+          try {
+            return JSON.parse(rawAddress);
+          } catch {
+            return {};
+          }
+        })()
+      : rawAddress;
 
   return (
     <div className="max-w-4xl mx-auto space-y-6 pb-16">
@@ -171,58 +181,70 @@ export const OrderDetailPage = () => {
           </h2>
 
           <div className="divide-y divide-slate-100 dark:divide-slate-800">
-            {order.items?.map((it) => (
-              <div key={it.id} className="py-3 flex items-center justify-between gap-3 text-xs">
-                <div className="flex items-center gap-3">
-                  {it.productImage ? (
-                    <img
-                      src={it.productImage}
-                      alt={it.productName}
-                      className="w-12 h-12 object-contain rounded-lg bg-slate-50 dark:bg-slate-800 p-1 border border-slate-100 dark:border-slate-700 shrink-0"
-                    />
-                  ) : (
-                    <div className="w-12 h-12 rounded-lg bg-slate-100 dark:bg-slate-800 shrink-0 flex items-center justify-center text-slate-400">
-                      <ShoppingBag className="w-5 h-5" />
-                    </div>
-                  )}
-                  <div>
-                    {it.productId ? (
-                      <Link
-                        to={`/products/${it.productId}`}
-                        className="font-bold text-slate-900 dark:text-slate-100 hover:text-brand-600 dark:hover:text-brand-400 transition-colors block"
-                      >
-                        {it.productName}
-                      </Link>
+            {order.items?.map((it) => {
+              const productName = it.productName || it.nameSnapshot || it.name || 'Grocery Item';
+              const productImage = it.productImage || it.imageSnapshot || it.image;
+              const productId = it.productId || it.mongoProductId;
+              const price = Number(it.priceSnapshot ?? it.price ?? 0);
+              const quantity = Number(it.quantity || 1);
+              const itemTotal = Number(it.totalPrice ?? it.itemTotal ?? price * quantity);
+
+              return (
+                <div
+                  key={it.id || it.mongoProductId || it.nameSnapshot}
+                  className="py-3 flex items-center justify-between gap-3 text-xs"
+                >
+                  <div className="flex items-center gap-3">
+                    {productImage ? (
+                      <img
+                        src={productImage}
+                        alt={productName}
+                        className="w-12 h-12 object-contain rounded-lg bg-slate-50 dark:bg-slate-800 p-1 border border-slate-100 dark:border-slate-700 shrink-0"
+                      />
                     ) : (
-                      <h4 className="font-bold text-slate-900 dark:text-slate-100">
-                        {it.productName}
-                      </h4>
+                      <div className="w-12 h-12 rounded-lg bg-slate-100 dark:bg-slate-800 shrink-0 flex items-center justify-center text-slate-400">
+                        <ShoppingBag className="w-5 h-5" />
+                      </div>
                     )}
-                    <span className="text-slate-400 dark:text-slate-400 font-medium block">
-                      {it.unit} • ₹{it.price} each
+                    <div>
+                      {productId ? (
+                        <Link
+                          to={`/products/${productId}`}
+                          className="font-bold text-slate-900 dark:text-slate-100 hover:text-brand-600 dark:hover:text-brand-400 transition-colors block"
+                        >
+                          {productName}
+                        </Link>
+                      ) : (
+                        <h4 className="font-bold text-slate-900 dark:text-slate-100">
+                          {productName}
+                        </h4>
+                      )}
+                      <span className="text-slate-400 dark:text-slate-400 font-medium block">
+                        {it.unit ? `${it.unit} • ` : ''}₹{price} each
+                      </span>
+                      {productId && (
+                        <Link
+                          to={`/products/${productId}`}
+                          className="text-[11px] font-bold text-brand-700 dark:text-brand-400 hover:underline inline-flex items-center gap-1 mt-0.5"
+                        >
+                          <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+                          <span>Rate & Review</span>
+                        </Link>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="text-right">
+                    <span className="text-slate-500 dark:text-slate-400 font-semibold block">
+                      Qty: {quantity}
                     </span>
-                    {it.productId && (
-                      <Link
-                        to={`/products/${it.productId}`}
-                        className="text-[11px] font-bold text-brand-700 dark:text-brand-400 hover:underline inline-flex items-center gap-1 mt-0.5"
-                      >
-                        <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
-                        <span>Rate & Review</span>
-                      </Link>
-                    )}
+                    <span className="font-black text-slate-900 dark:text-slate-100 text-sm">
+                      ₹{itemTotal}
+                    </span>
                   </div>
                 </div>
-
-                <div className="text-right">
-                  <span className="text-slate-500 dark:text-slate-400 font-semibold block">
-                    Qty: {it.quantity}
-                  </span>
-                  <span className="font-black text-slate-900 dark:text-slate-100 text-sm">
-                    ₹{it.itemTotal || it.price * it.quantity}
-                  </span>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 
@@ -234,18 +256,34 @@ export const OrderDetailPage = () => {
               <MapPin className="w-3.5 h-3.5 text-brand-600 dark:text-brand-400" />
               Delivery Address
             </h3>
-            <p className="text-xs font-bold text-slate-900 dark:text-slate-100">
-              {deliveryAddress.fullName}
-            </p>
+            {(deliveryAddress.fullName || order.user?.name) && (
+              <p className="text-xs font-bold text-slate-900 dark:text-slate-100">
+                {deliveryAddress.fullName || order.user?.name}
+              </p>
+            )}
             <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-              {deliveryAddress.addressLine1}
-              {deliveryAddress.addressLine2 && `, ${deliveryAddress.addressLine2}`}
-              <br />
-              {deliveryAddress.city}, {deliveryAddress.state} - {deliveryAddress.pincode}
+              {[
+                deliveryAddress.addressLine1 || deliveryAddress.line1,
+                deliveryAddress.addressLine2 || deliveryAddress.line2,
+              ]
+                .filter(Boolean)
+                .join(', ')}
+              {deliveryAddress.landmark && (
+                <span className="block text-slate-400">Near: {deliveryAddress.landmark}</span>
+              )}
+              {(deliveryAddress.city || deliveryAddress.state || deliveryAddress.pincode) && (
+                <>
+                  <br />
+                  {[deliveryAddress.city, deliveryAddress.state].filter(Boolean).join(', ')}
+                  {deliveryAddress.pincode ? ` - ${deliveryAddress.pincode}` : ''}
+                </>
+              )}
             </p>
-            <p className="text-[11px] text-slate-400 dark:text-slate-400 pt-1">
-              Phone: {deliveryAddress.phone}
-            </p>
+            {(deliveryAddress.phone || order.user?.phone) && (
+              <p className="text-[11px] text-slate-400 dark:text-slate-400 pt-1">
+                Phone: {deliveryAddress.phone || order.user?.phone}
+              </p>
+            )}
           </div>
 
           {/* Bill Summary */}
@@ -266,18 +304,20 @@ export const OrderDetailPage = () => {
               </div>
             )}
             <div className="flex justify-between">
-              <span>Delivery Fee</span>
-              <span className="font-medium text-slate-800">
+              <span className="text-slate-600 dark:text-slate-400">Delivery Fee</span>
+              <span className="font-medium text-slate-800 dark:text-slate-200">
                 {Number(order.deliveryFee) === 0 ? 'FREE' : `₹${order.deliveryFee}`}
               </span>
             </div>
-            <div className="pt-2 border-t border-slate-200 flex justify-between items-center text-sm font-black text-slate-900">
+            <div className="pt-2 border-t border-slate-200 dark:border-slate-700 flex justify-between items-center text-sm font-black text-slate-900 dark:text-slate-100">
               <span>Total Paid</span>
               <span>₹{order.totalAmount}</span>
             </div>
-            <div className="pt-1 text-[11px] text-slate-400 flex items-center justify-between">
+            <div className="pt-1 text-[11px] text-slate-400 dark:text-slate-400 flex items-center justify-between">
               <span>Method:</span>
-              <span className="font-bold uppercase text-slate-700">{order.paymentMethod}</span>
+              <span className="font-bold uppercase text-slate-700 dark:text-slate-300">
+                {order.payment?.method || order.paymentMethod || 'COD'}
+              </span>
             </div>
           </div>
         </div>

@@ -29,7 +29,17 @@ export const OrderSuccessPage = () => {
     );
   }
 
-  const deliveryAddress = order?.deliveryAddressSnapshot || {};
+  const rawAddress = order?.deliveryAddressSnapshot || order?.deliveryAddress || {};
+  const deliveryAddress =
+    typeof rawAddress === 'string'
+      ? (() => {
+          try {
+            return JSON.parse(rawAddress);
+          } catch {
+            return {};
+          }
+        })()
+      : rawAddress;
 
   return (
     <div className="min-h-[70vh] flex items-center justify-center py-10 px-4">
@@ -67,7 +77,7 @@ export const OrderSuccessPage = () => {
           <div className="flex items-center justify-between pb-2 border-b border-slate-200/60 dark:border-slate-700">
             <span className="text-slate-500 dark:text-slate-400 font-medium">Payment Method</span>
             <span className="font-bold text-slate-800 dark:text-slate-200 uppercase">
-              {order?.paymentMethod || 'COD'}
+              {order?.payment?.method || order?.paymentMethod || 'COD'}
             </span>
           </div>
 
@@ -81,8 +91,10 @@ export const OrderSuccessPage = () => {
           <div className="pt-1 flex items-start gap-2">
             <MapPin className="w-4 h-4 text-slate-400 dark:text-slate-500 shrink-0 mt-0.5" />
             <p className="text-slate-600 dark:text-slate-300 line-clamp-2">
-              {deliveryAddress.addressLine1 || 'Delivery Address'}, {deliveryAddress.city} -{' '}
-              {deliveryAddress.pincode}
+              {[deliveryAddress.addressLine1 || deliveryAddress.line1, deliveryAddress.city]
+                .filter(Boolean)
+                .join(', ')}
+              {deliveryAddress.pincode ? ` - ${deliveryAddress.pincode}` : ''}
             </p>
           </div>
         </div>

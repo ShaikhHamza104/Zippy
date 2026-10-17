@@ -25,6 +25,44 @@ const generateOrderNumber = () => {
 };
 
 /**
+ * Format order response ensuring all frontend snapshot keys & fallbacks are populated.
+ */
+export const formatOrder = (order) => {
+  if (!order) return order;
+
+  let deliveryAddress = order.deliveryAddress;
+  if (typeof deliveryAddress === 'string') {
+    try {
+      deliveryAddress = JSON.parse(deliveryAddress);
+    } catch {
+      deliveryAddress = {};
+    }
+  }
+  deliveryAddress = deliveryAddress || {};
+
+  const items = order.items?.map((it) => ({
+    ...it,
+    productId: it.mongoProductId || it.productId,
+    productName: it.nameSnapshot || it.productName,
+    productImage: it.imageSnapshot || it.productImage,
+    price: Number(it.priceSnapshot ?? it.price ?? 0),
+    itemTotal: Number(
+      it.totalPrice ??
+        it.itemTotal ??
+        Number(it.priceSnapshot ?? it.price ?? 0) * (it.quantity || 1)
+    ),
+  }));
+
+  return {
+    ...order,
+    deliveryAddress,
+    deliveryAddressSnapshot: deliveryAddress,
+    paymentMethod: order.payment?.method || order.paymentMethod || null,
+    items,
+  };
+};
+
+/**
  * Checkout & Order Creation
  * Guarantees cross-database atomicity:
  * 1. Atomically decrements MongoDB stock with $gte check to prevent overselling.
@@ -48,7 +86,7 @@ export const checkout = async (req, res, next) => {
           success: true,
           message: 'Order already processed (idempotent request)',
           data: {
-            order: existingOrder,
+            order: formatOrder(existingOrder),
           },
         });
       }
@@ -288,7 +326,7 @@ export const checkout = async (req, res, next) => {
       success: true,
       message: 'Order placed successfully',
       data: {
-        order: populatedOrder,
+        order: formatOrder(populatedOrder),
         razorpay: razorpayOrderData
           ? {
               orderId: razorpayOrderData.id,
@@ -348,7 +386,7 @@ export const listMyOrders = async (req, res, next) => {
         hasPrevPage: Number(page) > 1,
       },
       data: {
-        orders,
+        orders: orders.map(formatOrder),
       },
     });
   } catch (err) {
@@ -394,7 +432,7 @@ export const getOrderById = async (req, res, next) => {
     res.status(200).json({
       success: true,
       data: {
-        order,
+        order: formatOrder(order),
       },
     });
   } catch (err) {
@@ -492,7 +530,7 @@ export const cancelOrder = async (req, res, next) => {
       success: true,
       message: 'Order cancelled successfully and stock restored',
       data: {
-        order: updatedOrder,
+        order: formatOrder(updatedOrder),
       },
     });
   } catch (err) {

@@ -5,6 +5,7 @@ import { Banner, Category, Product } from '../models/index.js';
 import { processAndSaveImage } from '../services/storage.service.js';
 import { recordAuditLog } from '../utils/auditLogger.js';
 import { cache } from '../utils/cache.js';
+import { formatOrder } from './order.controller.js';
 
 const VALID_STATUS_TRANSITIONS = {
   PLACED: ['PACKED', 'CANCELLED'],
@@ -693,7 +694,7 @@ export const listAdminOrders = async (req, res, next) => {
         total,
         totalPages: Math.ceil(total / limit),
       },
-      data: { orders },
+      data: { orders: orders.map(formatOrder) },
     });
   } catch (err) {
     next(err);
@@ -719,7 +720,7 @@ export const getAdminOrderById = async (req, res, next) => {
         .json({ success: false, error: { code: 'NOT_FOUND', message: 'Order not found' } });
     }
 
-    res.status(200).json({ success: true, data: { order } });
+    res.status(200).json({ success: true, data: { order: formatOrder(order) } });
   } catch (err) {
     next(err);
   }

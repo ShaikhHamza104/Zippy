@@ -549,22 +549,46 @@ export const AdminOrdersPage = () => {
             </div>
 
             {/* Delivery Address */}
-            <div className="p-4 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 space-y-1">
-              <div className="flex items-center gap-1.5 font-bold text-slate-800 dark:text-slate-200">
-                <MapPin className="w-3.5 h-3.5 text-brand-600 dark:text-emerald-400" />
-                <span>Delivery Address ({detailData.deliveryAddressSnapshot?.type || 'Home'})</span>
-              </div>
-              <p className="text-slate-600 dark:text-slate-300">
-                {detailData.deliveryAddressSnapshot?.line1}
-                {detailData.deliveryAddressSnapshot?.line2 &&
-                  `, ${detailData.deliveryAddressSnapshot?.line2}`}
-                , {detailData.deliveryAddressSnapshot?.city},{' '}
-                {detailData.deliveryAddressSnapshot?.state} -{' '}
-                <strong className="text-slate-900 dark:text-slate-100 font-bold">
-                  {detailData.deliveryAddressSnapshot?.pincode}
-                </strong>
-              </p>
-            </div>
+            {(() => {
+              const rawAddr =
+                detailData.deliveryAddress || detailData.deliveryAddressSnapshot || {};
+              const address =
+                typeof rawAddr === 'string'
+                  ? (() => {
+                      try {
+                        return JSON.parse(rawAddr);
+                      } catch {
+                        return {};
+                      }
+                    })()
+                  : rawAddr;
+              return (
+                <div className="p-4 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 space-y-1">
+                  <div className="flex items-center gap-1.5 font-bold text-slate-800 dark:text-slate-200">
+                    <MapPin className="w-3.5 h-3.5 text-brand-600 dark:text-emerald-400" />
+                    <span>Delivery Address ({address?.type || 'Home'})</span>
+                  </div>
+                  <p className="text-slate-600 dark:text-slate-300">
+                    {[
+                      address?.addressLine1 || address?.line1,
+                      address?.addressLine2 || address?.line2,
+                    ]
+                      .filter(Boolean)
+                      .join(', ')}
+                    {address?.city ? `, ${address?.city}` : ''}
+                    {address?.state ? `, ${address?.state}` : ''}
+                    {address?.pincode ? (
+                      <>
+                        {' - '}
+                        <strong className="text-slate-900 dark:text-slate-100 font-bold">
+                          {address?.pincode}
+                        </strong>
+                      </>
+                    ) : null}
+                  </p>
+                </div>
+              );
+            })()}
 
             {/* Line Items Table */}
             <div>
@@ -582,25 +606,39 @@ export const AdminOrdersPage = () => {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                    {detailData.items?.map((item) => (
-                      <tr key={item.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/40">
-                        <td className="px-4 py-2.5">
-                          <div className="font-bold text-slate-900 dark:text-slate-100">
-                            {item.nameSnapshot}
-                          </div>
-                          <div className="text-[10px] text-slate-400 dark:text-slate-500 font-mono">
-                            MongoID: {item.mongoProductId}
-                          </div>
-                        </td>
-                        <td className="px-4 py-2.5 font-bold">
-                          ₹{Number(item.priceSnapshot).toLocaleString('en-IN')}
-                        </td>
-                        <td className="px-4 py-2.5 font-bold">{item.quantity}</td>
-                        <td className="px-4 py-2.5 text-right font-black text-slate-900 dark:text-slate-100">
-                          ₹{Number(item.totalSnapshot).toLocaleString('en-IN')}
-                        </td>
-                      </tr>
-                    ))}
+                    {detailData.items?.map((item) => {
+                      const itemName =
+                        item.nameSnapshot || item.productName || item.name || 'Grocery Item';
+                      const itemPrice = Number(item.priceSnapshot ?? item.price ?? 0);
+                      const itemSubtotal = Number(
+                        item.totalPrice ??
+                          item.totalSnapshot ??
+                          item.itemTotal ??
+                          itemPrice * item.quantity
+                      );
+                      return (
+                        <tr
+                          key={item.id}
+                          className="hover:bg-slate-50/50 dark:hover:bg-slate-800/40"
+                        >
+                          <td className="px-4 py-2.5">
+                            <div className="font-bold text-slate-900 dark:text-slate-100">
+                              {itemName}
+                            </div>
+                            <div className="text-[10px] text-slate-400 dark:text-slate-500 font-mono">
+                              MongoID: {item.mongoProductId || item.productId}
+                            </div>
+                          </td>
+                          <td className="px-4 py-2.5 font-bold">
+                            ₹{itemPrice.toLocaleString('en-IN')}
+                          </td>
+                          <td className="px-4 py-2.5 font-bold">{item.quantity}</td>
+                          <td className="px-4 py-2.5 text-right font-black text-slate-900 dark:text-slate-100">
+                            ₹{itemSubtotal.toLocaleString('en-IN')}
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>

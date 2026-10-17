@@ -81,23 +81,23 @@ export const OrdersListPage = () => {
               {/* Items summary */}
               <div className="flex items-center justify-between gap-4">
                 <div className="flex items-center gap-2 overflow-x-auto py-1">
-                  {ord.items?.slice(0, 4).map((it) => (
-                    <div
-                      key={it.id}
-                      className="w-12 h-12 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 p-1 shrink-0 flex items-center justify-center overflow-hidden"
-                      title={`${it.quantity}x ${it.productName}`}
-                    >
-                      {it.productImage ? (
-                        <img
-                          src={it.productImage}
-                          alt=""
-                          className="w-full h-full object-contain"
-                        />
-                      ) : (
-                        <ShoppingBag className="w-5 h-5 text-slate-300 dark:text-slate-600" />
-                      )}
-                    </div>
-                  ))}
+                  {ord.items?.slice(0, 4).map((it) => {
+                    const name = it.productName || it.nameSnapshot || it.name || 'Grocery Item';
+                    const img = it.productImage || it.imageSnapshot || it.image;
+                    return (
+                      <div
+                        key={it.id || it.mongoProductId || it.nameSnapshot}
+                        className="w-12 h-12 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 p-1 shrink-0 flex items-center justify-center overflow-hidden"
+                        title={`${it.quantity}x ${name}`}
+                      >
+                        {img ? (
+                          <img src={img} alt="" className="w-full h-full object-contain" />
+                        ) : (
+                          <ShoppingBag className="w-5 h-5 text-slate-300 dark:text-slate-600" />
+                        )}
+                      </div>
+                    );
+                  })}
                   {ord.items?.length > 4 && (
                     <span className="text-xs font-bold text-slate-400 dark:text-slate-500 px-1">
                       +{ord.items.length - 4} more
