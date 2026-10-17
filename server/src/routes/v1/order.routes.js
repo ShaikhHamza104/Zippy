@@ -14,6 +14,7 @@ const router = Router();
 // All order endpoints require authentication
 router.use(requireAuth);
 
+router.get('/checkout/preview', orderController.checkoutPreview);
 router.post('/checkout', validateBody(checkoutSchema), orderController.checkout);
 router.get('/', orderController.listMyOrders);
 router.get('/:orderId', orderController.getOrderById);

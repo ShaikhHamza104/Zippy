@@ -1,7 +1,7 @@
 # Phase 13: Application Flow Documentation (Final Phase)
 
 > **Status:** Complete  
-> **Environment:** Node.js v20 LTS, React 18, Vite, Express, Prisma (MySQL 8.4), Mongoose (MongoDB 8.0), Nginx, Docker  
+> **Environment:** Node.js v24 LTS (v24.20.0), pnpm 12 (v12.14.0), React 18, Vite, Express, Prisma (MySQL 8.4), Mongoose (MongoDB 8.0), Nginx, Docker  
 > **Date:** October 2026  
 > **Scope:** Comprehensive End-to-End Application Flow Architecture, Rich Mermaid Diagrams, Operations Handbook, and Root README Project Synthesis.
 
@@ -11,7 +11,7 @@
 
 Synthesize the entire Zippy quick-commerce platform engineering effort by:
 
-1. Validating that all 165+ automated tests, ESLint checks, and production builds pass cleanly with 0 errors.
+1. Validating that all 233 automated tests (180 server + 53 client across 14 test files), ESLint checks, and production builds pass cleanly with 0 errors.
 2. Creating `docs/APPLICATION_FLOW.md` containing rich, syntactically valid Mermaid diagrams covering all 10 architectural and behavioral domains:
    - System Architecture
    - Authentication & Security Flow
@@ -34,15 +34,15 @@ Synthesize the entire Zippy quick-commerce platform engineering effort by:
 Before drafting the final documentation, executed the entire test and compilation pipeline:
 
 - `pnpm lint`: Verified 0 ESLint warnings or errors across `client/` and `server/`.
-- `pnpm test`: Executed 165 total unit and integration tests (112 server tests + 53 client tests) with 100% pass rate.
-- `pnpm build`: Compiled the client Vite production bundle in 15.7s with optimal chunk code-splitting.
+- `pnpm test`: Executed 233 total unit and integration tests (180 server tests + 53 client tests across 14 test files) with 100% pass rate.
+- `pnpm build`: Compiled the client Vite production bundle in 16.4s with optimal chunk code-splitting.
 
 ### 2.2 System Architecture & Flow Documentation (`docs/APPLICATION_FLOW.md`)
 
 Authored a 10-section master architectural guide featuring verified Mermaid diagrams:
 
 1. **System Architecture (`flowchart TD`):** Details ingress through Nginx, Express API services, in-memory catalog cache, dual-database layer, and external adapters (Razorpay, SMTP, S3).
-2. **Authentication Flow (`sequenceDiagram`):** Illustrates registration, password policy, Argon2id hashing, short-lived JWT access tokens, rotating refresh token families, reuse attack mitigation, and custom CSRF header validation.
+2. **Authentication Flow (`sequenceDiagram`):** Illustrates registration, password policy, bcryptjs (cost 12) hashing, short-lived JWT access tokens, rotating refresh token families, reuse attack mitigation, and custom CSRF header validation.
 3. **Customer Journey (`flowchart TD`):** Maps the user experience from 10-minute pincode serviceability checks through debounced live search, multi-variant selectors, cart drawer interactions, to Cash on Delivery (COD) order completion and live tracking.
 4. **Checkout & Atomic Stock Sequence (`sequenceDiagram`):** Documents the critical dual-database coordination: MongoDB conditional stock reservation (`$gte`), MySQL ACID transaction (`$transaction`), compensating rollback on failure, and Razorpay HMAC-SHA256 signature verification.
 5. **Order State Machine (`stateDiagram-v2`):** Defines the lifecycle (`PLACED` ➔ `PACKED` ➔ `OUT_FOR_DELIVERY` ➔ `DELIVERED` / `CANCELLED`), with explicit transition guards and stock restoration rules.
@@ -77,11 +77,11 @@ pnpm lint
 
 # 2. Run Full Test Suite
 pnpm test
-# Output: Test Files 13 passed (13), Tests 165 passed (165)
+# Output: Test Files 14 passed (14), Tests 233 passed (233)
 
 # 3. Compile Production Frontend Assets
 pnpm build
-# Output: ✓ built in 15.77s (dist/index.html 0.96 kB, dist/assets/...)
+# Output: ✓ built in 16.4s (dist/index.html 1.44 kB, dist/assets/...)
 
 # 4. Validate Docker Compose Configurations
 docker compose -f docker-compose.prod.yml config

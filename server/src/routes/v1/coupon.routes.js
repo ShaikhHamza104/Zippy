@@ -8,6 +8,7 @@ import { validateCouponSchema } from '../../validation/order.validation.js';
 const router = Router();
 
 router.get('/', couponController.listCoupons);
+router.get('/active', couponController.listCoupons);
 router.post(
   '/validate',
   optionalAuth,

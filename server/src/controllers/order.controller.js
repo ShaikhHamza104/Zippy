@@ -582,3 +582,50 @@ export const updateOrderStatus = async (req, res, next) => {
     next(err);
   }
 };
+
+/**
+ * Checkout Preview
+ * Recomputes live cart pricing, item availability, delivery fees, and applied coupons
+ * for the authenticated customer prior to submitting an order.
+ */
+export const checkoutPreview = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    const cart = await Cart.findOne({ userId });
+
+    if (!cart || !cart.items || cart.items.length === 0) {
+      return res.status(200).json({
+        success: true,
+        data: {
+          items: [],
+          invalidItems: [],
+          itemCount: 0,
+          pricing: {
+            subtotal: 0,
+            totalMrp: 0,
+            deliveryFee: 0,
+            discountAmount: 0,
+            totalAmount: 0,
+            totalSavings: 0,
+            freeDeliveryThreshold: 199,
+            amountNeededForFreeDelivery: 199,
+          },
+          appliedCoupon: null,
+        },
+      });
+    }
+
+    const breakdown = await calculateCartBreakdown(
+      cart.items,
+      cart.appliedCoupon?.code || null,
+      userId
+    );
+
+    res.status(200).json({
+      success: true,
+      data: breakdown,
+    });
+  } catch (err) {
+    next(err);
+  }
+};

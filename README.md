@@ -1,14 +1,14 @@
 # Zippy ⚡ — 10-Minute Quick-Commerce Grocery Platform
 
 [![CI/CD Pipeline](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-blue?logo=githubactions)](.github/workflows/ci.yml)
-[![Tests Passing](https://img.shields.io/badge/tests-180%20passed-success?logo=vitest)](docs/phases/PHASE_14_QA_DARKMODE_VERIFICATION.md)
+[![Tests Passing](https://img.shields.io/badge/tests-233%20passed-success?logo=vitest)](docs/phases/PHASE_15_VERIFICATION.md)
 [![E2E Automation](https://img.shields.io/badge/Playwright%20E2E-8%20passed-emerald?logo=playwright)](e2e/)
 [![Theme System](<https://img.shields.io/badge/Theme-Dark%20%7C%20Light%20(Zero--FOUC)-9333ea>)](docs/phases/PHASE_14_QA_DARKMODE_VERIFICATION.md)
 [![Load Benchmark](https://img.shields.io/badge/Autocannon-0.00%25%20Errors-brightgreen)](scripts/load-test.js)
 [![Docker Hardened](https://img.shields.io/badge/Docker-Non--Root%20Multi--Stage-2496ED?logo=docker)](docker-compose.prod.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-> A production-ready, ultra-fast quick-commerce grocery web application (inspired by Blinkit and Zepto) built on a modern **React 18 + Node.js 20 + Dual-Database (MySQL 8.4 + MongoDB 8.0)** enterprise stack.
+> A production-ready, ultra-fast quick-commerce grocery web application (inspired by Blinkit and Zepto) built on a modern **React 18 + Node.js 24 + Dual-Database (MySQL 8.4 + MongoDB 8.0)** enterprise stack.
 
 ---
 
@@ -46,7 +46,7 @@ Zippy separates concerns across its persistence layer to deliver both high-throu
 
 ### 🔒 Enterprise Security
 
-- **Argon2id Password Hashing:** Resistant to GPU/ASIC cracking with timing-safe comparison.
+- **bcryptjs Password Hashing:** Salt cost 12 with timing-safe comparison, dummy hashing against timing attacks, and common password blacklist protection.
 - **Dual-Token Authentication:** 15-minute JWT access tokens + rotating refresh tokens in `httpOnly, Secure, SameSite=Lax` cookies with family reuse attack detection.
 - **CSRF Mitigation:** Required custom security headers (`X-Zippy-Client: web`, `X-Requested-With: XMLHttpRequest`).
 - **Defense in Depth:** Helmet HTTP headers, rate limiting (auth + API), `express-mongo-sanitize`, parameterized Prisma queries, and non-root Docker execution (`USER node` & `USER nginx`).
@@ -57,8 +57,8 @@ Zippy separates concerns across its persistence layer to deliver both high-throu
 
 ### Prerequisites
 
-- Node.js **20+ LTS** (`node -v`)
-- pnpm **10+** (`pnpm -v`)
+- Node.js **24 LTS** (`v24.20.0+`) (`node -v`)
+- pnpm **12+** (`v12.14.0+`) (`pnpm -v`)
 - Local or Docker daemons for MySQL 8.4 and MongoDB 8.0
 
 ### 1. Workstation Setup (Windows PowerShell)
@@ -109,13 +109,13 @@ docker compose -f docker-compose.prod.yml exec server node src/database/seed.js
 
 ## 🧪 Testing, Quality Gates & Benchmarks
 
-| Test Suite / Quality Gate       | Tooling                                 | Results                                                                                                                                                                                                                                                                                                                                                 |
-| :------------------------------ | :-------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Unit & Integration Tests**    | Vitest v2.1.9 (`@vitest/coverage-v8`)   | **180 passed (100%)** across 7 test suites<br/>• Server: 180 passed (Auth, Catalog, Cart, Orders, Admin, DB, Full-API-Audit)<br/>• 68-Route Full API verification suite with concurrency race testing                                                                                                                                                   |
-| **End-to-End (E2E) Automation** | Playwright v1.64.1 (Chromium)           | **8 passed (100% green)**<br/>• Customer Journey (Signup, Pincode, Browse, Cart, COD): **13.8s**<br/>• Admin Journey (Login, Product CRUD, Fulfillment): **14.0s**<br/>• Theme Engine (Toggle, Persistence, Zero-FOUC): **6.2s**<br/>• Responsive Zero-Overflow (360px, 768px, 1440px): **15.5s**<br/>• Non-Colliding Stepper & Price (360px): **3.2s** |
-| **Load & Stress Benchmarks**    | Autocannon v8.0.0 (10 connections)      | **12,981 total requests, 0.00% error rate**<br/>• `/health`: 994.00 RPS (p50: 8ms, p99: 36ms)<br/>• `/api/v1/categories`: 766.40 RPS (p50: 11ms, p99: 38ms)<br/>• `/api/v1/products`: 400.00 RPS (p50: 20ms, p99: 89ms)<br/>• `/api/v1/home`: 283.40 RPS (p50: 32ms, p99: 69ms)<br/>• `/api/v1/search?q=milk`: 153.60 RPS (p50: 61ms, p99: 100ms)       |
-| **Static Code Analysis**        | ESLint Flat Config (`eslint.config.js`) | **0 errors, 0 warnings** across monorepo                                                                                                                                                                                                                                                                                                                |
-| **Production Build**            | Vite v6.4.4 (Code-Split Rollup)         | **Compiled in 16.9s** with clean chunk distribution                                                                                                                                                                                                                                                                                                     |
+| Test Suite / Quality Gate       | Tooling                                 | Results                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| :------------------------------ | :-------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Unit & Integration Tests**    | Vitest (`@vitest/coverage-v8`)          | **233 passed (100%)** across 14 test files<br/>• Server: 180 passed across 7 files (Auth, Catalog, Cart, Orders, Admin, DB, Full-API-Audit)<br/>• Client: 53 passed across 7 files (Stores, Routes, Components, App, Customer, Admin, API)<br/>• 68-test Full API verification suite with concurrency race testing                                                                                                        |
+| **End-to-End (E2E) Automation** | Playwright v1.64.1 (Chromium)           | **8 passed (100% green)** across 3 spec files<br/>• Customer Journey (Signup, Pincode, Browse, Cart, COD): **11.4s**<br/>• Admin Journey (Login, Product CRUD, Fulfillment): **13.4s**<br/>• Theme Engine (Toggle, Persistence, Zero-FOUC): **5.6s**<br/>• Responsive Zero-Overflow (360px, 768px, 1440px): **13.7s**<br/>• Non-Colliding Stepper & Price (360px): **2.8s**<br/>• Admin Theme & Table Integrity: **6.5s** |
+| **Load & Stress Benchmarks**    | Autocannon v8.0.0 (10 connections)      | **12,981 total requests, 0.00% error rate**<br/>• `/health`: 994.00 RPS (p50: 8ms, p99: 36ms)<br/>• `/api/v1/categories`: 766.40 RPS (p50: 11ms, p99: 38ms)<br/>• `/api/v1/products`: 400.00 RPS (p50: 20ms, p99: 89ms)<br/>• `/api/v1/home`: 283.40 RPS (p50: 32ms, p99: 69ms)<br/>• `/api/v1/search?q=milk`: 153.60 RPS (p50: 61ms, p99: 100ms)                                                                         |
+| **Static Code Analysis**        | ESLint Flat Config (`eslint.config.js`) | **0 errors, 0 warnings** across monorepo                                                                                                                                                                                                                                                                                                                                                                                  |
+| **Production Build**            | Vite v6.4.4 (Code-Split Rollup)         | **Compiled in 16.4s** with clean chunk distribution                                                                                                                                                                                                                                                                                                                                                                       |
 
 ---
 
@@ -126,7 +126,7 @@ docker compose -f docker-compose.prod.yml exec server node src/database/seed.js
 - 📖 [Master Architecture & Application Flow (`docs/APPLICATION_FLOW.md`)](docs/APPLICATION_FLOW.md) — 10 architectural sections with interactive Mermaid diagrams.
 - 🚀 [Production Deployment Runbook (`docs/DEPLOYMENT.md`)](docs/DEPLOYMENT.md) — VPS checklist, zero-downtime migrations, SSL certbot, and Render/Railway guides.
 
-### Complete Phase Execution Logs (Phases 0–14)
+### Complete Phase Execution Logs (Phases 0–15)
 
 - [Phase 0: Environment Setup & Tooling](docs/phases/PHASE_0_SETUP.md)
 - [Phase 1: Project Scaffolding & Monorepo Structure](docs/phases/PHASE_1_SCAFFOLD.md)
@@ -143,6 +143,7 @@ docker compose -f docker-compose.prod.yml exec server node src/database/seed.js
 - [Phase 12: Production Setup & Deployment](docs/phases/PHASE_12_DEPLOYMENT.md)
 - [Phase 13: Final Application Flow Documentation](docs/phases/PHASE_13_APPLICATION_FLOW.md)
 - [Phase 14: QA, Dark/Light Mode Engine & Full API Audit](docs/phases/PHASE_14_QA_DARKMODE_VERIFICATION.md)
+- [Phase 15: Verification & Documentation Cleanup](docs/phases/PHASE_15_VERIFICATION.md)
 
 ---
 

@@ -12,7 +12,7 @@ const isRazorpayConfigured =
   !env.RAZORPAY_KEY_ID.includes('placeholder') &&
   !env.RAZORPAY_KEY_SECRET.includes('replace_with');
 
-if (isRazorpayConfigured) {
+if (isRazorpayConfigured && env.NODE_ENV !== 'test') {
   try {
     razorpayClient = new Razorpay({
       key_id: env.RAZORPAY_KEY_ID,
@@ -41,7 +41,7 @@ if (isRazorpayConfigured) {
 export const createRazorpayOrder = async ({ amount, currency = 'INR', receipt, notes = {} }) => {
   const amountInPaise = Math.round(Number(amount) * 100);
 
-  if (razorpayClient && env.NODE_ENV === 'production') {
+  if (razorpayClient && env.NODE_ENV !== 'test') {
     try {
       const order = await razorpayClient.orders.create({
         amount: amountInPaise,

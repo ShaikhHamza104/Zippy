@@ -7,7 +7,7 @@
 # ------------------------------------------------------------------------------
 # Stage 1: Builder
 # ------------------------------------------------------------------------------
-FROM node:20-alpine AS builder
+FROM node:24-alpine AS builder
 
 WORKDIR /app
 
@@ -47,6 +47,7 @@ COPY --from=builder /app/client/dist /usr/share/nginx/html
 # Copy production nginx server configuration
 COPY docker/nginx/default.conf /etc/nginx/conf.d/default.conf
 COPY docker/nginx/nginx.conf /etc/nginx/nginx.conf
+COPY docker/nginx/templates /etc/nginx/templates
 
 # Configure directory permissions and PID file for non-root execution
 RUN touch /var/run/nginx.pid \

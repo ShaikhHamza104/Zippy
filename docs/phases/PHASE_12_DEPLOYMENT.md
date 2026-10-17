@@ -1,7 +1,7 @@
 # Phase 12: Production Setup and Deployment
 
 > **Status:** Complete  
-> **Environment:** Docker Engine v24+, Docker Compose v2.20+, Node.js v20 LTS, Nginx Alpine, GitHub Actions  
+> **Environment:** Docker Engine v24+, Docker Compose v2.20+, Node.js v24 LTS (v24.20.0), pnpm 12, Nginx Alpine, GitHub Actions  
 > **Date:** October 2026  
 > **Scope:** Multi-Stage Dockerfiles, Production Docker Compose, Nginx Reverse Proxy with TLS/Caching, GitHub Actions CI/CD Pipeline, Environment Templates, and Deployment Runbooks.
 
@@ -26,7 +26,7 @@ Prepare the Zippy quick-commerce application for production readiness and deploy
 
 - **Backend (`server/Dockerfile`):**
   - **Stage 1 (`builder`):** Installs build tools, activates `pnpm`, installs dependencies, generates Prisma client, copies source code, and uses `pnpm deploy --prod` to produce a pruned production distribution.
-  - **Stage 2 (`runner`):** Built on `node:20-alpine`, configures `NODE_ENV=production`, creates an `/app/uploads` volume with ownership assigned to the system non-root `node` user, drops privileges (`USER node`), exposes port `5000`, and sets up an automated healthcheck.
+  - **Stage 2 (`runner`):** Built on `node:24-alpine`, configures `NODE_ENV=production`, creates an `/app/uploads` volume with ownership assigned to the system non-root `node` user, drops privileges (`USER node`), exposes port `5000`, and sets up an automated healthcheck.
 - **Frontend (`client/Dockerfile`):**
   - **Stage 1 (`builder`):** Installs client dependencies and compiles an optimized Vite SPA bundle into `/app/client/dist`.
   - **Stage 2 (`runner`):** Built on `nginx:alpine`, uses `libcap` to grant `cap_net_bind_service=+ep` to the `nginx` binary, sets ownership of pid/cache/log directories to user `nginx`, drops privileges (`USER nginx`), serves static assets, and exposes ports `80` and `443`.

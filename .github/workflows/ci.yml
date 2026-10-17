@@ -41,10 +41,10 @@ jobs:
         with:
           run_install: false
 
-      - name: Setup Node.js Runtime (v20)
+      - name: Setup Node.js Runtime (v24)
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: 'pnpm'
 
       - name: Install Monorepo Dependencies
@@ -68,10 +68,10 @@ jobs:
         with:
           run_install: false
 
-      - name: Setup Node.js Runtime (v20)
+      - name: Setup Node.js Runtime (v24)
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: 'pnpm'
 
       - name: Install Monorepo Dependencies
@@ -137,10 +137,10 @@ jobs:
         with:
           run_install: false
 
-      - name: Setup Node.js Runtime (v20)
+      - name: Setup Node.js Runtime (v24)
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: 'pnpm'
 
       - name: Install Monorepo Dependencies
@@ -171,10 +171,10 @@ jobs:
         with:
           run_install: false
 
-      - name: Setup Node.js Runtime (v20)
+      - name: Setup Node.js Runtime (v24)
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: 'pnpm'
 
       - name: Install Monorepo Dependencies

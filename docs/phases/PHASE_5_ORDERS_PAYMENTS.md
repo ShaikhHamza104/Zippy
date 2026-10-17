@@ -129,17 +129,19 @@ stateDiagram-v2
 | Method | Endpoint                   | Auth     | Description                                             |
 | ------ | -------------------------- | -------- | ------------------------------------------------------- |
 | `GET`  | `/api/v1/coupons`          | Public   | List all active, unexpired coupons                      |
+| `GET`  | `/api/v1/coupons/active`   | Public   | List all active, unexpired coupons (Alias)              |
 | `POST` | `/api/v1/coupons/validate` | Optional | Validate coupon code against prospective order subtotal |
 
 ### 4. Orders (`/api/v1/orders`)
 
-| Method  | Endpoint                         | Auth     | Description                                                     |
-| ------- | -------------------------------- | -------- | --------------------------------------------------------------- |
-| `POST`  | `/api/v1/orders/checkout`        | Required | Place order (COD or Razorpay) with atomic stock decrement       |
-| `GET`   | `/api/v1/orders`                 | Required | List user orders (Customer: own; Admin: all with status filter) |
-| `GET`   | `/api/v1/orders/:orderId`        | Required | Get detailed order summary with snapshot items & payment        |
-| `POST`  | `/api/v1/orders/:orderId/cancel` | Required | Cancel order (allowed in PLACED/PACKED) and replenish stock     |
-| `PATCH` | `/api/v1/orders/:orderId/status` | Admin    | Advance order status along validated state machine              |
+| Method  | Endpoint                          | Auth     | Description                                                      |
+| ------- | --------------------------------- | -------- | ---------------------------------------------------------------- |
+| `GET`   | `/api/v1/orders/checkout/preview` | Required | Recompute live checkout pricing breakdown for authenticated cart |
+| `POST`  | `/api/v1/orders/checkout`         | Required | Place order (COD or Razorpay) with atomic stock decrement        |
+| `GET`   | `/api/v1/orders`                  | Required | List user orders (Customer: own; Admin: all with status filter)  |
+| `GET`   | `/api/v1/orders/:orderId`         | Required | Get detailed order summary with snapshot items & payment         |
+| `POST`  | `/api/v1/orders/:orderId/cancel`  | Required | Cancel order (allowed in PLACED/PACKED) and replenish stock      |
+| `PATCH` | `/api/v1/orders/:orderId/status`  | Admin    | Advance order status along validated state machine               |
 
 ### 5. Payments (`/api/v1/payments`)
 

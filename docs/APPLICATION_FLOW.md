@@ -87,7 +87,7 @@ sequenceDiagram
     Note over User,Mailer: 1. Customer Registration Flow
     User->>Client: Enters Name, Email, Password, Phone
     Client->>API: POST /api/v1/auth/register (with X-Zippy-Client header)
-    API->>API: Validate Zod Schema & Hash Password (Argon2id)
+    API->>API: Validate Zod Schema & Hash Password (bcryptjs, cost 12)
     API->>MySQL: Create User (Role: CUSTOMER)
     API->>API: Generate Access Token (15m) & Refresh Token (7d)
     API->>MySQL: Store Hashed Refresh Token (Family ID, Active)

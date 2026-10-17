@@ -1,7 +1,7 @@
 # Zippy Production Deployment Runbook
 
 > **Target Platforms:** Linux VPS (Docker Compose + Hardened Nginx) & Managed Cloud Platforms (Render, Railway, AWS ECS)  
-> **Tech Stack:** Node.js 20 LTS, Express, Prisma (MySQL 8.4), Mongoose (MongoDB 8.0), React 18, Vite, Nginx Alpine
+> **Tech Stack:** Node.js 24 LTS, pnpm 12, Express, Prisma (MySQL 8.4), Mongoose (MongoDB 8.0), React 18, Vite, Nginx Alpine
 
 ---
 
@@ -142,13 +142,17 @@ cp .env.production.example .env
 nano .env  # Enter your actual production secrets and domain
 ```
 
-### Step 3.3: Issue SSL Certificate via Let's Encrypt
+### Step 3.3: Issue SSL Certificate via Let's Encrypt & Enable HTTPS
+
+The production stack supports automated TLS termination with HTTP-to-HTTPS (301) redirection, modern ciphers, and ACME challenge preservation.
+
+#### A. Initial SSL Certificate Issuance
 
 ```bash
-# Create shared certbot webroot volume directory
+# 1. Create shared ACME challenge directory
 sudo mkdir -p /var/www/certbot
 
-# Obtain initial SSL certificate using Certbot webroot mode
+# 2. Obtain initial SSL certificate using Certbot standalone (or webroot)
 sudo certbot certonly --standalone \
   --preferred-challenges http \
   -d zippy.yourdomain.com \
@@ -157,7 +161,71 @@ sudo certbot certonly --standalone \
   --non-interactive
 ```
 
-_Note: Once issued, certificates reside in `/etc/letsencrypt/live/zippy.yourdomain.com/` which mounts into the Nginx container._
+_Note: Once issued, certificates reside in `/etc/letsencrypt/live/zippy.yourdomain.com/` (`fullchain.pem`, `privkey.pem`, `chain.pem`) which mount into the Nginx container._
+
+#### B. Configure Environment Variables for HTTPS
+
+In your production `.env`:
+
+```env
+DOMAIN_NAME=zippy.yourdomain.com
+SSL_CERT_PATH=/etc/letsencrypt/live/zippy.yourdomain.com/fullchain.pem
+SSL_KEY_PATH=/etc/letsencrypt/live/zippy.yourdomain.com/privkey.pem
+SSL_TRUSTED_CERT_PATH=/etc/letsencrypt/live/zippy.yourdomain.com/chain.pem
+```
+
+The Nginx container automatically populates `docker/nginx/templates/default.conf.template` via `envsubst` upon startup, enforcing:
+
+- **Port 80:** ACME challenge path (`/.well-known/acme-challenge/`) open for Certbot renewals, with 301 redirection for all other HTTP traffic to HTTPS.
+- **Port 443:** TLSv1.2 & TLSv1.3 modern ciphers, HSTS (`max-age=15768000`), secure proxy forwarding to the Express API, and cached SPA asset serving.
+
+#### C. Automated SSL Renewal Cron Job
+
+Let's Encrypt certificates expire every 90 days. Schedule an automated renewal check twice daily:
+
+```bash
+# Add renewal job to root crontab
+sudo crontab -e
+
+# Renewal command:
+0 3 * * * certbot renew --webroot -w /var/www/certbot --quiet && docker compose -f /opt/zippy/docker-compose.prod.yml exec -T client nginx -s reload
+```
+
+---
+
+### Step 3.3b: Payment Gateway Configuration (Razorpay)
+
+Zippy supports dual-mode Razorpay payment operations:
+
+1. **Simulated Mode (Dev / Test / Offline):**
+   - Active when `RAZORPAY_KEY_ID` or `RAZORPAY_KEY_SECRET` are omitted or contain default placeholders.
+   - Generates deterministic simulated orders (`order_<hex>`) and accepts simulated signatures (`simulated_sig_...`).
+   - Zero external network requests; ideal for CI/CD runs, offline local development, and Vitest test suites.
+
+2. **Test Mode (Real Razorpay Sandbox API):**
+   - Sign up for a free developer account at [Razorpay Dashboard](https://dashboard.razorpay.com/).
+   - Navigate to **Settings > API Keys** and click **Generate Key** in **Test Mode**.
+   - Copy Key ID (`rzp_test_...`) and Key Secret into `.env`:
+     ```env
+     RAZORPAY_KEY_ID=rzp_test_1234567890abcdef
+     RAZORPAY_KEY_SECRET=your_test_key_secret_here
+     RAZORPAY_WEBHOOK_SECRET=your_test_webhook_secret_here
+     ```
+   - When configured and outside `NODE_ENV=test`, the backend calls real Razorpay APIs to generate authentic orders.
+
+3. **Live Production Mode:**
+   - Switch to **Live Mode** in the Razorpay Dashboard after KYC completion.
+   - Generate Live API keys (`rzp_live_...`).
+   - Configure Webhook URL in Razorpay Dashboard:
+     - **URL:** `https://zippy.yourdomain.com/api/v1/payments/webhook`
+     - **Events:** `payment.captured`, `payment.failed`, `order.paid`
+     - **Secret:** Generate a 32+ character random string and store in `RAZORPAY_WEBHOOK_SECRET`.
+   - Update production `.env`:
+     ```env
+     RAZORPAY_KEY_ID=rzp_live_your_actual_key_id
+     RAZORPAY_KEY_SECRET=your_production_secret
+     RAZORPAY_WEBHOOK_SECRET=your_production_webhook_secret
+     ```
 
 ### Step 3.4: Launch the Production Stack
 

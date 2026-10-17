@@ -391,6 +391,24 @@ export const swaggerSpec = {
         responses: { 200: { description: 'Active coupons list' } },
       },
     },
+    '/api/v1/coupons/active': {
+      get: {
+        summary: 'List active public coupons (Alias)',
+        tags: ['Coupons'],
+        responses: { 200: { description: 'Active coupons list' } },
+      },
+    },
+    '/api/v1/orders/checkout/preview': {
+      get: {
+        summary: 'Recompute live checkout pricing and breakdown for authenticated cart',
+        tags: ['Orders'],
+        security: [{ BearerAuth: [] }],
+        responses: {
+          200: { description: 'Checkout preview breakdown' },
+          401: { description: 'Unauthorized' },
+        },
+      },
+    },
     '/api/v1/orders/checkout': {
       post: {
         summary: 'Atomic checkout and order creation (Cross-DB)',

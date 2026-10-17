@@ -1,7 +1,7 @@
 # Phase 11: Full Testing Documentation
 
 > **Status:** Complete  
-> **Environment:** Node.js v20+, Vitest v2.1.9, Playwright v1.64.1, Autocannon v8.0.0  
+> **Environment:** Node.js v24 LTS (v24.20.0), pnpm 12 (v12.14.0), Vitest, Playwright v1.64.1, Autocannon v8.0.0  
 > **Date:** October 2026  
 > **Scope:** Unit & Integration Coverage Matrices, Playwright End-to-End Test Automation, and Autocannon Throughput/Latency Load Benchmarking
 
@@ -15,15 +15,16 @@ Phase 11 implements comprehensive testing across all tiers of the Zippy 10-minut
                   ▲
                  / \
                 /   \     E2E Tests (Playwright)
-               / E2E \    - Customer COD Journey (5.0s)
-              /-------\   - Admin Catalog & Order Flow (6.9s)
-             /  LOAD   \
+               / E2E \    - Customer COD Journey (11.4s)
+              /-------\   - Admin Catalog & Order Flow (13.4s)
+             /  LOAD   \  - Theme Engine & Layout Integrity (8 passed)
             /BENCHMARKS \ Load Testing (Autocannon)
            /-------------\ - 12,981 requests across 5 endpoints, 0 errors (0.00%)
           /  INTEGRATION  \
          /   UNIT TESTS    \ Unit & Integration Tests (Vitest + Coverage V8)
-        /-------------------\ - Server: 112 passed (77.91% Stmts, 80.57% Funcs)
-       /                     \ - Client: 53 passed (UI Library: 96.99%, Stores: 80.57%)
+        /-------------------\ - Monorepo Total: 233 passed across 14 test files
+       /                     \ - Server: 180 passed (7 files, 100% green)
+      /                       \ - Client: 53 passed (7 files, 100% green)
 ```
 
 All test suites execute deterministically in automated CI/CD and local development environments without flaky timers or unhandled rejections.
@@ -36,9 +37,9 @@ Code coverage is measured using `@vitest/coverage-v8` across both `@zippy/server
 
 ### 2.1 Backend Coverage Summary (`@zippy/server`)
 
-- **Total Test Files:** 6 passed (100%)
-- **Total Tests:** 112 passed (100%)
-- **Test Duration:** ~20.5s
+- **Total Test Files:** 7 passed (100%)
+- **Total Tests:** 180 passed (100%)
+- **Test Duration:** ~58.7s
 
 | Module / Directory                       | Statements (%) | Branches (%) | Functions (%) |  Lines (%)  | Key Paths Covered                                                        |
 | :--------------------------------------- | :------------: | :----------: | :-----------: | :---------: | :----------------------------------------------------------------------- |
@@ -47,7 +48,7 @@ Code coverage is measured using `@vitest/coverage-v8` across both `@zippy/server
 | `src/models`                             |  **100.00%**   |  **85.71%**  |  **100.00%**  | **100.00%** | Product, Cart, Category, Banner, Review schemas                          |
 | `src/validation`                         |   **99.79%**   |  **81.81%**  |  **100.00%**  | **99.79%**  | Zod payload validators (auth, catalog, order, admin)                     |
 | `src/utils/tokens.js`                    |  **100.00%**   | **100.00%**  |  **100.00%**  | **100.00%** | JWT signing, verification, and rotation                                  |
-| `src/utils/password.js`                  |   **92.20%**   |  **66.66%**  |  **100.00%**  | **92.20%**  | Argon2id hashing & timing-safe compare                                   |
+| `src/utils/password.js`                  |   **92.20%**   |  **66.66%**  |  **100.00%**  | **92.20%**  | bcryptjs (cost 12) hashing & timing-safe compare                         |
 | `src/utils/auditLogger.js`               |   **93.18%**   |  **42.85%**  |  **100.00%**  | **93.18%**  | Admin action auditing                                                    |
 | `src/controllers/auth.controller.js`     |   **77.77%**   |  **53.19%**  |  **100.00%**  | **77.77%**  | Register, login, refresh rotation, reuse detection, logout, email verify |
 | `src/controllers/admin.controller.js`    |   **70.57%**   |  **32.28%**  |  **83.33%**   | **70.57%**  | Dashboard KPIs, product/category CRUD, customer blocking, audit logs     |
@@ -136,7 +137,7 @@ Load tests were executed against the live server using `scripts/load-test.js` (`
 
 1. **Lightweight Health & Micro-Endpoints:** `/health` sustains ~1,000 requests/sec at single-digit p50 latency (8ms) with HTTP response compression enabled.
 2. **Catalog Caching:** `/api/v1/categories` serves 766 requests/sec directly from memory cache, protecting MongoDB from redundant queries.
-3. **Compound Aggregations:** `/api/v1/home` (multi-category rails + banners) and `/api/v1/search?q=milk` (indexed regex search + category facets) complete under 100ms at the 99th percentile under sustained concurrent pressure.
+3. **Compound Aggregations:** `/api/v1/home` (multi-category rails + banners) and `/api/v1/search?q=milk` (MongoDB $text full-text index search + category facets; with fast $regex prefix matching for autocomplete suggestions) complete under 100ms at the 99th percentile under sustained concurrent pressure.
 4. **Zero Error Rate:** 0 network connection drops, 0 5xx gateway errors, and 0 memory leaks observed across all 12,981 requests.
 
 ---

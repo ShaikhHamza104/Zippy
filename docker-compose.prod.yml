@@ -127,6 +127,12 @@ services:
     depends_on:
       server:
         condition: service_healthy
+    environment:
+      DOMAIN_NAME: ${DOMAIN_NAME:-zippy.yourdomain.com}
+      SSL_CERT_PATH: ${SSL_CERT_PATH:-/etc/letsencrypt/live/${DOMAIN_NAME:-zippy.yourdomain.com}/fullchain.pem}
+      SSL_KEY_PATH: ${SSL_KEY_PATH:-/etc/letsencrypt/live/${DOMAIN_NAME:-zippy.yourdomain.com}/privkey.pem}
+      SSL_TRUSTED_CERT_PATH: ${SSL_TRUSTED_CERT_PATH:-/etc/letsencrypt/live/${DOMAIN_NAME:-zippy.yourdomain.com}/chain.pem}
+      NGINX_ENVSUBST_FILTER: "DOMAIN_NAME SSL_CERT_PATH SSL_KEY_PATH SSL_TRUSTED_CERT_PATH"
     ports:
       - "80:80"
       - "443:443"
