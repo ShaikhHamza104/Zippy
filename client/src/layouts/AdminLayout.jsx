@@ -20,7 +20,8 @@ import { useAuthStore } from '../stores/authStore.js';
 import { useUIStore } from '../stores/uiStore.js';
 import { apiFetch } from '../services/api.js';
 import { Skeleton, ToastContainer } from '../components/ui/index.js';
-import { ThemeToggle } from '../components/common/ThemeToggle.jsx';
+// ThemeToggle kept intact in ThemeToggle.jsx and uiStore.js for future use
+// import { ThemeToggle } from '../components/common/ThemeToggle.jsx';
 
 const ADMIN_NAV_ITEMS = [
   { name: 'Dashboard', to: '/admin', icon: LayoutDashboard, end: true },
@@ -193,7 +194,8 @@ export const AdminLayout = () => {
           </div>
 
           <div className="flex items-center gap-3">
-            <ThemeToggle />
+            {/* Theme toggle temporarily hidden per user request; functionality preserved in ThemeToggle.jsx & uiStore.js */}
+            {/* <ThemeToggle /> */}
             <span className="text-xs font-bold text-slate-600 dark:text-slate-300 hidden md:inline">
               Logged in as <strong className="text-slate-900 dark:text-white">{user?.email}</strong>
             </span>
