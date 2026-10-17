@@ -44,12 +44,12 @@ export const Footer = () => {
         {/* Copyright and Brand Footer */}
         <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-400 dark:text-slate-500">
           <p>© {new Date().getFullYear()} Zippy Commerce Technologies. All rights reserved.</p>
-          <p className="flex items-center gap-1">
+          {/* <p className="flex items-center gap-1">
             Engineered with{' '}
             <span className="text-brand-600 dark:text-brand-400 font-bold">
               React 18 + Vite + Tailwind
             </span>
-          </p>
+          </p> */}
         </div>
       </div>
     </footer>
