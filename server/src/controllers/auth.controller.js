@@ -1,6 +1,7 @@
 // server/src/controllers/auth.controller.js
 import crypto from 'node:crypto';
 import jwt from 'jsonwebtoken';
+import { env } from '../config/env.js';
 import { prisma } from '../database/prisma.js';
 import { logger } from '../config/logger.js';
 import { sendPasswordResetEmail, sendVerificationEmail } from '../services/email.service.js';
@@ -558,11 +559,22 @@ export const forgotPassword = async (req, res, next) => {
       });
     }
 
-    // Always respond with identical message to eliminate user enumeration
-    res.status(200).json({
+    const responsePayload = {
       success: true,
       message: 'If an account with that email exists, password reset instructions have been sent.',
-    });
+    };
+
+    // In local development / testing, expose dev reset link so testing is instantaneous without SMTP
+    if (env.NODE_ENV !== 'production' && user && !user.deletedAt && !user.isBlocked) {
+      const resetToken = generatePasswordResetToken(user);
+      responsePayload.dev = {
+        resetUrl: `${env.CLIENT_URL}/reset-password?token=${encodeURIComponent(resetToken)}`,
+        resetToken,
+      };
+    }
+
+    // Always respond with identical message to eliminate user enumeration
+    res.status(200).json(responsePayload);
   } catch (err) {
     next(err);
   }
