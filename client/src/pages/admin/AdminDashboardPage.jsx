@@ -145,10 +145,10 @@ export const AdminDashboardPage = () => {
       {/* Page Title & Action Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 tracking-tight">
+          <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
             Operations Dashboard
           </h1>
-          <p className="text-sm font-medium text-slate-500">
+          <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
             Real-time quick-commerce revenue, dark store inventory alerts, and order lifecycle
             status.
           </p>
@@ -172,10 +172,12 @@ export const AdminDashboardPage = () => {
           return (
             <Card key={kpi.label} className="p-5 flex items-center justify-between shadow-xs">
               <div className="space-y-1">
-                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                   {kpi.label}
                 </span>
-                <div className="text-2xl font-black text-slate-900 tracking-tight">{kpi.value}</div>
+                <div className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                  {kpi.value}
+                </div>
               </div>
               <div className={`p-3 rounded-2xl border ${kpi.color}`}>
                 <Icon className="w-6 h-6" />
@@ -189,16 +191,16 @@ export const AdminDashboardPage = () => {
       <Card className="p-6 space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-base font-extrabold text-slate-900 tracking-tight">
+            <h2 className="text-base font-extrabold text-slate-900 dark:text-white tracking-tight">
               Order Fulfillment Pipeline
             </h2>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-slate-500 dark:text-slate-400">
               Live order distribution across fulfillment stages
             </p>
           </div>
           <Link
             to="/admin/orders"
-            className="text-xs font-bold text-brand-600 hover:text-brand-700 inline-flex items-center gap-1"
+            className="text-xs font-bold text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 inline-flex items-center gap-1"
           >
             Manage Orders <ArrowRight className="w-3.5 h-3.5" />
           </Link>
@@ -221,21 +223,21 @@ export const AdminDashboardPage = () => {
 
       {/* Low-Stock Inventory Alerts */}
       <Card className="overflow-hidden shadow-xs">
-        <div className="p-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 bg-amber-50 text-amber-600 rounded-xl border border-amber-200">
+            <div className="p-2 bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 rounded-xl border border-amber-200 dark:border-amber-800">
               <AlertTriangle className="w-5 h-5" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-base font-extrabold text-slate-900 tracking-tight">
+                <h2 className="text-base font-extrabold text-slate-900 dark:text-white tracking-tight">
                   Low-Stock Inventory Alerts
                 </h2>
                 <Badge variant={lowStockAlerts.length > 0 ? 'danger' : 'success'} size="sm">
                   {lowStockAlerts.length} Critical
                 </Badge>
               </div>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 Variants with stock level ≤ 10 units needing dark store replenishment
               </p>
             </div>

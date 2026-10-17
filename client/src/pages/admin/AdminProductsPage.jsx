@@ -1137,12 +1137,14 @@ export const AdminProductsPage = () => {
           </div>
 
           {/* Mode Switch: Set Absolute vs Relative Adjust */}
-          <div className="grid grid-cols-2 gap-2 bg-slate-100 p-1 rounded-xl text-xs font-bold">
+          <div className="grid grid-cols-2 gap-2 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl text-xs font-bold">
             <button
               type="button"
               onClick={() => setStockMode('set')}
               className={`py-1.5 rounded-lg transition-colors ${
-                stockMode === 'set' ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-600'
+                stockMode === 'set'
+                  ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-2xs'
+                  : 'text-slate-600 dark:text-slate-400'
               }`}
             >
               Set Absolute Stock
@@ -1151,7 +1153,9 @@ export const AdminProductsPage = () => {
               type="button"
               onClick={() => setStockMode('adjust')}
               className={`py-1.5 rounded-lg transition-colors ${
-                stockMode === 'adjust' ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-600'
+                stockMode === 'adjust'
+                  ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-2xs'
+                  : 'text-slate-600 dark:text-slate-400'
               }`}
             >
               Adjust (+ / -)
@@ -1160,7 +1164,7 @@ export const AdminProductsPage = () => {
 
           {stockMode === 'set' ? (
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-1">
                 New Absolute Stock Count
               </label>
               <Input
