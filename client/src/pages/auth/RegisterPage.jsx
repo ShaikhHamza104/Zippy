@@ -83,7 +83,7 @@ export const RegisterPage = () => {
 
   return (
     <div className="min-h-[70vh] flex items-center justify-center py-10 px-4">
-      <div className="max-w-md w-full bg-white rounded-3xl shadow-floating border border-slate-100 p-6 sm:p-8 space-y-6">
+      <div className="max-w-md w-full bg-white dark:bg-slate-900 rounded-3xl shadow-floating border border-slate-100 dark:border-slate-800 p-6 sm:p-8 space-y-6">
         <div className="text-center space-y-2">
           <Link
             to="/"
@@ -92,12 +92,14 @@ export const RegisterPage = () => {
             <span className="flex items-center justify-center w-9 h-9 rounded-xl bg-brand-600 text-white font-extrabold text-lg shadow-sm">
               <Zap className="w-5 h-5 fill-current" />
             </span>
-            <span className="text-2xl font-black tracking-tight text-slate-900">
+            <span className="text-2xl font-black tracking-tight text-slate-900 dark:text-slate-100">
               Zippy<span className="text-brand-600">.</span>
             </span>
           </Link>
-          <h1 className="text-xl font-black text-slate-900">Create New Account</h1>
-          <p className="text-xs text-slate-500">
+          <h1 className="text-xl font-black text-slate-900 dark:text-slate-100">
+            Create New Account
+          </h1>
+          <p className="text-xs text-slate-500 dark:text-slate-400">
             Sign up in seconds to enjoy 10-minute grocery deliveries.
           </p>
         </div>
@@ -105,7 +107,7 @@ export const RegisterPage = () => {
         {serverError && (
           <div
             role="alert"
-            className="p-3 bg-red-50 border border-red-200 rounded-xl text-xs text-red-700 font-semibold"
+            className="p-3 bg-red-50 dark:bg-red-950/60 border border-red-200 dark:border-red-800 rounded-xl text-xs text-red-700 dark:text-red-300 font-semibold"
           >
             {serverError}
           </div>
@@ -117,7 +119,7 @@ export const RegisterPage = () => {
             label="Full Name"
             placeholder="John Doe"
             error={errors.name?.message}
-            leftIcon={<User className="w-4 h-4 text-slate-400" />}
+            leftIcon={<User className="w-4 h-4 text-slate-400 dark:text-slate-500" />}
             {...register('name')}
           />
 
@@ -127,7 +129,7 @@ export const RegisterPage = () => {
             type="email"
             placeholder="name@example.com"
             error={errors.email?.message}
-            leftIcon={<Mail className="w-4 h-4 text-slate-400" />}
+            leftIcon={<Mail className="w-4 h-4 text-slate-400 dark:text-slate-500" />}
             {...register('email')}
           />
 
@@ -138,7 +140,7 @@ export const RegisterPage = () => {
             placeholder="9876543210"
             helperText="Used for order status and live delivery driver coordination."
             error={errors.phone?.message}
-            leftIcon={<Phone className="w-4 h-4 text-slate-400" />}
+            leftIcon={<Phone className="w-4 h-4 text-slate-400 dark:text-slate-500" />}
             {...register('phone')}
           />
 
@@ -148,7 +150,7 @@ export const RegisterPage = () => {
             type="password"
             placeholder="At least 8 characters"
             error={errors.password?.message}
-            leftIcon={<Lock className="w-4 h-4 text-slate-400" />}
+            leftIcon={<Lock className="w-4 h-4 text-slate-400 dark:text-slate-500" />}
             {...register('password')}
           />
 
@@ -164,13 +166,13 @@ export const RegisterPage = () => {
           </Button>
         </form>
 
-        <div className="text-center pt-2 border-t border-slate-100">
-          <p className="text-xs text-slate-500">
+        <div className="text-center pt-2 border-t border-slate-100 dark:border-slate-800">
+          <p className="text-xs text-slate-500 dark:text-slate-400">
             Already have a Zippy account?{' '}
             <Link
               to="/login"
               state={{ from: location.state?.from }}
-              className="font-bold text-brand-700 hover:underline"
+              className="font-bold text-brand-700 dark:text-brand-400 hover:underline"
             >
               Sign In
             </Link>

@@ -179,19 +179,21 @@ export const ProfilePage = () => {
   return (
     <div className="space-y-8 max-w-5xl mx-auto pb-16">
       {/* Profile Header */}
-      <div className="bg-white rounded-3xl border border-slate-100 p-6 sm:p-8 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 p-6 sm:p-8 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <div className="w-16 h-16 rounded-2xl bg-brand-600 text-white flex items-center justify-center font-black text-2xl shadow-sm">
             {user?.name?.charAt(0).toUpperCase() || 'U'}
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+              <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-slate-100 tracking-tight">
                 {user?.name || 'Customer Account'}
               </h1>
               <Badge variant="brand">{user?.role || 'CUSTOMER'}</Badge>
             </div>
-            <p className="text-xs text-slate-500 font-medium mt-0.5">{user?.email}</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium mt-0.5">
+              {user?.email}
+            </p>
           </div>
         </div>
 
@@ -207,14 +209,14 @@ export const ProfilePage = () => {
       </div>
 
       {/* Tabs Bar */}
-      <div className="flex border-b border-slate-200 gap-6 text-sm font-bold">
+      <div className="flex border-b border-slate-200 dark:border-slate-800 gap-6 text-sm font-bold">
         <button
           type="button"
           onClick={() => setActiveTab('addresses')}
           className={`pb-3 flex items-center gap-2 transition-all ${
             activeTab === 'addresses'
-              ? 'border-b-2 border-brand-600 text-brand-700'
-              : 'text-slate-400 hover:text-slate-700'
+              ? 'border-b-2 border-brand-600 text-brand-700 dark:text-brand-400'
+              : 'text-slate-400 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
           }`}
         >
           <MapPin className="w-4 h-4" />
@@ -226,8 +228,8 @@ export const ProfilePage = () => {
           onClick={() => setActiveTab('security')}
           className={`pb-3 flex items-center gap-2 transition-all ${
             activeTab === 'security'
-              ? 'border-b-2 border-brand-600 text-brand-700'
-              : 'text-slate-400 hover:text-slate-700'
+              ? 'border-b-2 border-brand-600 text-brand-700 dark:text-brand-400'
+              : 'text-slate-400 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
           }`}
         >
           <Lock className="w-4 h-4" />
@@ -239,7 +241,9 @@ export const ProfilePage = () => {
       {activeTab === 'addresses' && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-base font-black text-slate-900">Saved Delivery Addresses</h2>
+            <h2 className="text-base font-black text-slate-900 dark:text-slate-100">
+              Saved Delivery Addresses
+            </h2>
             <Button
               variant="primary"
               size="sm"
@@ -252,14 +256,16 @@ export const ProfilePage = () => {
 
           {isLoadingAddresses ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="h-32 bg-slate-100 animate-pulse rounded-2xl" />
-              <div className="h-32 bg-slate-100 animate-pulse rounded-2xl" />
+              <div className="h-32 bg-slate-100 dark:bg-slate-800 animate-pulse rounded-2xl" />
+              <div className="h-32 bg-slate-100 dark:bg-slate-800 animate-pulse rounded-2xl" />
             </div>
           ) : addresses.length === 0 ? (
-            <div className="p-8 text-center bg-white rounded-2xl border border-slate-100">
-              <MapPin className="w-10 h-10 text-slate-300 mx-auto mb-2" />
-              <h3 className="text-sm font-bold text-slate-800">No saved addresses</h3>
-              <p className="text-xs text-slate-500 mb-4">
+            <div className="p-8 text-center bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800">
+              <MapPin className="w-10 h-10 text-slate-300 dark:text-slate-600 mx-auto mb-2" />
+              <h3 className="text-sm font-bold text-slate-800 dark:text-slate-100">
+                No saved addresses
+              </h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">
                 Add an address so your 10-minute grocery orders arrive seamlessly.
               </p>
               <Button variant="outline" size="sm" onClick={() => setIsAddressModalOpen(true)}>
@@ -271,31 +277,33 @@ export const ProfilePage = () => {
               {addresses.map((addr) => (
                 <div
                   key={addr.id}
-                  className="bg-white rounded-2xl border border-slate-200 p-4 space-y-2 relative shadow-xs"
+                  className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 space-y-2 relative shadow-xs"
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <span className="font-black text-sm text-slate-900">{addr.fullName}</span>
+                      <span className="font-black text-sm text-slate-900 dark:text-slate-100">
+                        {addr.fullName}
+                      </span>
                       {addr.isDefault && <Badge variant="success">DEFAULT</Badge>}
                     </div>
                     <button
                       type="button"
                       onClick={() => deleteAddressMutation.mutate(addr.id)}
                       aria-label={`Delete address ${addr.fullName}`}
-                      className="p-1 text-slate-400 hover:text-red-600 rounded transition-colors"
+                      className="p-1 text-slate-400 hover:text-red-600 dark:hover:text-red-400 rounded transition-colors"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
 
-                  <p className="text-xs text-slate-600 leading-relaxed">
+                  <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
                     {addr.addressLine1}
                     {addr.addressLine2 && `, ${addr.addressLine2}`}
                     <br />
                     {addr.city}, {addr.state} - {addr.pincode}
                   </p>
 
-                  <div className="text-[11px] font-semibold text-slate-500">
+                  <div className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">
                     Phone: {addr.phone}
                   </div>
                 </div>
@@ -307,10 +315,12 @@ export const ProfilePage = () => {
 
       {/* Tab: Security & Password */}
       {activeTab === 'security' && (
-        <div className="bg-white rounded-3xl border border-slate-100 p-6 sm:p-8 shadow-xs max-w-lg space-y-6">
+        <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 p-6 sm:p-8 shadow-xs max-w-lg space-y-6">
           <div>
-            <h2 className="text-base font-black text-slate-900">Change Password</h2>
-            <p className="text-xs text-slate-500 mt-0.5">
+            <h2 className="text-base font-black text-slate-900 dark:text-slate-100">
+              Change Password
+            </h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
               Update your account password with at least 8 characters.
             </p>
           </div>
@@ -318,7 +328,7 @@ export const ProfilePage = () => {
           {passwordServerError && (
             <div
               role="alert"
-              className="p-3 bg-red-50 border border-red-200 rounded-xl text-xs text-red-700 font-semibold"
+              className="p-3 bg-red-50 dark:bg-red-950/60 border border-red-200 dark:border-red-800 rounded-xl text-xs text-red-700 dark:text-red-300 font-semibold"
             >
               {passwordServerError}
             </div>
@@ -331,7 +341,7 @@ export const ProfilePage = () => {
               type="password"
               placeholder="••••••••"
               error={passwordErrors.currentPassword?.message}
-              leftIcon={<Lock className="w-4 h-4 text-slate-400" />}
+              leftIcon={<Lock className="w-4 h-4 text-slate-400 dark:text-slate-500" />}
               {...registerPassword('currentPassword')}
             />
 
@@ -341,7 +351,7 @@ export const ProfilePage = () => {
               type="password"
               placeholder="••••••••"
               error={passwordErrors.newPassword?.message}
-              leftIcon={<Lock className="w-4 h-4 text-slate-400" />}
+              leftIcon={<Lock className="w-4 h-4 text-slate-400 dark:text-slate-500" />}
               {...registerPassword('newPassword')}
             />
 
@@ -351,7 +361,7 @@ export const ProfilePage = () => {
               type="password"
               placeholder="••••••••"
               error={passwordErrors.confirmPassword?.message}
-              leftIcon={<Lock className="w-4 h-4 text-slate-400" />}
+              leftIcon={<Lock className="w-4 h-4 text-slate-400 dark:text-slate-500" />}
               {...registerPassword('confirmPassword')}
             />
 
@@ -371,7 +381,7 @@ export const ProfilePage = () => {
       >
         <form onSubmit={handleSubmitAddress(onAddressSubmit)} className="space-y-3.5">
           {addressServerError && (
-            <div className="p-2.5 bg-red-50 border border-red-200 rounded-xl text-xs text-red-700">
+            <div className="p-2.5 bg-red-50 dark:bg-red-950/60 border border-red-200 dark:border-red-800 rounded-xl text-xs text-red-700 dark:text-red-300">
               {addressServerError}
             </div>
           )}
@@ -433,10 +443,10 @@ export const ProfilePage = () => {
             />
           </div>
 
-          <label className="flex items-center gap-2 pt-1 text-xs font-semibold text-slate-700 cursor-pointer">
+          <label className="flex items-center gap-2 pt-1 text-xs font-semibold text-slate-700 dark:text-slate-300 cursor-pointer">
             <input
               type="checkbox"
-              className="w-4 h-4 rounded text-brand-600 focus:ring-brand-500 border-slate-300"
+              className="w-4 h-4 rounded text-brand-600 focus:ring-brand-500 border-slate-300 dark:border-slate-700 dark:bg-slate-800"
               {...registerAddress('isDefault')}
             />
             <span>Set as default delivery address</span>

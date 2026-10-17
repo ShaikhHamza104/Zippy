@@ -23,7 +23,7 @@ export const ToastItem = ({ toast, onDismiss }) => {
     <div
       role="alert"
       className={cn(
-        'w-full max-w-sm bg-white rounded-xl shadow-floating border border-slate-200/90 p-4',
+        'w-full max-w-sm bg-white dark:bg-slate-900 rounded-xl shadow-floating border border-slate-200/90 dark:border-slate-800 p-4',
         'flex items-start gap-3 pointer-events-auto transition-all transform',
         toastBorderClasses[toast.type || 'info']
       )}
@@ -31,15 +31,19 @@ export const ToastItem = ({ toast, onDismiss }) => {
       {toastIcons[toast.type || 'info']}
       <div className="flex-1 text-left min-w-0">
         {toast.title && (
-          <h4 className="text-xs font-bold text-slate-900 mb-0.5 truncate">{toast.title}</h4>
+          <h4 className="text-xs font-bold text-slate-900 dark:text-slate-100 mb-0.5 truncate">
+            {toast.title}
+          </h4>
         )}
-        <p className="text-xs text-slate-600 leading-relaxed break-words">{toast.message}</p>
+        <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed break-words">
+          {toast.message}
+        </p>
       </div>
       <button
         type="button"
         onClick={() => onDismiss(toast.id)}
         aria-label="Dismiss notification"
-        className="text-slate-400 hover:text-slate-600 p-1 -mr-1 -mt-1 rounded transition-colors"
+        className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1 -mr-1 -mt-1 rounded transition-colors"
       >
         <X className="w-4 h-4" aria-hidden="true" />
       </button>
@@ -55,7 +59,7 @@ export const ToastContainer = () => {
   return (
     <div
       aria-live="polite"
-      className="fixed bottom-20 sm:bottom-6 right-4 sm:right-6 z-50 flex flex-col gap-2.5 max-w-sm pointer-events-none"
+      className="fixed bottom-20 sm:bottom-6 right-4 sm:right-6 z-[60] flex flex-col gap-2.5 max-w-sm pointer-events-none"
     >
       {toasts.map((toast) => (
         <ToastItem key={toast.id} toast={toast} onDismiss={removeToast} />

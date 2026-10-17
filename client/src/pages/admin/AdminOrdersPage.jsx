@@ -226,8 +226,8 @@ export const AdminOrdersPage = () => {
                 onClick={() => handleStatusFilterChange(tab.value)}
                 className={`px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-colors ${
                   isActive
-                    ? 'bg-slate-900 text-white shadow-xs'
-                    : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
+                    ? 'bg-slate-900 text-white dark:bg-emerald-500 dark:text-slate-950 shadow-xs'
+                    : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700'
                 }`}
               >
                 {tab.label}
@@ -281,7 +281,7 @@ export const AdminOrdersPage = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
-                <tr className="bg-slate-50 border-b border-slate-200 text-slate-500 font-extrabold uppercase tracking-wider">
+                <tr className="bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 font-extrabold uppercase tracking-wider whitespace-nowrap">
                   <th className="px-5 py-3.5">Order #</th>
                   <th className="px-5 py-3.5">Date</th>
                   <th className="px-5 py-3.5">Customer</th>
@@ -292,7 +292,7 @@ export const AdminOrdersPage = () => {
                   <th className="px-5 py-3.5 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800 font-medium text-slate-700 dark:text-slate-300">
                 {orders.map((order) => {
                   const statusConfig = STATUS_BADGE_VARIANTS[order.status] || {
                     variant: 'neutral',
@@ -303,14 +303,17 @@ export const AdminOrdersPage = () => {
                   const allowedTransitions = ALLOWED_NEXT_STATUS[order.status] || [];
 
                   return (
-                    <tr key={order.id} className="hover:bg-slate-50/70 transition-colors">
+                    <tr
+                      key={order.id}
+                      className="hover:bg-slate-50/70 dark:hover:bg-slate-800/60 transition-colors whitespace-nowrap"
+                    >
                       {/* Order Number */}
-                      <td className="px-5 py-3.5 font-mono font-bold text-slate-900 whitespace-nowrap">
+                      <td className="px-5 py-3.5 font-mono font-bold text-slate-900 dark:text-slate-100 whitespace-nowrap">
                         {order.orderNumber}
                       </td>
 
                       {/* Date */}
-                      <td className="px-5 py-3.5 whitespace-nowrap text-slate-500">
+                      <td className="px-5 py-3.5 whitespace-nowrap text-slate-500 dark:text-slate-400">
                         {new Date(order.createdAt).toLocaleDateString('en-IN', {
                           month: 'short',
                           day: 'numeric',
@@ -321,23 +324,23 @@ export const AdminOrdersPage = () => {
 
                       {/* Customer */}
                       <td className="px-5 py-3.5">
-                        <div className="font-bold text-slate-900">
+                        <div className="font-bold text-slate-900 dark:text-slate-100">
                           {order.user?.name || 'Customer'}
                         </div>
-                        <div className="text-[11px] text-slate-400">
+                        <div className="text-[11px] text-slate-400 dark:text-slate-500">
                           {order.user?.phone || order.user?.email}
                         </div>
                       </td>
 
                       {/* Items Count */}
                       <td className="px-5 py-3.5 whitespace-nowrap">
-                        <span className="font-bold text-slate-800">
+                        <span className="font-bold text-slate-800 dark:text-slate-200">
                           {order.items?.length || 0} items
                         </span>
                       </td>
 
                       {/* Amount */}
-                      <td className="px-5 py-3.5 whitespace-nowrap font-bold text-slate-900">
+                      <td className="px-5 py-3.5 whitespace-nowrap font-bold text-slate-900 dark:text-slate-100">
                         ₹{Number(order.totalAmount).toLocaleString('en-IN')}
                       </td>
 
@@ -346,8 +349,8 @@ export const AdminOrdersPage = () => {
                         <span
                           className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-bold ${
                             order.payment?.status === 'SUCCESS'
-                              ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                              : 'bg-amber-50 text-amber-700 border border-amber-200'
+                              ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800'
+                              : 'bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800'
                           }`}
                         >
                           <span>{order.payment?.method || 'COD'}</span>
@@ -375,7 +378,7 @@ export const AdminOrdersPage = () => {
                           <button
                             type="button"
                             onClick={() => handleOpenDetailModal(order.id)}
-                            className="p-1.5 text-slate-600 hover:text-brand-600 hover:bg-slate-100 rounded-lg transition-colors font-bold text-xs inline-flex items-center gap-1"
+                            className="p-1.5 text-slate-600 dark:text-slate-400 hover:text-brand-600 dark:hover:text-emerald-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors font-bold text-xs inline-flex items-center gap-1"
                             title="View Full Order Details"
                           >
                             <Eye className="w-3.5 h-3.5" />
@@ -386,7 +389,7 @@ export const AdminOrdersPage = () => {
                             <button
                               type="button"
                               onClick={() => handleOpenStatusModal(order)}
-                              className="p-1.5 text-slate-600 hover:text-blue-600 hover:bg-slate-100 rounded-lg transition-colors font-bold text-xs inline-flex items-center gap-1"
+                              className="p-1.5 text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors font-bold text-xs inline-flex items-center gap-1"
                               title="Update Fulfillment Status"
                             >
                               <ArrowRight className="w-3.5 h-3.5" />
@@ -405,11 +408,17 @@ export const AdminOrdersPage = () => {
 
         {/* Pagination Controls */}
         {pagination.totalPages > 1 && (
-          <div className="px-6 py-4 border-t border-slate-100 bg-slate-50 flex items-center justify-between text-xs text-slate-600">
+          <div className="px-6 py-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 flex items-center justify-between text-xs text-slate-600 dark:text-slate-400">
             <div>
-              Showing page <strong className="font-bold text-slate-900">{pagination.page}</strong>{' '}
-              of <strong className="font-bold text-slate-900">{pagination.totalPages}</strong> (
-              {pagination.total} orders)
+              Showing page{' '}
+              <strong className="font-bold text-slate-900 dark:text-slate-100">
+                {pagination.page}
+              </strong>{' '}
+              of{' '}
+              <strong className="font-bold text-slate-900 dark:text-slate-100">
+                {pagination.totalPages}
+              </strong>{' '}
+              ({pagination.total} orders)
             </div>
 
             <div className="flex items-center gap-2">
@@ -450,20 +459,26 @@ export const AdminOrdersPage = () => {
             <Skeleton className="h-40 w-full rounded-xl" />
           </div>
         ) : (
-          <div className="space-y-5 p-6 max-h-[80vh] overflow-y-auto text-xs">
+          <div className="space-y-5 p-6 max-h-[80vh] overflow-y-auto text-xs text-slate-700 dark:text-slate-300">
             {/* Customer & Status Header */}
-            <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 grid grid-cols-2 sm:grid-cols-3 gap-3">
+            <div className="p-4 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 grid grid-cols-2 sm:grid-cols-3 gap-3">
               <div>
-                <span className="text-[10px] font-bold text-slate-400 uppercase">Customer</span>
-                <div className="font-extrabold text-slate-900 text-sm mt-0.5">
+                <span className="text-[10px] font-bold text-slate-400 dark:text-slate-400 uppercase">
+                  Customer
+                </span>
+                <div className="font-extrabold text-slate-900 dark:text-slate-100 text-sm mt-0.5">
                   {detailData.user?.name}
                 </div>
-                <div className="text-slate-500">{detailData.user?.phone}</div>
-                <div className="text-slate-400 truncate">{detailData.user?.email}</div>
+                <div className="text-slate-500 dark:text-slate-400">{detailData.user?.phone}</div>
+                <div className="text-slate-400 dark:text-slate-500 truncate">
+                  {detailData.user?.email}
+                </div>
               </div>
 
               <div>
-                <span className="text-[10px] font-bold text-slate-400 uppercase">Fulfillment</span>
+                <span className="text-[10px] font-bold text-slate-400 dark:text-slate-400 uppercase">
+                  Fulfillment
+                </span>
                 <div className="mt-1">
                   <Badge
                     variant={STATUS_BADGE_VARIANTS[detailData.status]?.variant || 'brand'}
@@ -472,17 +487,19 @@ export const AdminOrdersPage = () => {
                     {detailData.status}
                   </Badge>
                 </div>
-                <div className="text-[11px] text-slate-500 mt-1">
+                <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
                   {new Date(detailData.createdAt).toLocaleString('en-IN')}
                 </div>
               </div>
 
               <div>
-                <span className="text-[10px] font-bold text-slate-400 uppercase">Payment</span>
-                <div className="font-bold text-slate-900 mt-0.5">
+                <span className="text-[10px] font-bold text-slate-400 dark:text-slate-400 uppercase">
+                  Payment
+                </span>
+                <div className="font-bold text-slate-900 dark:text-slate-100 mt-0.5">
                   {detailData.payment?.method} ({detailData.payment?.status})
                 </div>
-                <div className="text-[11px] text-slate-500">
+                <div className="text-[11px] text-slate-500 dark:text-slate-400">
                   Transaction:{' '}
                   <span className="font-mono">{detailData.payment?.id?.substring(0, 8)}...</span>
                 </div>
@@ -490,18 +507,18 @@ export const AdminOrdersPage = () => {
             </div>
 
             {/* Delivery Address */}
-            <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
-              <div className="flex items-center gap-1.5 font-bold text-slate-800">
-                <MapPin className="w-3.5 h-3.5 text-brand-600" />
+            <div className="p-4 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 space-y-1">
+              <div className="flex items-center gap-1.5 font-bold text-slate-800 dark:text-slate-200">
+                <MapPin className="w-3.5 h-3.5 text-brand-600 dark:text-emerald-400" />
                 <span>Delivery Address ({detailData.deliveryAddressSnapshot?.type || 'Home'})</span>
               </div>
-              <p className="text-slate-600">
+              <p className="text-slate-600 dark:text-slate-300">
                 {detailData.deliveryAddressSnapshot?.line1}
                 {detailData.deliveryAddressSnapshot?.line2 &&
                   `, ${detailData.deliveryAddressSnapshot?.line2}`}
                 , {detailData.deliveryAddressSnapshot?.city},{' '}
                 {detailData.deliveryAddressSnapshot?.state} -{' '}
-                <strong className="text-slate-900 font-bold">
+                <strong className="text-slate-900 dark:text-slate-100 font-bold">
                   {detailData.deliveryAddressSnapshot?.pincode}
                 </strong>
               </p>
@@ -509,12 +526,12 @@ export const AdminOrdersPage = () => {
 
             {/* Line Items Table */}
             <div>
-              <h3 className="font-black text-slate-800 mb-2 uppercase tracking-wider text-[11px]">
+              <h3 className="font-black text-slate-800 dark:text-slate-200 mb-2 uppercase tracking-wider text-[11px]">
                 Order Items ({detailData.items?.length || 0})
               </h3>
-              <div className="border border-slate-200 rounded-xl overflow-hidden">
+              <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
                 <table className="w-full text-left text-xs border-collapse">
-                  <thead className="bg-slate-50 text-slate-500 font-bold border-b border-slate-200">
+                  <thead className="bg-slate-50 dark:bg-slate-800 text-slate-500 dark:text-slate-400 font-bold border-b border-slate-200 dark:border-slate-700">
                     <tr>
                       <th className="px-4 py-2.5">Item</th>
                       <th className="px-4 py-2.5">Price</th>
@@ -522,12 +539,14 @@ export const AdminOrdersPage = () => {
                       <th className="px-4 py-2.5 text-right">Subtotal</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100">
+                  <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                     {detailData.items?.map((item) => (
-                      <tr key={item.id} className="hover:bg-slate-50/50">
+                      <tr key={item.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/40">
                         <td className="px-4 py-2.5">
-                          <div className="font-bold text-slate-900">{item.nameSnapshot}</div>
-                          <div className="text-[10px] text-slate-400 font-mono">
+                          <div className="font-bold text-slate-900 dark:text-slate-100">
+                            {item.nameSnapshot}
+                          </div>
+                          <div className="text-[10px] text-slate-400 dark:text-slate-500 font-mono">
                             MongoID: {item.mongoProductId}
                           </div>
                         </td>
@@ -535,7 +554,7 @@ export const AdminOrdersPage = () => {
                           ₹{Number(item.priceSnapshot).toLocaleString('en-IN')}
                         </td>
                         <td className="px-4 py-2.5 font-bold">{item.quantity}</td>
-                        <td className="px-4 py-2.5 text-right font-black text-slate-900">
+                        <td className="px-4 py-2.5 text-right font-black text-slate-900 dark:text-slate-100">
                           ₹{Number(item.totalSnapshot).toLocaleString('en-IN')}
                         </td>
                       </tr>
@@ -546,22 +565,22 @@ export const AdminOrdersPage = () => {
             </div>
 
             {/* Financial Summary */}
-            <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-1.5 font-medium">
-              <div className="flex justify-between text-slate-600">
+            <div className="p-4 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 space-y-1.5 font-medium">
+              <div className="flex justify-between text-slate-600 dark:text-slate-400">
                 <span>Subtotal</span>
                 <span>₹{Number(detailData.subtotal).toLocaleString('en-IN')}</span>
               </div>
-              <div className="flex justify-between text-slate-600">
+              <div className="flex justify-between text-slate-600 dark:text-slate-400">
                 <span>Delivery Fee</span>
                 <span>₹{Number(detailData.deliveryFee).toLocaleString('en-IN')}</span>
               </div>
               {Number(detailData.discountAmount || 0) > 0 && (
-                <div className="flex justify-between text-emerald-600 font-bold">
+                <div className="flex justify-between text-emerald-600 dark:text-emerald-400 font-bold">
                   <span>Coupon Discount</span>
                   <span>-₹{Number(detailData.discountAmount).toLocaleString('en-IN')}</span>
                 </div>
               )}
-              <div className="pt-2 border-t border-slate-200 flex justify-between font-black text-slate-900 text-sm">
+              <div className="pt-2 border-t border-slate-200 dark:border-slate-700 flex justify-between font-black text-slate-900 dark:text-slate-100 text-sm">
                 <span>Total Paid</span>
                 <span>₹{Number(detailData.totalAmount).toLocaleString('en-IN')}</span>
               </div>
@@ -569,7 +588,7 @@ export const AdminOrdersPage = () => {
 
             {/* Cancellation Reason if cancelled */}
             {detailData.status === 'CANCELLED' && (
-              <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-rose-800 space-y-0.5">
+              <div className="p-3 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900 rounded-xl text-rose-800 dark:text-rose-300 space-y-0.5">
                 <span className="font-bold block">Cancellation Note:</span>
                 <p className="text-[11px]">
                   {detailData.cancellationReason || 'No reason provided.'}
@@ -592,20 +611,22 @@ export const AdminOrdersPage = () => {
       >
         <div className="space-y-4 p-6 text-xs">
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1">Current Status</label>
-            <div className="p-2.5 bg-slate-100 rounded-lg font-bold text-slate-800">
+            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+              Current Status
+            </label>
+            <div className="p-2.5 bg-slate-100 dark:bg-slate-800 rounded-lg font-bold text-slate-800 dark:text-slate-200">
               {orderToUpdate?.status}
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1">
+            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
               Target Next Status *
             </label>
             <select
               value={targetStatus}
               onChange={(e) => setTargetStatus(e.target.value)}
-              className="w-full h-10 px-3 bg-white border border-slate-300 rounded-lg text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500"
+              className="w-full h-10 px-3 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-bold text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500"
             >
               {(ALLOWED_NEXT_STATUS[orderToUpdate?.status] || []).map((st) => (
                 <option key={st} value={st}>
@@ -617,7 +638,7 @@ export const AdminOrdersPage = () => {
 
           {targetStatus === 'CANCELLED' && (
             <div className="space-y-1">
-              <label className="block text-xs font-bold text-rose-700">
+              <label className="block text-xs font-bold text-rose-700 dark:text-rose-400">
                 Cancellation Reason * (Inventory will be restored)
               </label>
               <textarea
@@ -626,12 +647,12 @@ export const AdminOrdersPage = () => {
                 value={cancellationReason}
                 onChange={(e) => setCancellationReason(e.target.value)}
                 placeholder="e.g. Customer requested cancellation / Delivery partner unavailable..."
-                className="w-full p-2.5 bg-white border border-rose-300 rounded-lg text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-rose-500 resize-none"
+                className="w-full p-2.5 bg-white dark:bg-slate-800 border border-rose-300 dark:border-rose-800 rounded-lg text-xs font-medium text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-500 resize-none"
               />
             </div>
           )}
 
-          <div className="pt-4 border-t border-slate-200 flex items-center justify-end gap-2">
+          <div className="pt-4 border-t border-slate-200 dark:border-slate-700 flex items-center justify-end gap-2">
             <Button
               type="button"
               variant="outline"

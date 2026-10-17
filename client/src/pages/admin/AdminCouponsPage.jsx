@@ -173,10 +173,10 @@ export const AdminCouponsPage = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 tracking-tight">
+          <h1 className="text-2xl font-black text-slate-900 dark:text-slate-100 tracking-tight">
             Promotional Coupons & Discounts
           </h1>
-          <p className="text-sm font-medium text-slate-500">
+          <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
             Create percentage or flat discounts, enforce minimum order thresholds, and monitor
             redemption limits.
           </p>
@@ -226,7 +226,7 @@ export const AdminCouponsPage = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
-                <tr className="bg-slate-50 border-b border-slate-200 text-slate-500 font-extrabold uppercase tracking-wider">
+                <tr className="bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 font-extrabold uppercase tracking-wider whitespace-nowrap">
                   <th className="px-5 py-3.5">Coupon Code</th>
                   <th className="px-5 py-3.5">Discount Offer</th>
                   <th className="px-5 py-3.5">Min Order</th>
@@ -236,27 +236,30 @@ export const AdminCouponsPage = () => {
                   <th className="px-5 py-3.5 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800 font-medium text-slate-700 dark:text-slate-300">
                 {coupons.map((coupon) => {
                   const isExpired = new Date(coupon.validUntil) < new Date();
 
                   return (
-                    <tr key={coupon.id} className="hover:bg-slate-50/70 transition-colors">
+                    <tr
+                      key={coupon.id}
+                      className="hover:bg-slate-50/70 dark:hover:bg-slate-800/60 transition-colors whitespace-nowrap"
+                    >
                       {/* Code */}
                       <td className="px-5 py-3.5 whitespace-nowrap">
-                        <span className="font-mono font-black text-slate-900 bg-amber-50 text-amber-900 border border-amber-300 px-2.5 py-1 rounded-lg">
+                        <span className="font-mono font-black text-slate-900 dark:text-amber-200 bg-amber-50 dark:bg-amber-950/60 text-amber-900 border border-amber-300 dark:border-amber-800 px-2.5 py-1 rounded-lg">
                           {coupon.code}
                         </span>
                       </td>
 
                       {/* Offer */}
                       <td className="px-5 py-3.5 whitespace-nowrap">
-                        <div className="font-extrabold text-slate-900 flex items-center gap-1">
+                        <div className="font-extrabold text-slate-900 dark:text-slate-100 flex items-center gap-1">
                           {coupon.discountType === 'PERCENTAGE' ? (
                             <>
                               <span>{coupon.discountValue}% OFF</span>
                               {coupon.maxDiscountAmount && (
-                                <span className="text-slate-400 font-normal">
+                                <span className="text-slate-400 dark:text-slate-500 font-normal">
                                   (Up to ₹{coupon.maxDiscountAmount})
                                 </span>
                               )}
@@ -268,13 +271,13 @@ export const AdminCouponsPage = () => {
                       </td>
 
                       {/* Min Order */}
-                      <td className="px-5 py-3.5 whitespace-nowrap font-bold text-slate-800">
+                      <td className="px-5 py-3.5 whitespace-nowrap font-bold text-slate-800 dark:text-slate-200">
                         {coupon.minOrderAmount > 0 ? `₹${coupon.minOrderAmount}` : 'No Minimum'}
                       </td>
 
                       {/* Usages */}
-                      <td className="px-5 py-3.5 whitespace-nowrap text-slate-600">
-                        <span className="font-bold text-slate-900">
+                      <td className="px-5 py-3.5 whitespace-nowrap text-slate-600 dark:text-slate-400">
+                        <span className="font-bold text-slate-900 dark:text-slate-100">
                           {coupon._count?.usages ?? 0}
                         </span>{' '}
                         used / {coupon.usageLimit ? `${coupon.usageLimit} max` : 'Unlimited'}
@@ -285,7 +288,9 @@ export const AdminCouponsPage = () => {
                         <div className="flex items-center gap-1">
                           <span
                             className={
-                              isExpired ? 'text-rose-600 font-bold' : 'text-slate-700 font-medium'
+                              isExpired
+                                ? 'text-rose-600 dark:text-rose-400 font-bold'
+                                : 'text-slate-700 dark:text-slate-300 font-medium'
                             }
                           >
                             {new Date(coupon.validUntil).toLocaleDateString('en-IN', {
@@ -295,7 +300,7 @@ export const AdminCouponsPage = () => {
                             })}
                           </span>
                           {isExpired && (
-                            <span className="text-[10px] bg-rose-50 text-rose-700 border border-rose-200 px-1 rounded font-bold">
+                            <span className="text-[10px] bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800 px-1 rounded font-bold">
                               Expired
                             </span>
                           )}
@@ -309,9 +314,9 @@ export const AdminCouponsPage = () => {
                           size="sm"
                           icon={
                             coupon.isActive && !isExpired ? (
-                              <CheckCircle className="w-3 h-3 text-emerald-600" />
+                              <CheckCircle className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
                             ) : (
-                              <XCircle className="w-3 h-3 text-slate-400" />
+                              <XCircle className="w-3 h-3 text-slate-400 dark:text-slate-500" />
                             )
                           }
                         >
@@ -325,7 +330,7 @@ export const AdminCouponsPage = () => {
                           <button
                             type="button"
                             onClick={() => handleOpenEditModal(coupon)}
-                            className="p-1.5 text-slate-600 hover:text-blue-600 hover:bg-slate-100 rounded-lg transition-colors font-bold text-xs inline-flex items-center gap-1"
+                            className="p-1.5 text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors font-bold text-xs inline-flex items-center gap-1"
                             title="Edit Coupon"
                           >
                             <Edit2 className="w-3.5 h-3.5" />
@@ -339,7 +344,7 @@ export const AdminCouponsPage = () => {
                                 deleteCouponMutation.mutate(coupon.id);
                               }
                             }}
-                            className="p-1.5 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors font-bold text-xs inline-flex items-center gap-1"
+                            className="p-1.5 text-slate-500 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg transition-colors font-bold text-xs inline-flex items-center gap-1"
                             title="Delete Coupon"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
@@ -367,7 +372,9 @@ export const AdminCouponsPage = () => {
       >
         <form onSubmit={handleFormSubmit} className="space-y-4 p-6 text-xs">
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1">Coupon Code *</label>
+            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+              Coupon Code *
+            </label>
             <Input
               type="text"
               required
@@ -380,11 +387,13 @@ export const AdminCouponsPage = () => {
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">Discount Type *</label>
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                Discount Type *
+              </label>
               <select
                 value={formData.discountType}
                 onChange={(e) => setFormData({ ...formData, discountType: e.target.value })}
-                className="w-full h-10 px-3 bg-white border border-slate-300 rounded-lg text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500"
+                className="w-full h-10 px-3 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-bold text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500"
               >
                 <option value="PERCENTAGE">PERCENTAGE (%)</option>
                 <option value="FLAT">FLAT (₹)</option>
@@ -392,7 +401,7 @@ export const AdminCouponsPage = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                 {formData.discountType === 'PERCENTAGE'
                   ? 'Discount Percentage (%) *'
                   : 'Flat Amount (₹) *'}
@@ -412,7 +421,7 @@ export const AdminCouponsPage = () => {
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                 Min Order Amount (₹)
               </label>
               <Input
@@ -427,7 +436,7 @@ export const AdminCouponsPage = () => {
 
             {formData.discountType === 'PERCENTAGE' && (
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                   Max Discount Cap (₹)
                 </label>
                 <Input
@@ -444,7 +453,7 @@ export const AdminCouponsPage = () => {
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                 Usage Limit (Count)
               </label>
               <Input
@@ -458,7 +467,7 @@ export const AdminCouponsPage = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                 Valid Until Date *
               </label>
               <Input
@@ -477,17 +486,17 @@ export const AdminCouponsPage = () => {
               id="couponActiveCheck"
               checked={formData.isActive}
               onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-              className="w-4 h-4 text-brand-600 rounded border-slate-300 focus:ring-brand-500"
+              className="w-4 h-4 text-brand-600 rounded border-slate-300 dark:border-slate-700 dark:bg-slate-800 focus:ring-brand-500"
             />
             <label
               htmlFor="couponActiveCheck"
-              className="text-xs font-bold text-slate-800 cursor-pointer"
+              className="text-xs font-bold text-slate-800 dark:text-slate-200 cursor-pointer"
             >
               Coupon is Active and Redeemable at Checkout
             </label>
           </div>
 
-          <div className="pt-4 border-t border-slate-200 flex items-center justify-end gap-2">
+          <div className="pt-4 border-t border-slate-200 dark:border-slate-700 flex items-center justify-end gap-2">
             <Button type="button" variant="outline" size="sm" onClick={() => setIsModalOpen(false)}>
               Cancel
             </Button>

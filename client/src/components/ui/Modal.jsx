@@ -45,7 +45,7 @@ export const Modal = ({
     >
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm transition-opacity"
+        className="fixed inset-0 bg-slate-900/50 dark:bg-slate-950/70 backdrop-blur-sm transition-opacity"
         onClick={onClose}
         aria-hidden="true"
       />
@@ -54,22 +54,25 @@ export const Modal = ({
       <div
         ref={modalRef}
         className={cn(
-          'relative w-full bg-white rounded-2xl shadow-floating overflow-hidden z-10',
+          'relative w-full max-h-[90vh] flex flex-col bg-white dark:bg-slate-900 rounded-2xl shadow-floating border border-transparent dark:border-slate-800 overflow-hidden z-10',
           'transform transition-all duration-200 ease-out',
           maxWidth,
           className
         )}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-5 border-b border-slate-100">
+        <div className="flex items-center justify-between p-5 border-b border-slate-100 dark:border-slate-800 shrink-0">
           <div>
             {title && (
-              <h2 id="modal-title" className="text-lg font-bold text-slate-900">
+              <h2 id="modal-title" className="text-lg font-bold text-slate-900 dark:text-slate-100">
                 {title}
               </h2>
             )}
             {description && (
-              <p id="modal-description" className="text-xs text-slate-500 mt-0.5">
+              <p
+                id="modal-description"
+                className="text-xs text-slate-500 dark:text-slate-400 mt-0.5"
+              >
                 {description}
               </p>
             )}
@@ -78,14 +81,14 @@ export const Modal = ({
             type="button"
             onClick={onClose}
             aria-label="Close dialog"
-            className="p-2 -mr-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-full transition-colors"
+            className="p-2 -mr-2 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
           >
             <X className="w-5 h-5" aria-hidden="true" />
           </button>
         </div>
 
         {/* Content */}
-        <div className="p-5">{children}</div>
+        <div className="p-5 overflow-y-auto">{children}</div>
       </div>
     </div>
   );

@@ -5,14 +5,15 @@ import { cn } from '../../utils/cn.js';
 
 const variantClasses = {
   primary:
-    'bg-brand-600 text-white hover:bg-brand-700 active:bg-brand-800 shadow-sm focus-visible:ring-brand-500',
+    'bg-brand-600 text-white hover:bg-brand-700 active:bg-brand-800 shadow-sm focus-visible:ring-brand-500 dark:focus-visible:ring-offset-slate-950',
   secondary:
-    'bg-brand-100 text-brand-800 hover:bg-brand-200 active:bg-brand-300 focus-visible:ring-brand-400',
+    'bg-brand-100 dark:bg-brand-950/60 text-brand-800 dark:text-brand-300 hover:bg-brand-200 dark:hover:bg-brand-900 active:bg-brand-300 focus-visible:ring-brand-400',
   accent:
     'bg-accent-500 text-slate-900 font-semibold hover:bg-accent-400 active:bg-accent-600 shadow-sm focus-visible:ring-accent-400',
   outline:
-    'border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 active:bg-slate-100 focus-visible:ring-brand-500',
-  ghost: 'text-slate-700 hover:bg-slate-100 active:bg-slate-200 focus-visible:ring-brand-500',
+    'border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 active:bg-slate-100 dark:active:bg-slate-700 focus-visible:ring-brand-500',
+  ghost:
+    'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 active:bg-slate-200 dark:active:bg-slate-700 focus-visible:ring-brand-500',
   danger:
     'bg-red-600 text-white hover:bg-red-700 active:bg-red-800 shadow-sm focus-visible:ring-red-500',
 };

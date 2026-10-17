@@ -20,6 +20,7 @@ import { useAuthStore } from '../stores/authStore.js';
 import { useUIStore } from '../stores/uiStore.js';
 import { apiFetch } from '../services/api.js';
 import { Skeleton, ToastContainer } from '../components/ui/index.js';
+import { ThemeToggle } from '../components/common/ThemeToggle.jsx';
 
 const ADMIN_NAV_ITEMS = [
   { name: 'Dashboard', to: '/admin', icon: LayoutDashboard, end: true },
@@ -66,7 +67,7 @@ export const AdminLayout = () => {
   };
 
   return (
-    <div className="min-h-screen flex bg-slate-50 text-slate-900">
+    <div className="min-h-screen flex bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors overflow-x-hidden w-full max-w-full">
       {/* Mobile Sidebar Overlay */}
       {isMobileMenuOpen && (
         <div
@@ -174,35 +175,36 @@ export const AdminLayout = () => {
       </aside>
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 w-full max-w-full overflow-hidden">
         {/* Top Header */}
-        <header className="h-16 bg-white border-b border-slate-200 px-4 sm:px-6 flex items-center justify-between sticky top-0 z-30 shadow-xs">
+        <header className="h-16 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-4 sm:px-6 flex items-center justify-between sticky top-0 z-30 shadow-xs transition-colors">
           <div className="flex items-center gap-3">
             <button
               type="button"
               onClick={() => setIsMobileMenuOpen(true)}
-              className="p-2 -ml-2 text-slate-600 hover:text-slate-900 rounded-lg lg:hidden"
+              className="p-2 -ml-2 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white rounded-lg lg:hidden"
               aria-label="Open sidebar menu"
             >
               <Menu className="w-5 h-5" />
             </button>
-            <span className="text-xs font-extrabold uppercase tracking-wider text-slate-500 hidden sm:inline">
+            <span className="text-xs font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400 hidden sm:inline">
               Zippy Backoffice Control Center
             </span>
           </div>
 
           <div className="flex items-center gap-3">
-            <span className="text-xs font-bold text-slate-600 hidden md:inline">
-              Logged in as <strong className="text-slate-900">{user?.email}</strong>
+            <ThemeToggle />
+            <span className="text-xs font-bold text-slate-600 dark:text-slate-300 hidden md:inline">
+              Logged in as <strong className="text-slate-900 dark:text-white">{user?.email}</strong>
             </span>
-            <span className="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-brand-50 text-brand-700 border border-brand-200">
+            <span className="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-brand-50 dark:bg-brand-950/50 text-brand-700 dark:text-brand-300 border border-brand-200 dark:border-brand-800">
               {user?.role || 'ADMIN'}
             </span>
           </div>
         </header>
 
         {/* Dynamic Page Outlet with Suspense */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto min-w-0">
           <Suspense fallback={<AdminLoadingFallback />}>
             <Outlet />
           </Suspense>

@@ -1,8 +1,9 @@
 # Zippy ⚡ — 10-Minute Quick-Commerce Grocery Platform
 
 [![CI/CD Pipeline](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-blue?logo=githubactions)](.github/workflows/ci.yml)
-[![Tests Passing](https://img.shields.io/badge/tests-165%20passed-success?logo=vitest)](docs/phases/PHASE_11_TESTING.md)
-[![E2E Automation](https://img.shields.io/badge/Playwright%20E2E-100%25%20Green-emerald?logo=playwright)](e2e/)
+[![Tests Passing](https://img.shields.io/badge/tests-180%20passed-success?logo=vitest)](docs/phases/PHASE_14_QA_DARKMODE_VERIFICATION.md)
+[![E2E Automation](https://img.shields.io/badge/Playwright%20E2E-8%20passed-emerald?logo=playwright)](e2e/)
+[![Theme System](<https://img.shields.io/badge/Theme-Dark%20%7C%20Light%20(Zero--FOUC)-9333ea>)](docs/phases/PHASE_14_QA_DARKMODE_VERIFICATION.md)
 [![Load Benchmark](https://img.shields.io/badge/Autocannon-0.00%25%20Errors-brightgreen)](scripts/load-test.js)
 [![Docker Hardened](https://img.shields.io/badge/Docker-Non--Root%20Multi--Stage-2496ED?logo=docker)](docker-compose.prod.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -108,13 +109,13 @@ docker compose -f docker-compose.prod.yml exec server node src/database/seed.js
 
 ## 🧪 Testing, Quality Gates & Benchmarks
 
-| Test Suite / Quality Gate       | Tooling                                 | Results                                                                                                                                                                                                                                                                                                                                           |
-| :------------------------------ | :-------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Unit & Integration Tests**    | Vitest v2.1.9 (`@vitest/coverage-v8`)   | **165 passed (100%)**<br/>• Server: 112 passed (77.91% Stmts, 80.57% Funcs)<br/>• Client: 53 passed (UI Kit: 96.99%, Stores: 80.57%)                                                                                                                                                                                                              |
-| **End-to-End (E2E) Automation** | Playwright v1.64.1 (Chromium)           | **2 passed (17.2s total)**<br/>• Customer Journey (Signup, Pincode, Browse, Cart, COD): **5.0s**<br/>• Admin Journey (Login, Product CRUD, Fulfillment): **6.9s**                                                                                                                                                                                 |
-| **Load & Stress Benchmarks**    | Autocannon v8.0.0 (10 connections)      | **12,981 total requests, 0.00% error rate**<br/>• `/health`: 994.00 RPS (p50: 8ms, p99: 36ms)<br/>• `/api/v1/categories`: 766.40 RPS (p50: 11ms, p99: 38ms)<br/>• `/api/v1/products`: 400.00 RPS (p50: 20ms, p99: 89ms)<br/>• `/api/v1/home`: 283.40 RPS (p50: 32ms, p99: 69ms)<br/>• `/api/v1/search?q=milk`: 153.60 RPS (p50: 61ms, p99: 100ms) |
-| **Static Code Analysis**        | ESLint Flat Config (`eslint.config.js`) | **0 errors, 0 warnings** across monorepo                                                                                                                                                                                                                                                                                                          |
-| **Production Build**            | Vite v6.4.4 (Code-Split Rollup)         | **Compiled in 15.7s** with clean chunk distribution                                                                                                                                                                                                                                                                                               |
+| Test Suite / Quality Gate       | Tooling                                 | Results                                                                                                                                                                                                                                                                                                                                                 |
+| :------------------------------ | :-------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Unit & Integration Tests**    | Vitest v2.1.9 (`@vitest/coverage-v8`)   | **180 passed (100%)** across 7 test suites<br/>• Server: 180 passed (Auth, Catalog, Cart, Orders, Admin, DB, Full-API-Audit)<br/>• 68-Route Full API verification suite with concurrency race testing                                                                                                                                                   |
+| **End-to-End (E2E) Automation** | Playwright v1.64.1 (Chromium)           | **8 passed (100% green)**<br/>• Customer Journey (Signup, Pincode, Browse, Cart, COD): **13.8s**<br/>• Admin Journey (Login, Product CRUD, Fulfillment): **14.0s**<br/>• Theme Engine (Toggle, Persistence, Zero-FOUC): **6.2s**<br/>• Responsive Zero-Overflow (360px, 768px, 1440px): **15.5s**<br/>• Non-Colliding Stepper & Price (360px): **3.2s** |
+| **Load & Stress Benchmarks**    | Autocannon v8.0.0 (10 connections)      | **12,981 total requests, 0.00% error rate**<br/>• `/health`: 994.00 RPS (p50: 8ms, p99: 36ms)<br/>• `/api/v1/categories`: 766.40 RPS (p50: 11ms, p99: 38ms)<br/>• `/api/v1/products`: 400.00 RPS (p50: 20ms, p99: 89ms)<br/>• `/api/v1/home`: 283.40 RPS (p50: 32ms, p99: 69ms)<br/>• `/api/v1/search?q=milk`: 153.60 RPS (p50: 61ms, p99: 100ms)       |
+| **Static Code Analysis**        | ESLint Flat Config (`eslint.config.js`) | **0 errors, 0 warnings** across monorepo                                                                                                                                                                                                                                                                                                                |
+| **Production Build**            | Vite v6.4.4 (Code-Split Rollup)         | **Compiled in 16.9s** with clean chunk distribution                                                                                                                                                                                                                                                                                                     |
 
 ---
 
@@ -125,7 +126,7 @@ docker compose -f docker-compose.prod.yml exec server node src/database/seed.js
 - 📖 [Master Architecture & Application Flow (`docs/APPLICATION_FLOW.md`)](docs/APPLICATION_FLOW.md) — 10 architectural sections with interactive Mermaid diagrams.
 - 🚀 [Production Deployment Runbook (`docs/DEPLOYMENT.md`)](docs/DEPLOYMENT.md) — VPS checklist, zero-downtime migrations, SSL certbot, and Render/Railway guides.
 
-### Complete Phase Execution Logs (Phases 0–13)
+### Complete Phase Execution Logs (Phases 0–14)
 
 - [Phase 0: Environment Setup & Tooling](docs/phases/PHASE_0_SETUP.md)
 - [Phase 1: Project Scaffolding & Monorepo Structure](docs/phases/PHASE_1_SCAFFOLD.md)
@@ -141,6 +142,7 @@ docker compose -f docker-compose.prod.yml exec server node src/database/seed.js
 - [Phase 11: Full Testing & Load Benchmarks](docs/phases/PHASE_11_TESTING.md)
 - [Phase 12: Production Setup & Deployment](docs/phases/PHASE_12_DEPLOYMENT.md)
 - [Phase 13: Final Application Flow Documentation](docs/phases/PHASE_13_APPLICATION_FLOW.md)
+- [Phase 14: QA, Dark/Light Mode Engine & Full API Audit](docs/phases/PHASE_14_QA_DARKMODE_VERIFICATION.md)
 
 ---
 

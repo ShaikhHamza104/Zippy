@@ -161,10 +161,10 @@ export const AdminCustomersPage = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 tracking-tight">
+          <h1 className="text-2xl font-black text-slate-900 dark:text-slate-100 tracking-tight">
             Customer Directory & Access
           </h1>
-          <p className="text-sm font-medium text-slate-500">
+          <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
             View customer order histories, manage account statuses, and enforce security account
             lockouts.
           </p>
@@ -202,7 +202,7 @@ export const AdminCustomersPage = () => {
             <select
               value={isBlockedFilter}
               onChange={(e) => handleBlockFilterChange(e.target.value)}
-              className="w-full h-10 px-3 bg-white border border-slate-300 rounded-lg text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500"
+              className="w-full h-10 px-3 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500"
             >
               <option value="">All Account Statuses</option>
               <option value="false">Active Customers Only</option>
@@ -237,7 +237,7 @@ export const AdminCustomersPage = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
-                <tr className="bg-slate-50 border-b border-slate-200 text-slate-500 font-extrabold uppercase tracking-wider">
+                <tr className="bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 font-extrabold uppercase tracking-wider whitespace-nowrap">
                   <th className="px-5 py-3.5">Customer</th>
                   <th className="px-5 py-3.5">Contact Details</th>
                   <th className="px-5 py-3.5">Email Status</th>
@@ -246,13 +246,18 @@ export const AdminCustomersPage = () => {
                   <th className="px-5 py-3.5 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800 font-medium text-slate-700 dark:text-slate-300">
                 {customers.map((cust) => (
-                  <tr key={cust.id} className="hover:bg-slate-50/70 transition-colors">
+                  <tr
+                    key={cust.id}
+                    className="hover:bg-slate-50/70 dark:hover:bg-slate-800/60 transition-colors whitespace-nowrap"
+                  >
                     {/* Customer */}
-                    <td className="px-5 py-3.5">
-                      <div className="font-extrabold text-slate-900">{cust.name}</div>
-                      <div className="text-[11px] text-slate-400">
+                    <td className="px-5 py-3.5 whitespace-nowrap">
+                      <div className="font-extrabold text-slate-900 dark:text-slate-100">
+                        {cust.name}
+                      </div>
+                      <div className="text-[11px] text-slate-400 dark:text-slate-500">
                         Joined{' '}
                         {new Date(cust.createdAt).toLocaleDateString('en-IN', {
                           month: 'short',
@@ -262,9 +267,11 @@ export const AdminCustomersPage = () => {
                     </td>
 
                     {/* Contact */}
-                    <td className="px-5 py-3.5">
-                      <div className="text-slate-800 font-medium">{cust.email}</div>
-                      <div className="text-[11px] text-slate-400">
+                    <td className="px-5 py-3.5 whitespace-nowrap">
+                      <div className="text-slate-800 dark:text-slate-200 font-medium">
+                        {cust.email}
+                      </div>
+                      <div className="text-[11px] text-slate-400 dark:text-slate-500">
                         {cust.phone || 'No phone recorded'}
                       </div>
                     </td>
@@ -272,18 +279,19 @@ export const AdminCustomersPage = () => {
                     {/* Email Verified */}
                     <td className="px-5 py-3.5 whitespace-nowrap">
                       {cust.emailVerified ? (
-                        <span className="inline-flex items-center gap-1 text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 text-[11px]">
-                          <CheckCircle className="w-3 h-3 text-emerald-600" /> Verified
+                        <span className="inline-flex items-center gap-1 text-emerald-700 dark:text-emerald-300 font-bold bg-emerald-50 dark:bg-emerald-950/50 px-2 py-0.5 rounded border border-emerald-200 dark:border-emerald-800 text-[11px]">
+                          <CheckCircle className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />{' '}
+                          Verified
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 text-slate-500 font-medium bg-slate-100 px-2 py-0.5 rounded text-[11px]">
+                        <span className="inline-flex items-center gap-1 text-slate-500 dark:text-slate-400 font-medium bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded text-[11px]">
                           Unverified
                         </span>
                       )}
                     </td>
 
                     {/* Total Orders */}
-                    <td className="px-5 py-3.5 whitespace-nowrap font-bold text-slate-900">
+                    <td className="px-5 py-3.5 whitespace-nowrap font-bold text-slate-900 dark:text-slate-100">
                       {cust._count?.orders ?? 0} orders
                     </td>
 
@@ -296,7 +304,7 @@ export const AdminCustomersPage = () => {
                           cust.isBlocked ? (
                             <Ban className="w-3 h-3" />
                           ) : (
-                            <ShieldCheck className="w-3 h-3 text-emerald-600" />
+                            <ShieldCheck className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
                           )
                         }
                       >
@@ -310,7 +318,7 @@ export const AdminCustomersPage = () => {
                         <button
                           type="button"
                           onClick={() => handleOpenDetailModal(cust.id)}
-                          className="p-1.5 text-slate-600 hover:text-brand-600 hover:bg-slate-100 rounded-lg transition-colors font-bold text-xs inline-flex items-center gap-1"
+                          className="p-1.5 text-slate-600 dark:text-slate-400 hover:text-brand-600 dark:hover:text-emerald-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors font-bold text-xs inline-flex items-center gap-1"
                           title="View Customer Profile"
                         >
                           <Eye className="w-3.5 h-3.5" />
@@ -322,8 +330,8 @@ export const AdminCustomersPage = () => {
                           onClick={() => handleOpenBlockModal(cust)}
                           className={`p-1.5 rounded-lg transition-colors font-bold text-xs inline-flex items-center gap-1 ${
                             cust.isBlocked
-                              ? 'text-emerald-600 hover:bg-emerald-50'
-                              : 'text-rose-600 hover:bg-rose-50'
+                              ? 'text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/40'
+                              : 'text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40'
                           }`}
                           title={cust.isBlocked ? 'Unblock Customer' : 'Block Customer Account'}
                         >
@@ -340,11 +348,17 @@ export const AdminCustomersPage = () => {
 
         {/* Pagination Controls */}
         {pagination.totalPages > 1 && (
-          <div className="px-6 py-4 border-t border-slate-100 bg-slate-50 flex items-center justify-between text-xs text-slate-600">
+          <div className="px-6 py-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 flex items-center justify-between text-xs text-slate-600 dark:text-slate-400">
             <div>
-              Showing page <strong className="font-bold text-slate-900">{pagination.page}</strong>{' '}
-              of <strong className="font-bold text-slate-900">{pagination.totalPages}</strong> (
-              {pagination.total} customers)
+              Showing page{' '}
+              <strong className="font-bold text-slate-900 dark:text-slate-100">
+                {pagination.page}
+              </strong>{' '}
+              of{' '}
+              <strong className="font-bold text-slate-900 dark:text-slate-100">
+                {pagination.totalPages}
+              </strong>{' '}
+              ({pagination.total} customers)
             </div>
 
             <div className="flex items-center gap-2">
@@ -385,19 +399,23 @@ export const AdminCustomersPage = () => {
             <Skeleton className="h-32 w-full rounded-xl" />
           </div>
         ) : (
-          <div className="space-y-5 p-6 max-h-[80vh] overflow-y-auto text-xs">
+          <div className="space-y-5 p-6 max-h-[80vh] overflow-y-auto text-xs text-slate-700 dark:text-slate-300">
             {/* Profile Overview */}
-            <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 grid grid-cols-2 sm:grid-cols-3 gap-3">
+            <div className="p-4 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 grid grid-cols-2 sm:grid-cols-3 gap-3">
               <div>
-                <span className="text-[10px] font-bold text-slate-400 uppercase">
+                <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">
                   Contact Email
                 </span>
-                <div className="font-bold text-slate-900 mt-0.5 truncate">{detailData.email}</div>
-                <div className="text-slate-500">{detailData.phone || 'No phone'}</div>
+                <div className="font-bold text-slate-900 dark:text-slate-100 mt-0.5 truncate">
+                  {detailData.email}
+                </div>
+                <div className="text-slate-500 dark:text-slate-400">
+                  {detailData.phone || 'No phone'}
+                </div>
               </div>
 
               <div>
-                <span className="text-[10px] font-bold text-slate-400 uppercase">
+                <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">
                   Account Security
                 </span>
                 <div className="mt-1">
@@ -408,10 +426,10 @@ export const AdminCustomersPage = () => {
               </div>
 
               <div>
-                <span className="text-[10px] font-bold text-slate-400 uppercase">
+                <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">
                   Registered Date
                 </span>
-                <div className="font-bold text-slate-900 mt-0.5">
+                <div className="font-bold text-slate-900 dark:text-slate-100 mt-0.5">
                   {new Date(detailData.createdAt).toLocaleDateString('en-IN', {
                     day: 'numeric',
                     month: 'short',
@@ -423,13 +441,13 @@ export const AdminCustomersPage = () => {
 
             {/* Saved Delivery Addresses */}
             <div className="space-y-2">
-              <h3 className="font-black text-slate-800 uppercase tracking-wider text-[11px] flex items-center gap-1.5">
-                <MapPin className="w-3.5 h-3.5 text-brand-600" />
+              <h3 className="font-black text-slate-800 dark:text-slate-200 uppercase tracking-wider text-[11px] flex items-center gap-1.5">
+                <MapPin className="w-3.5 h-3.5 text-brand-600 dark:text-emerald-400" />
                 <span>Saved Addresses ({detailData.addresses?.length || 0})</span>
               </h3>
 
               {detailData.addresses?.length === 0 ? (
-                <div className="p-3 bg-slate-50 rounded-lg text-slate-500 text-center">
+                <div className="p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg text-slate-500 dark:text-slate-400 text-center">
                   No saved addresses.
                 </div>
               ) : (
@@ -437,19 +455,23 @@ export const AdminCustomersPage = () => {
                   {detailData.addresses?.map((addr) => (
                     <div
                       key={addr.id}
-                      className="p-3 bg-white rounded-lg border border-slate-200 space-y-1 shadow-2xs"
+                      className="p-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 space-y-1 shadow-2xs"
                     >
                       <div className="flex items-center justify-between">
-                        <span className="font-bold text-slate-900 uppercase text-[10px] bg-slate-100 px-1.5 py-0.5 rounded">
+                        <span className="font-bold text-slate-900 dark:text-slate-100 uppercase text-[10px] bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded">
                           {addr.type}
                         </span>
                         {addr.isDefault && (
-                          <span className="text-[10px] text-brand-600 font-bold">Default</span>
+                          <span className="text-[10px] text-brand-600 dark:text-emerald-400 font-bold">
+                            Default
+                          </span>
                         )}
                       </div>
-                      <p className="text-slate-600">
+                      <p className="text-slate-600 dark:text-slate-300">
                         {addr.line1}, {addr.city}, {addr.state} -{' '}
-                        <strong className="text-slate-900 font-bold">{addr.pincode}</strong>
+                        <strong className="text-slate-900 dark:text-slate-100 font-bold">
+                          {addr.pincode}
+                        </strong>
                       </p>
                     </div>
                   ))}
@@ -459,19 +481,19 @@ export const AdminCustomersPage = () => {
 
             {/* Recent Orders */}
             <div className="space-y-2">
-              <h3 className="font-black text-slate-800 uppercase tracking-wider text-[11px] flex items-center gap-1.5">
-                <ShoppingBag className="w-3.5 h-3.5 text-brand-600" />
+              <h3 className="font-black text-slate-800 dark:text-slate-200 uppercase tracking-wider text-[11px] flex items-center gap-1.5">
+                <ShoppingBag className="w-3.5 h-3.5 text-brand-600 dark:text-emerald-400" />
                 <span>Order History ({detailData.orders?.length || 0})</span>
               </h3>
 
               {detailData.orders?.length === 0 ? (
-                <div className="p-3 bg-slate-50 rounded-lg text-slate-500 text-center">
+                <div className="p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg text-slate-500 dark:text-slate-400 text-center">
                   No orders placed yet.
                 </div>
               ) : (
-                <div className="border border-slate-200 rounded-xl overflow-hidden">
+                <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
                   <table className="w-full text-left text-xs border-collapse">
-                    <thead className="bg-slate-50 text-slate-500 font-bold border-b border-slate-200">
+                    <thead className="bg-slate-50 dark:bg-slate-800 text-slate-500 dark:text-slate-400 font-bold border-b border-slate-200 dark:border-slate-700">
                       <tr>
                         <th className="px-4 py-2">Order #</th>
                         <th className="px-4 py-2">Date</th>
@@ -479,20 +501,23 @@ export const AdminCustomersPage = () => {
                         <th className="px-4 py-2 text-right">Status</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100 font-medium">
+                    <tbody className="divide-y divide-slate-100 dark:divide-slate-800 font-medium">
                       {detailData.orders?.map((ord) => (
-                        <tr key={ord.id} className="hover:bg-slate-50/50">
-                          <td className="px-4 py-2 font-mono font-bold text-slate-900">
+                        <tr
+                          key={ord.id}
+                          className="hover:bg-slate-50/50 dark:hover:bg-slate-800/50"
+                        >
+                          <td className="px-4 py-2 font-mono font-bold text-slate-900 dark:text-slate-100">
                             {ord.orderNumber}
                           </td>
-                          <td className="px-4 py-2 text-slate-500">
+                          <td className="px-4 py-2 text-slate-500 dark:text-slate-400">
                             {new Date(ord.createdAt).toLocaleDateString('en-IN')}
                           </td>
-                          <td className="px-4 py-2 font-bold text-slate-900">
+                          <td className="px-4 py-2 font-bold text-slate-900 dark:text-slate-100">
                             ₹{Number(ord.totalAmount).toLocaleString('en-IN')}
                           </td>
                           <td className="px-4 py-2 text-right">
-                            <span className="font-bold text-[10px] uppercase px-2 py-0.5 rounded bg-slate-100">
+                            <span className="font-bold text-[10px] uppercase px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
                               {ord.status}
                             </span>
                           </td>
@@ -527,7 +552,7 @@ export const AdminCustomersPage = () => {
       >
         <div className="space-y-4 p-6 text-xs">
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1">
+            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
               {customerToToggle?.isBlocked ? 'Unblock Justification' : 'Reason for Blocking *'}
             </label>
             <textarea
@@ -536,11 +561,11 @@ export const AdminCustomersPage = () => {
               value={blockReason}
               onChange={(e) => setBlockReason(e.target.value)}
               placeholder="Provide an internal reason for security and audit logs..."
-              className="w-full p-2.5 bg-white border border-slate-300 rounded-lg text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-rose-500 resize-none"
+              className="w-full p-2.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-medium text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-500 resize-none"
             />
           </div>
 
-          <div className="pt-4 border-t border-slate-200 flex items-center justify-end gap-2">
+          <div className="pt-4 border-t border-slate-200 dark:border-slate-700 flex items-center justify-end gap-2">
             <Button
               type="button"
               variant="outline"

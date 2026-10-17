@@ -109,14 +109,14 @@ export const PincodeModal = () => {
           <div
             className={`p-3 rounded-xl border text-xs leading-relaxed flex items-start gap-2.5 ${
               statusMessage.type === 'success'
-                ? 'bg-emerald-50 border-emerald-200 text-emerald-900'
-                : 'bg-amber-50 border-amber-200 text-amber-900'
+                ? 'bg-emerald-50 dark:bg-emerald-950/60 border-emerald-200 dark:border-emerald-800 text-emerald-900 dark:text-emerald-200'
+                : 'bg-amber-50 dark:bg-amber-950/60 border-amber-200 dark:border-amber-800 text-amber-900 dark:text-amber-200'
             }`}
           >
             {statusMessage.type === 'success' ? (
-              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
             ) : (
-              <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+              <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
             )}
             <div>
               {statusMessage.type === 'success' ? (
@@ -125,14 +125,16 @@ export const PincodeModal = () => {
                     <Zap className="w-3.5 h-3.5 fill-amber-500 text-amber-500" />
                     Serviceable from {statusMessage.hubName}
                   </div>
-                  <div className="text-[11px] text-emerald-700">
+                  <div className="text-[11px] text-emerald-700 dark:text-emerald-300">
                     Guaranteed delivery in {statusMessage.eta} minutes to {statusMessage.city}.
                   </div>
                 </>
               ) : (
                 <>
                   <div className="font-bold">Unserviceable Location</div>
-                  <div className="text-[11px] text-amber-700">{statusMessage.message}</div>
+                  <div className="text-[11px] text-amber-700 dark:text-amber-300">
+                    {statusMessage.message}
+                  </div>
                 </>
               )}
             </div>
@@ -140,7 +142,7 @@ export const PincodeModal = () => {
         )}
 
         <div>
-          <label className="block text-xs font-semibold text-slate-500 mb-2">
+          <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2">
             Active Quick-Commerce Hubs
           </label>
           <div className="flex flex-wrap gap-2">
@@ -154,8 +156,8 @@ export const PincodeModal = () => {
                 }}
                 className={`px-3 py-1.5 text-xs font-semibold rounded-lg border transition-all ${
                   deliveryPincode === hub.pin
-                    ? 'bg-brand-50 border-brand-500 text-brand-700 shadow-sm'
-                    : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100 hover:border-slate-300'
+                    ? 'bg-brand-50 dark:bg-brand-950/60 border-brand-500 text-brand-700 dark:text-brand-300 shadow-sm'
+                    : 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 hover:border-slate-300 dark:hover:border-slate-600'
                 }`}
               >
                 {hub.city} ({hub.pin})

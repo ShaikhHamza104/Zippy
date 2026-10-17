@@ -78,7 +78,9 @@ test.describe('Phase 11: End-to-End Admin Journey', () => {
 
     // Wait for success toast / modal closure
     await expect(page.getByText(/Product Created/i)).toBeVisible({ timeout: 10000 });
-    await expect(page.getByText(productName)).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText(productName, { exact: true }).first()).toBeVisible({
+      timeout: 10000,
+    });
 
     // 4. Navigate to Admin Orders Management via Sidebar
     await page

@@ -117,10 +117,10 @@ export const AdminAuditLogsPage = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 tracking-tight">
+          <h1 className="text-2xl font-black text-slate-900 dark:text-slate-100 tracking-tight">
             Security & Compliance Logs
           </h1>
-          <p className="text-sm font-medium text-slate-500">
+          <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
             Immutable audit trails of administrator mutations, customer account updates, and
             authentication events.
           </p>
@@ -138,14 +138,14 @@ export const AdminAuditLogsPage = () => {
       </div>
 
       {/* Tabs Switcher */}
-      <div className="flex items-center gap-2 border-b border-slate-200">
+      <div className="flex items-center gap-2 border-b border-slate-200 dark:border-slate-800">
         <button
           type="button"
           onClick={() => handleTabChange('audit')}
           className={`pb-3 px-3 text-xs font-bold border-b-2 transition-colors flex items-center gap-2 ${
             activeTab === 'audit'
-              ? 'border-brand-600 text-brand-600'
-              : 'border-transparent text-slate-500 hover:text-slate-800'
+              ? 'border-brand-600 dark:border-emerald-500 text-brand-600 dark:text-emerald-400'
+              : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
           }`}
         >
           <ShieldAlert className="w-4 h-4" />
@@ -157,8 +157,8 @@ export const AdminAuditLogsPage = () => {
           onClick={() => handleTabChange('login')}
           className={`pb-3 px-3 text-xs font-bold border-b-2 transition-colors flex items-center gap-2 ${
             activeTab === 'login'
-              ? 'border-brand-600 text-brand-600'
-              : 'border-transparent text-slate-500 hover:text-slate-800'
+              ? 'border-brand-600 dark:border-emerald-500 text-brand-600 dark:text-emerald-400'
+              : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
           }`}
         >
           <Key className="w-4 h-4" />
@@ -212,7 +212,7 @@ export const AdminAuditLogsPage = () => {
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
-                  <tr className="bg-slate-50 border-b border-slate-200 text-slate-500 font-extrabold uppercase tracking-wider">
+                  <tr className="bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 font-extrabold uppercase tracking-wider whitespace-nowrap">
                     <th className="px-5 py-3.5">Timestamp</th>
                     <th className="px-5 py-3.5">Actor</th>
                     <th className="px-5 py-3.5">Action Code</th>
@@ -221,11 +221,14 @@ export const AdminAuditLogsPage = () => {
                     <th className="px-5 py-3.5 text-right">Details</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
+                <tbody className="divide-y divide-slate-100 dark:divide-slate-800 font-medium text-slate-700 dark:text-slate-300">
                   {auditLogs.map((log) => (
-                    <tr key={log.id} className="hover:bg-slate-50/70 transition-colors">
+                    <tr
+                      key={log.id}
+                      className="hover:bg-slate-50/70 dark:hover:bg-slate-800/60 transition-colors whitespace-nowrap"
+                    >
                       {/* Timestamp */}
-                      <td className="px-5 py-3.5 whitespace-nowrap text-slate-500 font-mono">
+                      <td className="px-5 py-3.5 whitespace-nowrap text-slate-500 dark:text-slate-400 font-mono">
                         {new Date(log.createdAt).toLocaleString('en-IN', {
                           month: 'short',
                           day: 'numeric',
@@ -236,30 +239,34 @@ export const AdminAuditLogsPage = () => {
                       </td>
 
                       {/* Actor */}
-                      <td className="px-5 py-3.5">
-                        <div className="font-bold text-slate-900">{log.user?.name || 'System'}</div>
-                        <div className="text-[11px] text-slate-400 font-mono">
+                      <td className="px-5 py-3.5 whitespace-nowrap">
+                        <div className="font-bold text-slate-900 dark:text-slate-100">
+                          {log.user?.name || 'System'}
+                        </div>
+                        <div className="text-[11px] text-slate-400 dark:text-slate-500 font-mono">
                           {log.user?.role || 'SYSTEM'}
                         </div>
                       </td>
 
                       {/* Action Code */}
                       <td className="px-5 py-3.5 whitespace-nowrap">
-                        <span className="font-mono font-bold text-[11px] px-2 py-0.5 rounded bg-slate-100 text-slate-800 border border-slate-200">
+                        <span className="font-mono font-bold text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700">
                           {log.action}
                         </span>
                       </td>
 
                       {/* Entity */}
-                      <td className="px-5 py-3.5">
-                        <div className="font-bold text-slate-900">{log.entityType}</div>
-                        <div className="text-[11px] text-slate-400 font-mono truncate max-w-[150px]">
+                      <td className="px-5 py-3.5 whitespace-nowrap">
+                        <div className="font-bold text-slate-900 dark:text-slate-100">
+                          {log.entityType}
+                        </div>
+                        <div className="text-[11px] text-slate-400 dark:text-slate-500 font-mono truncate max-w-[150px]">
                           {log.entityId}
                         </div>
                       </td>
 
                       {/* IP */}
-                      <td className="px-5 py-3.5 whitespace-nowrap font-mono text-slate-500">
+                      <td className="px-5 py-3.5 whitespace-nowrap font-mono text-slate-500 dark:text-slate-400">
                         {log.ipAddress || '127.0.0.1'}
                       </td>
 
@@ -268,7 +275,7 @@ export const AdminAuditLogsPage = () => {
                         <button
                           type="button"
                           onClick={() => setSelectedLogDetails(log)}
-                          className="p-1.5 text-slate-600 hover:text-brand-600 hover:bg-slate-100 rounded-lg transition-colors font-bold text-xs inline-flex items-center gap-1"
+                          className="p-1.5 text-slate-600 dark:text-slate-400 hover:text-brand-600 dark:hover:text-emerald-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors font-bold text-xs inline-flex items-center gap-1"
                         >
                           <Code className="w-3.5 h-3.5" />
                           <span>Inspect</span>
@@ -283,12 +290,17 @@ export const AdminAuditLogsPage = () => {
 
           {/* Audit Pagination */}
           {auditPagination.totalPages > 1 && (
-            <div className="px-6 py-4 border-t border-slate-100 bg-slate-50 flex items-center justify-between text-xs text-slate-600">
+            <div className="px-6 py-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 flex items-center justify-between text-xs text-slate-600 dark:text-slate-400">
               <div>
                 Showing page{' '}
-                <strong className="font-bold text-slate-900">{auditPagination.page}</strong> of{' '}
-                <strong className="font-bold text-slate-900">{auditPagination.totalPages}</strong> (
-                {auditPagination.total} logs)
+                <strong className="font-bold text-slate-900 dark:text-slate-100">
+                  {auditPagination.page}
+                </strong>{' '}
+                of{' '}
+                <strong className="font-bold text-slate-900 dark:text-slate-100">
+                  {auditPagination.totalPages}
+                </strong>{' '}
+                ({auditPagination.total} logs)
               </div>
 
               <div className="flex items-center gap-2">
@@ -337,7 +349,7 @@ export const AdminAuditLogsPage = () => {
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
-                  <tr className="bg-slate-50 border-b border-slate-200 text-slate-500 font-extrabold uppercase tracking-wider">
+                  <tr className="bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 font-extrabold uppercase tracking-wider whitespace-nowrap">
                     <th className="px-5 py-3.5">Timestamp</th>
                     <th className="px-5 py-3.5">Attempted Email</th>
                     <th className="px-5 py-3.5">Result</th>
@@ -346,11 +358,14 @@ export const AdminAuditLogsPage = () => {
                     <th className="px-5 py-3.5">Failure Diagnostic</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
+                <tbody className="divide-y divide-slate-100 dark:divide-slate-800 font-medium text-slate-700 dark:text-slate-300">
                   {loginLogs.map((log) => (
-                    <tr key={log.id} className="hover:bg-slate-50/70 transition-colors">
+                    <tr
+                      key={log.id}
+                      className="hover:bg-slate-50/70 dark:hover:bg-slate-800/60 transition-colors whitespace-nowrap"
+                    >
                       {/* Timestamp */}
-                      <td className="px-5 py-3.5 whitespace-nowrap text-slate-500 font-mono">
+                      <td className="px-5 py-3.5 whitespace-nowrap text-slate-500 dark:text-slate-400 font-mono">
                         {new Date(log.createdAt).toLocaleString('en-IN', {
                           month: 'short',
                           day: 'numeric',
@@ -361,7 +376,7 @@ export const AdminAuditLogsPage = () => {
                       </td>
 
                       {/* Email */}
-                      <td className="px-5 py-3.5 font-bold text-slate-900 whitespace-nowrap">
+                      <td className="px-5 py-3.5 font-bold text-slate-900 dark:text-slate-100 whitespace-nowrap">
                         {log.email}
                       </td>
 
@@ -372,9 +387,9 @@ export const AdminAuditLogsPage = () => {
                           size="sm"
                           icon={
                             log.success ? (
-                              <CheckCircle className="w-3 h-3 text-emerald-600" />
+                              <CheckCircle className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
                             ) : (
-                              <XCircle className="w-3 h-3 text-rose-600" />
+                              <XCircle className="w-3 h-3 text-rose-600 dark:text-rose-400" />
                             )
                           }
                         >
@@ -383,26 +398,26 @@ export const AdminAuditLogsPage = () => {
                       </td>
 
                       {/* IP */}
-                      <td className="px-5 py-3.5 whitespace-nowrap font-mono text-slate-500">
+                      <td className="px-5 py-3.5 whitespace-nowrap font-mono text-slate-500 dark:text-slate-400">
                         {log.ipAddress || '127.0.0.1'}
                       </td>
 
                       {/* User Agent */}
                       <td
-                        className="px-5 py-3.5 max-w-xs truncate text-slate-500 text-[11px]"
+                        className="px-5 py-3.5 max-w-xs truncate text-slate-500 dark:text-slate-400 text-[11px]"
                         title={log.userAgent}
                       >
                         {log.userAgent || 'Unknown client'}
                       </td>
 
                       {/* Diagnostic */}
-                      <td className="px-5 py-3.5 whitespace-nowrap text-slate-500">
+                      <td className="px-5 py-3.5 whitespace-nowrap text-slate-500 dark:text-slate-400">
                         {log.failureReason ? (
-                          <span className="text-rose-600 font-semibold text-[11px]">
+                          <span className="text-rose-600 dark:text-rose-400 font-semibold text-[11px]">
                             {log.failureReason}
                           </span>
                         ) : (
-                          <span className="text-slate-400">—</span>
+                          <span className="text-slate-400 dark:text-slate-500">—</span>
                         )}
                       </td>
                     </tr>
@@ -414,12 +429,17 @@ export const AdminAuditLogsPage = () => {
 
           {/* Login Pagination */}
           {loginPagination.totalPages > 1 && (
-            <div className="px-6 py-4 border-t border-slate-100 bg-slate-50 flex items-center justify-between text-xs text-slate-600">
+            <div className="px-6 py-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 flex items-center justify-between text-xs text-slate-600 dark:text-slate-400">
               <div>
                 Showing page{' '}
-                <strong className="font-bold text-slate-900">{loginPagination.page}</strong> of{' '}
-                <strong className="font-bold text-slate-900">{loginPagination.totalPages}</strong> (
-                {loginPagination.total} logins)
+                <strong className="font-bold text-slate-900 dark:text-slate-100">
+                  {loginPagination.page}
+                </strong>{' '}
+                of{' '}
+                <strong className="font-bold text-slate-900 dark:text-slate-100">
+                  {loginPagination.totalPages}
+                </strong>{' '}
+                ({loginPagination.total} logins)
               </div>
 
               <div className="flex items-center gap-2">
@@ -456,26 +476,26 @@ export const AdminAuditLogsPage = () => {
         maxWidth="max-w-lg"
       >
         {selectedLogDetails && (
-          <div className="space-y-4 p-6 text-xs">
+          <div className="space-y-4 p-6 text-xs text-slate-700 dark:text-slate-300">
             <div className="space-y-1">
-              <span className="text-[10px] font-bold text-slate-400 uppercase">
+              <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">
                 Actor Information
               </span>
-              <div className="font-bold text-slate-900">
+              <div className="font-bold text-slate-900 dark:text-slate-100">
                 {selectedLogDetails.user?.name} ({selectedLogDetails.user?.email})
               </div>
             </div>
 
             <div>
-              <span className="text-[10px] font-bold text-slate-400 uppercase block mb-1">
+              <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase block mb-1">
                 Payload Snapshot
               </span>
-              <pre className="p-3 bg-slate-900 text-emerald-400 rounded-xl font-mono text-[11px] overflow-x-auto max-h-60">
+              <pre className="p-3 bg-slate-950 text-emerald-400 dark:text-emerald-300 rounded-xl font-mono text-[11px] overflow-x-auto max-h-60 border border-slate-800">
                 {JSON.stringify(selectedLogDetails.details || {}, null, 2)}
               </pre>
             </div>
 
-            <div className="pt-3 border-t border-slate-200 flex justify-end">
+            <div className="pt-3 border-t border-slate-200 dark:border-slate-700 flex justify-end">
               <Button variant="outline" size="sm" onClick={() => setSelectedLogDetails(null)}>
                 Close
               </Button>

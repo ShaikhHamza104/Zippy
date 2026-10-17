@@ -33,9 +33,9 @@ export const OrderSuccessPage = () => {
 
   return (
     <div className="min-h-[70vh] flex items-center justify-center py-10 px-4">
-      <div className="max-w-md w-full bg-white rounded-3xl shadow-floating border border-slate-100 p-6 sm:p-8 text-center space-y-6">
+      <div className="max-w-md w-full bg-white dark:bg-slate-900 rounded-3xl shadow-floating border border-slate-100 dark:border-slate-800 p-6 sm:p-8 text-center space-y-6">
         {/* Celebration Graphic */}
-        <div className="relative mx-auto w-20 h-20 rounded-3xl bg-emerald-50 text-brand-600 flex items-center justify-center shadow-xs">
+        <div className="relative mx-auto w-20 h-20 rounded-3xl bg-emerald-50 dark:bg-brand-950/60 text-brand-600 dark:text-brand-400 flex items-center justify-center shadow-xs">
           <CheckCircle2 className="w-12 h-12 stroke-[2.5]" />
           <span className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-amber-400 text-white flex items-center justify-center">
             <Zap className="w-3.5 h-3.5 fill-current" />
@@ -43,41 +43,47 @@ export const OrderSuccessPage = () => {
         </div>
 
         <div>
-          <span className="text-[11px] font-black uppercase tracking-wider text-brand-700 bg-emerald-50 px-3 py-1 rounded-full">
+          <span className="text-[11px] font-black uppercase tracking-wider text-brand-700 dark:text-brand-300 bg-emerald-50 dark:bg-brand-950/60 px-3 py-1 rounded-full">
             Order Confirmed
           </span>
-          <h1 className="text-2xl font-black text-slate-900 mt-2">Arriving in 10 Minutes!</h1>
-          <p className="text-xs text-slate-500 mt-1">
+          <h1 className="text-2xl font-black text-slate-900 dark:text-slate-100 mt-2">
+            Arriving in 10 Minutes!
+          </h1>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
             Order #{order?.orderNumber || orderId} has been sent to our local dark store for
             immediate packing.
           </p>
         </div>
 
         {/* Delivery Details Card */}
-        <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4 text-left space-y-3 text-xs">
-          <div className="flex items-center justify-between pb-2 border-b border-slate-200/60">
-            <span className="text-slate-500 font-medium">Estimated Arrival</span>
-            <span className="font-extrabold text-brand-700 flex items-center gap-1">
+        <div className="bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl p-4 text-left space-y-3 text-xs">
+          <div className="flex items-center justify-between pb-2 border-b border-slate-200/60 dark:border-slate-700">
+            <span className="text-slate-500 dark:text-slate-400 font-medium">
+              Estimated Arrival
+            </span>
+            <span className="font-extrabold text-brand-700 dark:text-brand-400 flex items-center gap-1">
               <Clock className="w-3.5 h-3.5" />
               10-12 Mins
             </span>
           </div>
 
-          <div className="flex items-center justify-between pb-2 border-b border-slate-200/60">
-            <span className="text-slate-500 font-medium">Payment Method</span>
-            <span className="font-bold text-slate-800 uppercase">
+          <div className="flex items-center justify-between pb-2 border-b border-slate-200/60 dark:border-slate-700">
+            <span className="text-slate-500 dark:text-slate-400 font-medium">Payment Method</span>
+            <span className="font-bold text-slate-800 dark:text-slate-200 uppercase">
               {order?.paymentMethod || 'COD'}
             </span>
           </div>
 
-          <div className="flex items-center justify-between pb-2 border-b border-slate-200/60">
-            <span className="text-slate-500 font-medium">Amount To Pay</span>
-            <span className="font-black text-slate-900 text-sm">₹{order?.totalAmount}</span>
+          <div className="flex items-center justify-between pb-2 border-b border-slate-200/60 dark:border-slate-700">
+            <span className="text-slate-500 dark:text-slate-400 font-medium">Amount To Pay</span>
+            <span className="font-black text-slate-900 dark:text-slate-100 text-sm">
+              ₹{order?.totalAmount}
+            </span>
           </div>
 
           <div className="pt-1 flex items-start gap-2">
-            <MapPin className="w-4 h-4 text-slate-400 shrink-0 mt-0.5" />
-            <p className="text-slate-600 line-clamp-2">
+            <MapPin className="w-4 h-4 text-slate-400 dark:text-slate-500 shrink-0 mt-0.5" />
+            <p className="text-slate-600 dark:text-slate-300 line-clamp-2">
               {deliveryAddress.addressLine1 || 'Delivery Address'}, {deliveryAddress.city} -{' '}
               {deliveryAddress.pincode}
             </p>

@@ -100,16 +100,16 @@ export const HomePage = () => {
       <section className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+            <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-slate-100 tracking-tight">
               Shop by Category
             </h2>
-            <p className="text-xs text-slate-500 font-medium">
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
               Explore everything your pantry needs
             </p>
           </div>
           <Link
             to="/categories"
-            className="text-xs font-bold text-brand-700 hover:text-brand-800 flex items-center gap-1"
+            className="text-xs font-bold text-brand-700 dark:text-brand-400 hover:text-brand-800 dark:hover:text-brand-300 flex items-center gap-1"
           >
             <span>All categories</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -128,12 +128,12 @@ export const HomePage = () => {
               <Link
                 key={cat._id || cat.slug}
                 to={`/categories/${cat.slug}`}
-                className="group p-4 bg-white rounded-2xl border border-slate-100 hover:border-brand-300 hover:shadow-floating transition-all text-center flex flex-col items-center justify-center cursor-pointer select-none"
+                className="group p-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 hover:border-brand-300 dark:hover:border-brand-600 hover:shadow-floating transition-all text-center flex flex-col items-center justify-center cursor-pointer select-none"
               >
-                <div className="w-14 h-14 rounded-2xl bg-emerald-50 text-2xl flex items-center justify-center mb-2.5 transition-transform group-hover:scale-110">
+                <div className="w-14 h-14 rounded-2xl bg-emerald-50 dark:bg-slate-800 text-2xl flex items-center justify-center mb-2.5 transition-transform group-hover:scale-110">
                   {cat.icon || '🛒'}
                 </div>
-                <span className="text-xs font-bold text-slate-800 line-clamp-2 leading-tight group-hover:text-brand-700 transition-colors">
+                <span className="text-xs font-bold text-slate-800 dark:text-slate-100 line-clamp-2 leading-tight group-hover:text-brand-700 dark:group-hover:text-brand-400 transition-colors">
                   {cat.name}
                 </span>
               </Link>
@@ -146,21 +146,21 @@ export const HomePage = () => {
       <section className="space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="p-1.5 bg-amber-50 text-amber-600 rounded-lg">
+            <span className="p-1.5 bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 rounded-lg">
               <TrendingUp className="w-4 h-4" />
             </span>
             <div>
-              <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+              <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-slate-100 tracking-tight">
                 Trending Essentials
               </h2>
-              <p className="text-xs text-slate-500 font-medium">
+              <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
                 Most ordered items in your neighborhood
               </p>
             </div>
           </div>
           <Link
             to="/products?sort=popular"
-            className="text-xs font-bold text-brand-700 hover:text-brand-800 flex items-center gap-1"
+            className="text-xs font-bold text-brand-700 dark:text-brand-400 hover:text-brand-800 dark:hover:text-brand-300 flex items-center gap-1"
           >
             <span>View all</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -189,15 +189,17 @@ export const HomePage = () => {
             <div className="flex items-center gap-2">
               <span className="text-xl">{section.categoryIcon || '🛍️'}</span>
               <div>
-                <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+                <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-slate-100 tracking-tight">
                   {section.categoryName}
                 </h2>
-                <p className="text-xs text-slate-500 font-medium">Fresh stock sourced directly</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+                  Fresh stock sourced directly
+                </p>
               </div>
             </div>
             <Link
               to={`/categories/${section.categorySlug}`}
-              className="text-xs font-bold text-brand-700 hover:text-brand-800 flex items-center gap-1"
+              className="text-xs font-bold text-brand-700 dark:text-brand-400 hover:text-brand-800 dark:hover:text-brand-300 flex items-center gap-1"
             >
               <span>See more</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -213,14 +215,16 @@ export const HomePage = () => {
       ))}
 
       {/* 5. Quick-Commerce Guarantees */}
-      <section className="bg-emerald-50/70 border border-emerald-100 rounded-3xl p-6 sm:p-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+      <section className="bg-emerald-50/70 dark:bg-slate-900 border border-emerald-100 dark:border-slate-800 rounded-3xl p-6 sm:p-8 grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="flex items-start gap-3">
           <div className="w-10 h-10 rounded-xl bg-brand-600 text-white flex items-center justify-center shrink-0">
             <Zap className="w-5 h-5 fill-current" />
           </div>
           <div>
-            <h3 className="text-sm font-black text-slate-900">10-Minute Dispatch</h3>
-            <p className="text-xs text-slate-600 mt-0.5">
+            <h3 className="text-sm font-black text-slate-900 dark:text-slate-100">
+              10-Minute Dispatch
+            </h3>
+            <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
               Automated picking inside hyper-local micro fulfillment dark stores.
             </p>
           </div>
@@ -231,8 +235,10 @@ export const HomePage = () => {
             <ShieldCheck className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-sm font-black text-slate-900">Zero Spoilage Guarantee</h3>
-            <p className="text-xs text-slate-600 mt-0.5">
+            <h3 className="text-sm font-black text-slate-900 dark:text-slate-100">
+              Zero Spoilage Guarantee
+            </h3>
+            <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
               Temperature-controlled cold-chain for farm milk, curd, and organic veggies.
             </p>
           </div>
@@ -243,8 +249,10 @@ export const HomePage = () => {
             <Sparkles className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-sm font-black text-slate-900">Free Delivery Over ₹199</h3>
-            <p className="text-xs text-slate-600 mt-0.5">
+            <h3 className="text-sm font-black text-slate-900 dark:text-slate-100">
+              Free Delivery Over ₹199
+            </h3>
+            <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
               No hidden surge charges or packaging fees. Simple, honest pricing.
             </p>
           </div>

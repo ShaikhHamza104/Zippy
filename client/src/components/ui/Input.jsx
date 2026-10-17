@@ -29,7 +29,7 @@ export const Input = React.forwardRef(
         {label && (
           <label
             htmlFor={inputId}
-            className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5"
+            className="block text-xs font-semibold text-slate-700 dark:text-slate-200 uppercase tracking-wider mb-1.5"
           >
             {label}
             {required && (
@@ -41,7 +41,7 @@ export const Input = React.forwardRef(
         )}
         <div className="relative flex items-center">
           {leftIcon && (
-            <div className="absolute left-3.5 flex items-center pointer-events-none text-slate-400">
+            <div className="absolute left-3.5 flex items-center pointer-events-none text-slate-400 dark:text-slate-500">
               {leftIcon}
             </div>
           )}
@@ -53,15 +53,15 @@ export const Input = React.forwardRef(
             aria-invalid={!!error}
             aria-describedby={error ? errorId : helperText ? helperId : undefined}
             className={cn(
-              'w-full h-11 px-3.5 text-sm bg-white border rounded-lg text-slate-900 placeholder:text-slate-400 min-h-[44px]',
+              'w-full h-11 px-3.5 text-sm bg-white dark:bg-slate-800 border rounded-lg text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 min-h-[44px]',
               'transition-colors duration-150',
-              'focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500',
-              'disabled:bg-slate-50 disabled:text-slate-400 disabled:cursor-not-allowed',
+              'focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 dark:focus:ring-brand-400',
+              'disabled:bg-slate-50 dark:disabled:bg-slate-900 disabled:text-slate-400 dark:disabled:text-slate-600 disabled:cursor-not-allowed',
               leftIcon ? 'pl-10' : 'pl-3.5',
               rightIcon || error ? 'pr-10' : 'pr-3.5',
               error
-                ? 'border-red-500 focus:ring-red-400 focus:border-red-500 text-red-900'
-                : 'border-slate-300 hover:border-slate-400',
+                ? 'border-red-500 dark:border-red-500 focus:ring-red-400 focus:border-red-500 text-red-900 dark:text-red-200'
+                : 'border-slate-300 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-600',
               className
             )}
             {...props}
@@ -71,16 +71,22 @@ export const Input = React.forwardRef(
               <AlertCircle className="w-4 h-4" aria-hidden="true" />
             </div>
           ) : rightIcon ? (
-            <div className="absolute right-3.5 flex items-center text-slate-400">{rightIcon}</div>
+            <div className="absolute right-3.5 flex items-center text-slate-400 dark:text-slate-500">
+              {rightIcon}
+            </div>
           ) : null}
         </div>
         {error && (
-          <p id={errorId} role="alert" className="mt-1 text-xs text-red-600 font-medium">
+          <p
+            id={errorId}
+            role="alert"
+            className="mt-1 text-xs text-red-600 dark:text-red-400 font-medium"
+          >
             {error}
           </p>
         )}
         {!error && helperText && (
-          <p id={helperId} className="mt-1 text-xs text-slate-500">
+          <p id={helperId} className="mt-1 text-xs text-slate-500 dark:text-slate-400">
             {helperText}
           </p>
         )}

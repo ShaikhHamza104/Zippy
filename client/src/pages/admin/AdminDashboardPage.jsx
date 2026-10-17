@@ -76,25 +76,29 @@ export const AdminDashboardPage = () => {
       label: "Today's Orders",
       value: stats.ordersToday ?? 0,
       icon: ShoppingBag,
-      color: 'bg-blue-50 text-blue-600 border-blue-200',
+      color:
+        'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800',
     },
     {
       label: "Today's Revenue",
       value: `₹${Number(stats.todayRevenue || 0).toLocaleString('en-IN')}`,
       icon: IndianRupee,
-      color: 'bg-emerald-50 text-emerald-600 border-emerald-200',
+      color:
+        'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800',
     },
     {
       label: 'Total Revenue',
       value: `₹${Number(stats.totalRevenue || 0).toLocaleString('en-IN')}`,
       icon: TrendingUp,
-      color: 'bg-purple-50 text-purple-600 border-purple-200',
+      color:
+        'bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 border-purple-200 dark:border-purple-800',
     },
     {
       label: 'Active Customers',
       value: stats.activeCustomers ?? 0,
       icon: Users,
-      color: 'bg-amber-50 text-amber-600 border-amber-200',
+      color:
+        'bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-800',
     },
   ];
 
@@ -103,31 +107,36 @@ export const AdminDashboardPage = () => {
       key: 'PLACED',
       label: 'Placed',
       count: statusBreakdown.PLACED ?? 0,
-      color: 'text-amber-700 bg-amber-50 border-amber-200',
+      color:
+        'text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/60 border-amber-200 dark:border-amber-800',
     },
     {
       key: 'PACKED',
       label: 'Packed',
       count: statusBreakdown.PACKED ?? 0,
-      color: 'text-blue-700 bg-blue-50 border-blue-200',
+      color:
+        'text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/60 border-blue-200 dark:border-blue-800',
     },
     {
       key: 'OUT_FOR_DELIVERY',
       label: 'Out for Delivery',
       count: statusBreakdown.OUT_FOR_DELIVERY ?? 0,
-      color: 'text-indigo-700 bg-indigo-50 border-indigo-200',
+      color:
+        'text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/60 border-indigo-200 dark:border-indigo-800',
     },
     {
       key: 'DELIVERED',
       label: 'Delivered',
       count: statusBreakdown.DELIVERED ?? 0,
-      color: 'text-emerald-700 bg-emerald-50 border-emerald-200',
+      color:
+        'text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 border-emerald-200 dark:border-emerald-800',
     },
     {
       key: 'CANCELLED',
       label: 'Cancelled',
       count: statusBreakdown.CANCELLED ?? 0,
-      color: 'text-rose-700 bg-rose-50 border-rose-200',
+      color:
+        'text-rose-700 dark:text-rose-300 bg-rose-50 dark:bg-rose-950/60 border-rose-200 dark:border-rose-800',
     },
   ];
 
@@ -242,10 +251,10 @@ export const AdminDashboardPage = () => {
         {lowStockAlerts.length === 0 ? (
           <div className="p-8 text-center">
             <Package className="w-10 h-10 text-emerald-500 mx-auto mb-2" />
-            <h3 className="text-sm font-bold text-slate-900">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
               All dark store inventory levels are healthy!
             </h3>
-            <p className="text-xs text-slate-500 mt-0.5">
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
               No products currently have stock ≤ 10 units.
             </p>
           </div>
@@ -253,7 +262,7 @@ export const AdminDashboardPage = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
-                <tr className="bg-slate-50 border-b border-slate-200 text-slate-500 font-extrabold uppercase tracking-wider">
+                <tr className="bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 font-extrabold uppercase tracking-wider whitespace-nowrap">
                   <th className="px-5 py-3.5">Product & Brand</th>
                   <th className="px-5 py-3.5">SKU</th>
                   <th className="px-5 py-3.5">Unit</th>
@@ -262,27 +271,33 @@ export const AdminDashboardPage = () => {
                   <th className="px-5 py-3.5 text-right">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800 font-medium text-slate-700 dark:text-slate-300">
                 {lowStockAlerts.map((item) => (
                   <tr
                     key={`${item.productId}-${item.sku}`}
-                    className="hover:bg-slate-50/70 transition-colors"
+                    className="hover:bg-slate-50/70 dark:hover:bg-slate-800/60 transition-colors whitespace-nowrap"
                   >
                     <td className="px-5 py-3.5">
-                      <div className="font-bold text-slate-900">{item.productName}</div>
-                      <div className="text-[11px] text-slate-400 font-normal">{item.brand}</div>
+                      <div className="font-bold text-slate-900 dark:text-slate-100">
+                        {item.productName}
+                      </div>
+                      <div className="text-[11px] text-slate-400 dark:text-slate-500 font-normal">
+                        {item.brand}
+                      </div>
                     </td>
-                    <td className="px-5 py-3.5 font-mono text-slate-600 font-bold">{item.sku}</td>
+                    <td className="px-5 py-3.5 font-mono text-slate-600 dark:text-slate-400 font-bold">
+                      {item.sku}
+                    </td>
                     <td className="px-5 py-3.5">{item.unit}</td>
-                    <td className="px-5 py-3.5 font-bold text-slate-900">
+                    <td className="px-5 py-3.5 font-bold text-slate-900 dark:text-slate-100">
                       ₹{Number(item.price).toLocaleString('en-IN')}
                     </td>
                     <td className="px-5 py-3.5">
                       <span
                         className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-black ${
                           item.stock === 0
-                            ? 'bg-rose-100 text-rose-800 border border-rose-200'
-                            : 'bg-amber-100 text-amber-800 border border-amber-200'
+                            ? 'bg-rose-100 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300 border border-rose-200 dark:border-rose-800'
+                            : 'bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800'
                         }`}
                       >
                         {item.stock === 0 ? 'Out of Stock' : `${item.stock} left`}
@@ -291,7 +306,7 @@ export const AdminDashboardPage = () => {
                     <td className="px-5 py-3.5 text-right">
                       <Link
                         to={`/admin/products?search=${encodeURIComponent(item.sku)}`}
-                        className="text-brand-600 hover:text-brand-700 font-bold hover:underline"
+                        className="text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 font-bold hover:underline"
                       >
                         Update Stock
                       </Link>

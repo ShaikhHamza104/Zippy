@@ -97,13 +97,16 @@ export const OrderDetailPage = () => {
     <div className="max-w-4xl mx-auto space-y-6 pb-16">
       {/* Top Breadcrumb & Status */}
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-2 text-xs font-semibold text-slate-400">
-          <Link to="/orders" className="hover:text-brand-600 flex items-center gap-1">
+        <div className="flex items-center gap-2 text-xs font-semibold text-slate-400 dark:text-slate-500">
+          <Link
+            to="/orders"
+            className="hover:text-brand-600 dark:hover:text-brand-400 flex items-center gap-1"
+          >
             <ArrowLeft className="w-3.5 h-3.5" />
             All Orders
           </Link>
           <span>/</span>
-          <span className="text-slate-800">#{order.orderNumber}</span>
+          <span className="text-slate-800 dark:text-slate-200">#{order.orderNumber}</span>
         </div>
 
         {canCancel && (
@@ -114,13 +117,13 @@ export const OrderDetailPage = () => {
       </div>
 
       {/* Status Progress Timeline */}
-      <div className="bg-white rounded-3xl border border-slate-100 p-6 sm:p-8 shadow-xs space-y-6">
-        <div className="flex flex-wrap items-center justify-between gap-2 pb-4 border-b border-slate-100">
+      <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 p-6 sm:p-8 shadow-xs space-y-6">
+        <div className="flex flex-wrap items-center justify-between gap-2 pb-4 border-b border-slate-100 dark:border-slate-800">
           <div>
-            <h1 className="text-xl font-black text-slate-900 tracking-tight">
+            <h1 className="text-xl font-black text-slate-900 dark:text-slate-100 tracking-tight">
               Order #{order.orderNumber}
             </h1>
-            <p className="text-xs text-slate-500 font-medium mt-0.5">
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium mt-0.5">
               Placed on{' '}
               {new Date(order.createdAt).toLocaleDateString('en-IN', {
                 day: 'numeric',
@@ -138,11 +141,13 @@ export const OrderDetailPage = () => {
         </div>
 
         {isCancelled ? (
-          <div className="p-4 bg-red-50 border border-red-200 rounded-2xl flex items-start gap-3">
-            <XCircle className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
+          <div className="p-4 bg-red-50 dark:bg-red-950/60 border border-red-200 dark:border-red-800 rounded-2xl flex items-start gap-3">
+            <XCircle className="w-5 h-5 text-red-600 dark:text-red-400 shrink-0 mt-0.5" />
             <div>
-              <h3 className="text-xs font-black text-red-900">This order was cancelled</h3>
-              <p className="text-xs text-red-700 mt-0.5">
+              <h3 className="text-xs font-black text-red-900 dark:text-red-200">
+                This order was cancelled
+              </h3>
+              <p className="text-xs text-red-700 dark:text-red-300 mt-0.5">
                 Reason: {order.cancellationReason || 'Cancelled by customer'}
               </p>
             </div>
@@ -160,8 +165,8 @@ export const OrderDetailPage = () => {
                         isCurrent
                           ? 'bg-brand-600 text-white ring-4 ring-brand-500/20 shadow-sm'
                           : isPassed
-                            ? 'bg-emerald-100 text-brand-700'
-                            : 'bg-slate-100 text-slate-400'
+                            ? 'bg-emerald-100 dark:bg-emerald-950/60 text-brand-700 dark:text-brand-300'
+                            : 'bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500'
                       }`}
                     >
                       {isPassed ? (
@@ -173,12 +178,16 @@ export const OrderDetailPage = () => {
                     <div>
                       <h4
                         className={`text-xs font-bold ${
-                          isPassed ? 'text-slate-900' : 'text-slate-400'
+                          isPassed
+                            ? 'text-slate-900 dark:text-slate-100'
+                            : 'text-slate-400 dark:text-slate-500'
                         }`}
                       >
                         {step.label}
                       </h4>
-                      <p className="text-[10px] text-slate-400 mt-0.5">{step.desc}</p>
+                      <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5">
+                        {step.desc}
+                      </p>
                     </div>
                   </div>
                 );
@@ -191,12 +200,12 @@ export const OrderDetailPage = () => {
       {/* Main Grid: Immutable Items Snapshot + Address / Payment */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
         {/* Left 2 Cols: Item Snapshots */}
-        <div className="md:col-span-2 bg-white rounded-3xl border border-slate-100 p-6 shadow-xs space-y-4">
-          <h2 className="text-base font-black text-slate-900 pb-2 border-b border-slate-100">
+        <div className="md:col-span-2 bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 p-6 shadow-xs space-y-4">
+          <h2 className="text-base font-black text-slate-900 dark:text-slate-100 pb-2 border-b border-slate-100 dark:border-slate-800">
             Ordered Items ({order.items?.length || 0})
           </h2>
 
-          <div className="divide-y divide-slate-100">
+          <div className="divide-y divide-slate-100 dark:divide-slate-800">
             {order.items?.map((it) => (
               <div key={it.id} className="py-3 flex items-center justify-between gap-3 text-xs">
                 <div className="flex items-center gap-3">
@@ -204,24 +213,28 @@ export const OrderDetailPage = () => {
                     <img
                       src={it.productImage}
                       alt={it.productName}
-                      className="w-12 h-12 object-contain rounded-lg bg-slate-50 p-1 border border-slate-100 shrink-0"
+                      className="w-12 h-12 object-contain rounded-lg bg-slate-50 dark:bg-slate-800 p-1 border border-slate-100 dark:border-slate-700 shrink-0"
                     />
                   ) : (
-                    <div className="w-12 h-12 rounded-lg bg-slate-100 shrink-0 flex items-center justify-center text-slate-400">
+                    <div className="w-12 h-12 rounded-lg bg-slate-100 dark:bg-slate-800 shrink-0 flex items-center justify-center text-slate-400">
                       <ShoppingBag className="w-5 h-5" />
                     </div>
                   )}
                   <div>
-                    <h4 className="font-bold text-slate-900">{it.productName}</h4>
-                    <span className="text-slate-400 font-medium">
+                    <h4 className="font-bold text-slate-900 dark:text-slate-100">
+                      {it.productName}
+                    </h4>
+                    <span className="text-slate-400 dark:text-slate-400 font-medium">
                       {it.unit} • ₹{it.price} each
                     </span>
                   </div>
                 </div>
 
                 <div className="text-right">
-                  <span className="text-slate-500 font-semibold block">Qty: {it.quantity}</span>
-                  <span className="font-black text-slate-900 text-sm">
+                  <span className="text-slate-500 dark:text-slate-400 font-semibold block">
+                    Qty: {it.quantity}
+                  </span>
+                  <span className="font-black text-slate-900 dark:text-slate-100 text-sm">
                     ₹{it.itemTotal || it.price * it.quantity}
                   </span>
                 </div>
@@ -233,29 +246,35 @@ export const OrderDetailPage = () => {
         {/* Right Col: Address & Payment Breakdown */}
         <div className="space-y-4">
           {/* Delivery Address Snapshot */}
-          <div className="bg-white rounded-3xl border border-slate-100 p-5 shadow-xs space-y-2">
-            <h3 className="text-xs font-black uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
-              <MapPin className="w-3.5 h-3.5 text-brand-600" />
+          <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 p-5 shadow-xs space-y-2">
+            <h3 className="text-xs font-black uppercase tracking-wider text-slate-400 dark:text-slate-400 flex items-center gap-1.5">
+              <MapPin className="w-3.5 h-3.5 text-brand-600 dark:text-brand-400" />
               Delivery Address
             </h3>
-            <p className="text-xs font-bold text-slate-900">{deliveryAddress.fullName}</p>
-            <p className="text-xs text-slate-600 leading-relaxed">
+            <p className="text-xs font-bold text-slate-900 dark:text-slate-100">
+              {deliveryAddress.fullName}
+            </p>
+            <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
               {deliveryAddress.addressLine1}
               {deliveryAddress.addressLine2 && `, ${deliveryAddress.addressLine2}`}
               <br />
               {deliveryAddress.city}, {deliveryAddress.state} - {deliveryAddress.pincode}
             </p>
-            <p className="text-[11px] text-slate-400 pt-1">Phone: {deliveryAddress.phone}</p>
+            <p className="text-[11px] text-slate-400 dark:text-slate-400 pt-1">
+              Phone: {deliveryAddress.phone}
+            </p>
           </div>
 
           {/* Bill Summary */}
-          <div className="bg-white rounded-3xl border border-slate-100 p-5 shadow-xs space-y-2.5 text-xs text-slate-600">
-            <h3 className="font-black text-slate-900 pb-1 border-b border-slate-100">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 p-5 shadow-xs space-y-2.5 text-xs text-slate-600 dark:text-slate-300">
+            <h3 className="font-black text-slate-900 dark:text-slate-100 pb-1 border-b border-slate-100 dark:border-slate-800">
               Payment Breakdown
             </h3>
             <div className="flex justify-between">
-              <span>Subtotal</span>
-              <span className="font-medium text-slate-800">₹{order.subtotal}</span>
+              <span className="text-slate-600 dark:text-slate-400">Subtotal</span>
+              <span className="font-medium text-slate-800 dark:text-slate-200">
+                ₹{order.subtotal}
+              </span>
             </div>
             {Number(order.discountAmount) > 0 && (
               <div className="flex justify-between text-brand-700 font-semibold">

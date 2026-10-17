@@ -62,9 +62,10 @@ export default defineConfig({
       },
     },
     {
-      command: 'node client/node_modules/vite/bin/vite.js client --port 5173',
+      command: 'node ./node_modules/vite/bin/vite.js --port 5173',
+      cwd: 'client',
       url: 'http://localhost:5173',
-      reuseExistingServer: true,
+      reuseExistingServer: false,
       timeout: 30000,
     },
   ],

@@ -400,14 +400,14 @@ export const AdminProductsPage = () => {
   });
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 min-w-0 w-full max-w-full">
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 tracking-tight">
+          <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
             Product Catalog & Inventory
           </h1>
-          <p className="text-sm font-medium text-slate-500">
+          <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
             Manage multi-variant items, pricing, dark store stock levels, and real-time
             availability.
           </p>
@@ -456,7 +456,7 @@ export const AdminProductsPage = () => {
             <select
               value={categoryFilter}
               onChange={(e) => handleCategoryChange(e.target.value)}
-              className="w-full h-10 px-3 bg-white border border-slate-300 rounded-lg text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500"
+              className="w-full h-10 px-3 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500"
             >
               <option value="">All Categories</option>
               {categories.map((c) => (
@@ -471,7 +471,7 @@ export const AdminProductsPage = () => {
             <select
               value={isAvailableFilter}
               onChange={(e) => handleAvailabilityChange(e.target.value)}
-              className="w-full h-10 px-3 bg-white border border-slate-300 rounded-lg text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500"
+              className="w-full h-10 px-3 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500"
             >
               <option value="">All Availability</option>
               <option value="true">Available Only</option>
@@ -506,7 +506,7 @@ export const AdminProductsPage = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
-                <tr className="bg-slate-50 border-b border-slate-200 text-slate-500 font-extrabold uppercase tracking-wider">
+                <tr className="bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 font-extrabold uppercase tracking-wider whitespace-nowrap">
                   <th className="px-5 py-3.5">Product</th>
                   <th className="px-5 py-3.5">Category</th>
                   <th className="px-5 py-3.5">Variants & Inventory</th>
@@ -515,7 +515,7 @@ export const AdminProductsPage = () => {
                   <th className="px-5 py-3.5 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800 font-medium text-slate-700 dark:text-slate-300">
                 {products.map((prod) => {
                   const primaryImg =
                     prod.images?.find((img) => img.isPrimary)?.url ||
@@ -523,26 +523,31 @@ export const AdminProductsPage = () => {
                     'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=150&q=80';
 
                   return (
-                    <tr key={prod._id} className="hover:bg-slate-50/70 transition-colors">
+                    <tr
+                      key={prod._id}
+                      className="hover:bg-slate-50/70 dark:hover:bg-slate-800/60 transition-colors whitespace-nowrap"
+                    >
                       {/* Product Thumbnail & Name */}
                       <td className="px-5 py-3.5">
                         <div className="flex items-center gap-3">
                           <img
                             src={primaryImg}
                             alt={prod.name}
-                            className="w-11 h-11 rounded-xl object-cover bg-slate-100 shrink-0 border border-slate-200"
+                            className="w-11 h-11 rounded-xl object-cover bg-slate-100 dark:bg-slate-800 shrink-0 border border-slate-200 dark:border-slate-700"
                             onError={(e) => {
                               e.target.src =
                                 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=150&q=80';
                             }}
                           />
                           <div className="min-w-0">
-                            <div className="font-extrabold text-slate-900 truncate max-w-[200px] sm:max-w-xs">
+                            <div className="font-extrabold text-slate-900 dark:text-slate-100 truncate max-w-[200px] sm:max-w-xs">
                               {prod.name}
                             </div>
-                            <div className="text-[11px] text-slate-400 font-normal">
+                            <div className="text-[11px] text-slate-400 dark:text-slate-500 font-normal">
                               Brand:{' '}
-                              <strong className="text-slate-600 font-bold">{prod.brand}</strong>
+                              <strong className="text-slate-600 dark:text-slate-300 font-bold">
+                                {prod.brand}
+                              </strong>
                             </div>
                           </div>
                         </div>
@@ -550,7 +555,7 @@ export const AdminProductsPage = () => {
 
                       {/* Category */}
                       <td className="px-5 py-3.5 whitespace-nowrap">
-                        <span className="inline-flex items-center gap-1 text-slate-700 font-bold bg-slate-100 px-2.5 py-1 rounded-lg">
+                        <span className="inline-flex items-center gap-1 text-slate-700 dark:text-slate-200 font-bold bg-slate-100 dark:bg-slate-800 px-2.5 py-1 rounded-lg border border-transparent dark:border-slate-700">
                           <span>{prod.categoryId?.icon || '📦'}</span>
                           <span>{prod.categoryId?.name || prod.categorySlug || 'Category'}</span>
                         </span>
@@ -564,16 +569,16 @@ export const AdminProductsPage = () => {
                               key={v.sku}
                               className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md border text-[11px] font-mono ${
                                 v.stock <= 5
-                                  ? 'bg-rose-50 text-rose-800 border-rose-200'
+                                  ? 'bg-rose-50 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300 border-rose-200 dark:border-rose-800'
                                   : v.stock <= 15
-                                    ? 'bg-amber-50 text-amber-800 border-amber-200'
-                                    : 'bg-slate-50 text-slate-800 border-slate-200'
+                                    ? 'bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border-amber-200 dark:border-amber-800'
+                                    : 'bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border-slate-200 dark:border-slate-700'
                               }`}
                               title={`SKU: ${v.sku} | MRP: ₹${v.mrp}`}
                             >
                               <span className="font-bold">{v.unit}:</span>
                               <span>₹{v.price}</span>
-                              <span className="text-slate-400">|</span>
+                              <span className="text-slate-400 dark:text-slate-500">|</span>
                               <span className="font-bold">{v.stock} pcs</span>
                             </span>
                           ))}
@@ -585,10 +590,10 @@ export const AdminProductsPage = () => {
                         <span
                           className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-black ${
                             (prod.totalStock ?? 0) === 0
-                              ? 'bg-rose-100 text-rose-800 border border-rose-200'
+                              ? 'bg-rose-100 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300 border border-rose-200 dark:border-rose-800'
                               : (prod.totalStock ?? 0) <= 15
-                                ? 'bg-amber-100 text-amber-800 border border-amber-200'
-                                : 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                                ? 'bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800'
+                                : 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800'
                           }`}
                         >
                           {prod.totalStock ?? 0} in stock
@@ -663,11 +668,17 @@ export const AdminProductsPage = () => {
 
         {/* Pagination Controls */}
         {pagination.totalPages > 1 && (
-          <div className="px-6 py-4 border-t border-slate-100 bg-slate-50 flex items-center justify-between text-xs text-slate-600">
+          <div className="px-4 sm:px-6 py-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 flex flex-col sm:flex-row gap-3 sm:items-center justify-between text-xs text-slate-600 dark:text-slate-300">
             <div>
-              Showing page <strong className="font-bold text-slate-900">{pagination.page}</strong>{' '}
-              of <strong className="font-bold text-slate-900">{pagination.totalPages}</strong> (
-              {pagination.total} items)
+              Showing page{' '}
+              <strong className="font-bold text-slate-900 dark:text-white">
+                {pagination.page}
+              </strong>{' '}
+              of{' '}
+              <strong className="font-bold text-slate-900 dark:text-white">
+                {pagination.totalPages}
+              </strong>{' '}
+              ({pagination.total} items)
             </div>
 
             <div className="flex items-center gap-2">

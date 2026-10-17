@@ -100,31 +100,39 @@ export const ProductDetailPage = () => {
   return (
     <div className="space-y-8 max-w-6xl mx-auto pb-16">
       {/* Breadcrumb Navigation */}
-      <div className="flex items-center justify-between text-xs font-semibold text-slate-400">
+      <div className="flex items-center justify-between text-xs font-semibold text-slate-400 dark:text-slate-500">
         <div className="flex items-center gap-2">
-          <Link to="/" className="hover:text-brand-600 flex items-center gap-1">
+          <Link
+            to="/"
+            className="hover:text-brand-600 dark:hover:text-brand-400 flex items-center gap-1"
+          >
             <ArrowLeft className="w-3.5 h-3.5" />
             Home
           </Link>
           <span>/</span>
           {product.categoryId?.slug ? (
-            <Link to={`/categories/${product.categoryId.slug}`} className="hover:text-brand-600">
+            <Link
+              to={`/categories/${product.categoryId.slug}`}
+              className="hover:text-brand-600 dark:hover:text-brand-400"
+            >
               {product.categoryId.name}
             </Link>
           ) : (
-            <Link to="/products" className="hover:text-brand-600">
+            <Link to="/products" className="hover:text-brand-600 dark:hover:text-brand-400">
               Products
             </Link>
           )}
           <span>/</span>
-          <span className="text-slate-800 truncate max-w-[200px]">{product.name}</span>
+          <span className="text-slate-800 dark:text-slate-200 truncate max-w-[200px]">
+            {product.name}
+          </span>
         </div>
 
         <button
           type="button"
           onClick={handleShare}
           aria-label="Share product"
-          className="p-1.5 rounded-lg border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50 flex items-center gap-1 text-xs font-bold"
+          className="p-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center gap-1 text-xs font-bold"
         >
           <Share2 className="w-3.5 h-3.5" />
           <span className="hidden sm:inline">Share</span>
@@ -135,7 +143,7 @@ export const ProductDetailPage = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
         {/* Left: Gallery */}
         <div className="space-y-4">
-          <div className="relative aspect-square w-full bg-white rounded-3xl border border-slate-100 p-6 flex items-center justify-center shadow-xs overflow-hidden">
+          <div className="relative aspect-square w-full bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 p-6 flex items-center justify-center shadow-xs overflow-hidden">
             <img
               src={images[selectedImageIndex] || images[0]}
               alt={product.name}
@@ -143,7 +151,7 @@ export const ProductDetailPage = () => {
             />
 
             {discountPercent > 0 && (
-              <span className="absolute top-4 left-4 bg-brand-600 text-white font-black text-xs px-2.5 py-1 rounded-lg shadow-sm">
+              <span className="absolute top-4 left-4 z-10 bg-brand-600 text-white font-black text-xs px-2.5 py-1 rounded-lg shadow-sm">
                 {discountPercent}% OFF
               </span>
             )}
@@ -157,10 +165,10 @@ export const ProductDetailPage = () => {
                   key={idx}
                   type="button"
                   onClick={() => setSelectedImageIndex(idx)}
-                  className={`w-16 h-16 rounded-xl border p-1 bg-white overflow-hidden transition-all ${
+                  className={`w-16 h-16 rounded-xl border p-1 bg-white dark:bg-slate-800 overflow-hidden transition-all ${
                     selectedImageIndex === idx
                       ? 'border-brand-600 ring-2 ring-brand-500/30'
-                      : 'border-slate-200 opacity-70 hover:opacity-100'
+                      : 'border-slate-200 dark:border-slate-700 opacity-70 hover:opacity-100'
                   }`}
                 >
                   <img src={imgUrl} alt="" className="w-full h-full object-contain" />
@@ -173,39 +181,45 @@ export const ProductDetailPage = () => {
         {/* Right: Info, Variant Selector & Cart CTA */}
         <div className="space-y-6">
           <div>
-            <span className="text-xs font-extrabold uppercase tracking-wider text-brand-700 bg-brand-50 px-2.5 py-1 rounded-md">
+            <span className="text-xs font-extrabold uppercase tracking-wider text-brand-700 dark:text-brand-300 bg-brand-50 dark:bg-brand-950/60 px-2.5 py-1 rounded-md">
               {product.brand || 'Zippy Supermarket'}
             </span>
 
-            <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight mt-2 leading-tight">
+            <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-slate-100 tracking-tight mt-2 leading-tight">
               {product.name}
             </h1>
 
             {/* Rating pill */}
-            <div className="flex items-center gap-3 mt-2 text-xs font-semibold text-slate-500">
+            <div className="flex items-center gap-3 mt-2 text-xs font-semibold text-slate-500 dark:text-slate-400">
               {Number(product.ratingAverage) > 0 ? (
-                <span className="inline-flex items-center gap-1 text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md font-bold">
+                <span className="inline-flex items-center gap-1 text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/60 px-2 py-0.5 rounded-md font-bold">
                   <Star className="w-3.5 h-3.5 fill-amber-500 text-amber-500" />
                   {Number(product.ratingAverage).toFixed(1)} ({product.reviewCount || 0} reviews)
                 </span>
               ) : (
-                <span className="text-slate-400">Newly launched</span>
+                <span className="text-slate-400 dark:text-slate-500">Newly launched</span>
               )}
               <span>•</span>
-              <span className="text-emerald-700 font-bold">In stock at dark store</span>
+              <span className="text-emerald-700 dark:text-emerald-400 font-bold">
+                In stock at dark store
+              </span>
             </div>
           </div>
 
           {/* Pricing Box */}
-          <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4 flex items-center justify-between">
+          <div className="bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl p-4 flex items-center justify-between">
             <div>
               <div className="flex items-baseline gap-2">
-                <span className="text-3xl font-black text-slate-900 tracking-tight">₹{price}</span>
+                <span className="text-3xl font-black text-slate-900 dark:text-slate-100 tracking-tight">
+                  ₹{price}
+                </span>
                 {mrp > price && (
-                  <span className="text-sm font-semibold text-slate-400 line-through">₹{mrp}</span>
+                  <span className="text-sm font-semibold text-slate-400 dark:text-slate-500 line-through">
+                    ₹{mrp}
+                  </span>
                 )}
               </div>
-              <p className="text-[11px] text-slate-500 font-medium mt-0.5">
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-0.5">
                 Inclusive of all applicable taxes
               </p>
             </div>
@@ -216,7 +230,7 @@ export const ProductDetailPage = () => {
           {/* Multi-Variant Selector Pills */}
           {variants.length > 1 && (
             <div className="space-y-2">
-              <label className="block text-xs font-extrabold uppercase tracking-wider text-slate-500">
+              <label className="block text-xs font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 Select Pack Size / Unit:
               </label>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
@@ -232,8 +246,8 @@ export const ProductDetailPage = () => {
                       onClick={() => setSelectedVariantIndex(idx)}
                       className={`p-3 rounded-2xl border text-left transition-all relative ${
                         isSelected
-                          ? 'border-brand-600 bg-emerald-50/60 ring-2 ring-brand-500/20'
-                          : 'border-slate-200 bg-white hover:border-slate-300'
+                          ? 'border-brand-600 bg-emerald-50/60 dark:bg-brand-950/40 ring-2 ring-brand-500/20'
+                          : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-slate-300 dark:hover:border-slate-600'
                       }`}
                     >
                       {vDiscount > 0 && (
@@ -241,8 +255,12 @@ export const ProductDetailPage = () => {
                           {vDiscount}% OFF
                         </span>
                       )}
-                      <div className="text-xs font-bold text-slate-800">{v.unit}</div>
-                      <div className="text-sm font-black text-slate-900 mt-1">₹{vPrice}</div>
+                      <div className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                        {v.unit}
+                      </div>
+                      <div className="text-sm font-black text-slate-900 dark:text-slate-100 mt-1">
+                        ₹{vPrice}
+                      </div>
                     </button>
                   );
                 })}
@@ -251,16 +269,16 @@ export const ProductDetailPage = () => {
           )}
 
           {/* 10-Minute Delivery Promise & Location Pill */}
-          <div className="bg-emerald-50/60 border border-emerald-100 rounded-2xl p-4 flex items-center justify-between gap-4">
+          <div className="bg-emerald-50/60 dark:bg-emerald-950/40 border border-emerald-100 dark:border-emerald-800 rounded-2xl p-4 flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-brand-600 text-white flex items-center justify-center shrink-0">
                 <Zap className="w-5 h-5 fill-current" />
               </div>
               <div>
-                <h4 className="text-xs font-black text-slate-900">
+                <h4 className="text-xs font-black text-slate-900 dark:text-slate-100">
                   Delivering in 10 mins to {deliveryPincode}
                 </h4>
-                <p className="text-[11px] text-emerald-800">
+                <p className="text-[11px] text-emerald-800 dark:text-emerald-300">
                   Packed immediately by trained dark store staff.
                 </p>
               </div>
@@ -269,32 +287,36 @@ export const ProductDetailPage = () => {
             <button
               type="button"
               onClick={() => togglePincodeModal(true)}
-              className="text-xs font-bold text-brand-700 hover:underline shrink-0"
+              className="text-xs font-bold text-brand-700 dark:text-brand-400 hover:underline shrink-0"
             >
               Change
             </button>
           </div>
 
           {/* Product Highlights & Shelf Life */}
-          <div className="space-y-3 pt-2 border-t border-slate-100">
-            <h3 className="text-sm font-bold text-slate-900">Product Highlights</h3>
-            <p className="text-xs text-slate-600 leading-relaxed">
+          <div className="space-y-3 pt-2 border-t border-slate-100 dark:border-slate-800">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+              Product Highlights
+            </h3>
+            <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
               {product.description ||
                 'Guaranteed fresh daily essential delivered directly from certified suppliers through temperature-monitored dark store storage.'}
             </p>
 
             <div className="grid grid-cols-2 gap-3 pt-2 text-xs">
-              <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100">
-                <span className="text-slate-400 block font-medium text-[11px]">Shelf Life</span>
-                <span className="font-bold text-slate-800">
+              <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
+                <span className="text-slate-400 dark:text-slate-400 block font-medium text-[11px]">
+                  Shelf Life
+                </span>
+                <span className="font-bold text-slate-800 dark:text-slate-200">
                   {product.shelfLife || 'Fresh 3-5 days'}
                 </span>
               </div>
-              <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100">
-                <span className="text-slate-400 block font-medium text-[11px]">
+              <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
+                <span className="text-slate-400 dark:text-slate-400 block font-medium text-[11px]">
                   Country of Origin
                 </span>
-                <span className="font-bold text-slate-800">
+                <span className="font-bold text-slate-800 dark:text-slate-200">
                   {product.countryOfOrigin || 'India'}
                 </span>
               </div>
@@ -304,14 +326,18 @@ export const ProductDetailPage = () => {
       </div>
 
       {/* Customer Reviews Section */}
-      <section className="bg-white rounded-3xl border border-slate-100 p-6 sm:p-8 space-y-6">
-        <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+      <section className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 p-6 sm:p-8 space-y-6">
+        <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
           <div>
-            <h3 className="text-lg font-black text-slate-900">Customer Ratings & Reviews</h3>
-            <p className="text-xs text-slate-500">Verified buyer feedback from instant orders</p>
+            <h3 className="text-lg font-black text-slate-900 dark:text-slate-100">
+              Customer Ratings & Reviews
+            </h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              Verified buyer feedback from instant orders
+            </p>
           </div>
           {Number(product.ratingAverage) > 0 && (
-            <div className="flex items-center gap-1.5 text-base font-black text-amber-600 bg-amber-50 px-3 py-1.5 rounded-xl">
+            <div className="flex items-center gap-1.5 text-base font-black text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/60 px-3 py-1.5 rounded-xl">
               <Star className="w-5 h-5 fill-amber-500 text-amber-500" />
               <span>{Number(product.ratingAverage).toFixed(1)} / 5</span>
             </div>
@@ -319,11 +345,11 @@ export const ProductDetailPage = () => {
         </div>
 
         {product.reviews?.length > 0 ? (
-          <div className="divide-y divide-slate-100">
+          <div className="divide-y divide-slate-100 dark:divide-slate-800">
             {product.reviews.map((rev) => (
               <div key={rev._id || rev.id} className="py-4 space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-slate-800">
+                  <span className="text-xs font-bold text-slate-800 dark:text-slate-200">
                     {rev.userName || 'Verified Buyer'}
                   </span>
                   <div className="flex items-center gap-0.5 text-amber-500">
@@ -332,8 +358,10 @@ export const ProductDetailPage = () => {
                     ))}
                   </div>
                 </div>
-                <p className="text-xs text-slate-600 leading-relaxed">{rev.comment}</p>
-                <span className="text-[10px] text-slate-400 block">
+                <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                  {rev.comment}
+                </p>
+                <span className="text-[10px] text-slate-400 dark:text-slate-500 block">
                   {new Date(rev.createdAt || Date.now()).toLocaleDateString('en-IN', {
                     day: 'numeric',
                     month: 'short',
@@ -344,7 +372,7 @@ export const ProductDetailPage = () => {
             ))}
           </div>
         ) : (
-          <div className="text-center py-8 text-xs text-slate-500">
+          <div className="text-center py-8 text-xs text-slate-500 dark:text-slate-400">
             No customer reviews yet. Be the first to try this fresh item!
           </div>
         )}

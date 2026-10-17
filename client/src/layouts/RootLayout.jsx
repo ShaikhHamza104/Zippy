@@ -27,9 +27,12 @@ const PageLoadingFallback = () => (
 
 export const RootLayout = () => {
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50 text-gray-900 antialiased selection:bg-brand-500 selection:text-white">
+    <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-slate-950 text-gray-900 dark:text-slate-100 antialiased selection:bg-brand-500 selection:text-white">
       <Header />
-      <main id="main-content" className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full">
+      <main
+        id="main-content"
+        className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-24 md:pb-10 w-full"
+      >
         <Suspense fallback={<PageLoadingFallback />}>
           <Outlet />
         </Suspense>

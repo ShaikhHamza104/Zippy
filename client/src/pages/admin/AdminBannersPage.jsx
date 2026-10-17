@@ -205,10 +205,10 @@ export const AdminBannersPage = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 tracking-tight">
+          <h1 className="text-2xl font-black text-slate-900 dark:text-slate-100 tracking-tight">
             Storefront Banners & Campaigns
           </h1>
-          <p className="text-sm font-medium text-slate-500">
+          <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
             Publish static campaign creatives, deal headers, and category deep-link promotional
             graphics.
           </p>
@@ -258,7 +258,7 @@ export const AdminBannersPage = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
-                <tr className="bg-slate-50 border-b border-slate-200 text-slate-500 font-extrabold uppercase tracking-wider">
+                <tr className="bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 font-extrabold uppercase tracking-wider whitespace-nowrap">
                   <th className="px-5 py-3.5">Banner Creative</th>
                   <th className="px-5 py-3.5">Campaign Title</th>
                   <th className="px-5 py-3.5">Badge Text</th>
@@ -268,15 +268,18 @@ export const AdminBannersPage = () => {
                   <th className="px-5 py-3.5 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800 font-medium text-slate-700 dark:text-slate-300">
                 {banners.map((banner) => (
-                  <tr key={banner._id} className="hover:bg-slate-50/70 transition-colors">
+                  <tr
+                    key={banner._id}
+                    className="hover:bg-slate-50/70 dark:hover:bg-slate-800/60 transition-colors whitespace-nowrap"
+                  >
                     {/* Creative Thumbnail */}
-                    <td className="px-5 py-3.5">
+                    <td className="px-5 py-3.5 whitespace-nowrap">
                       <img
                         src={banner.imageUrl}
                         alt={banner.title}
-                        className="w-24 h-12 rounded-lg object-cover bg-slate-100 border border-slate-200"
+                        className="w-24 h-12 rounded-lg object-cover bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
                         onError={(e) => {
                           e.target.src =
                             'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=300&q=80';
@@ -286,28 +289,28 @@ export const AdminBannersPage = () => {
 
                     {/* Title */}
                     <td className="px-5 py-3.5">
-                      <div className="font-extrabold text-slate-900 max-w-xs truncate">
+                      <div className="font-extrabold text-slate-900 dark:text-slate-100 max-w-xs truncate">
                         {banner.title}
                       </div>
                     </td>
 
                     {/* Badge */}
                     <td className="px-5 py-3.5 whitespace-nowrap">
-                      <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200">
+                      <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
                         {banner.badgeText || 'PROMO'}
                       </span>
                     </td>
 
                     {/* Target Link */}
-                    <td className="px-5 py-3.5 font-mono text-slate-600 whitespace-nowrap">
+                    <td className="px-5 py-3.5 font-mono text-slate-600 dark:text-slate-400 whitespace-nowrap">
                       <span className="inline-flex items-center gap-1">
                         <span>{banner.linkUrl}</span>
-                        <ExternalLink className="w-3 h-3 text-slate-400" />
+                        <ExternalLink className="w-3 h-3 text-slate-400 dark:text-slate-500" />
                       </span>
                     </td>
 
                     {/* Order */}
-                    <td className="px-5 py-3.5 font-bold text-slate-900 whitespace-nowrap">
+                    <td className="px-5 py-3.5 font-bold text-slate-900 dark:text-slate-100 whitespace-nowrap">
                       #{banner.displayOrder ?? 0}
                     </td>
 
@@ -318,9 +321,9 @@ export const AdminBannersPage = () => {
                         size="sm"
                         icon={
                           banner.isActive ? (
-                            <CheckCircle className="w-3 h-3 text-emerald-600" />
+                            <CheckCircle className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
                           ) : (
-                            <XCircle className="w-3 h-3 text-slate-400" />
+                            <XCircle className="w-3 h-3 text-slate-400 dark:text-slate-500" />
                           )
                         }
                       >
@@ -334,7 +337,7 @@ export const AdminBannersPage = () => {
                         <button
                           type="button"
                           onClick={() => handleOpenEditModal(banner)}
-                          className="p-1.5 text-slate-600 hover:text-blue-600 hover:bg-slate-100 rounded-lg transition-colors font-bold text-xs inline-flex items-center gap-1"
+                          className="p-1.5 text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors font-bold text-xs inline-flex items-center gap-1"
                           title="Edit Banner"
                         >
                           <Edit2 className="w-3.5 h-3.5" />
@@ -348,7 +351,7 @@ export const AdminBannersPage = () => {
                               deleteBannerMutation.mutate(banner._id);
                             }
                           }}
-                          className="p-1.5 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors font-bold text-xs inline-flex items-center gap-1"
+                          className="p-1.5 text-slate-500 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg transition-colors font-bold text-xs inline-flex items-center gap-1"
                           title="Delete Banner"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -375,7 +378,9 @@ export const AdminBannersPage = () => {
       >
         <form onSubmit={handleFormSubmit} className="space-y-4 p-6 text-xs">
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1">Banner Title *</label>
+            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+              Banner Title *
+            </label>
             <Input
               type="text"
               required
@@ -388,8 +393,10 @@ export const AdminBannersPage = () => {
 
           <div>
             <div className="flex items-center justify-between mb-1">
-              <label className="text-xs font-bold text-slate-700">Image Asset URL *</label>
-              <label className="inline-flex items-center gap-1 text-[11px] font-bold text-brand-600 hover:text-brand-700 cursor-pointer">
+              <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                Image Asset URL *
+              </label>
+              <label className="inline-flex items-center gap-1 text-[11px] font-bold text-brand-600 dark:text-emerald-400 hover:text-brand-700 dark:hover:text-emerald-300 cursor-pointer">
                 <Upload className="w-3 h-3" />
                 <span>{isUploadingImage ? 'Uploading...' : 'Upload Image'}</span>
                 <input
@@ -414,7 +421,7 @@ export const AdminBannersPage = () => {
                 <img
                   src={formData.imageUrl}
                   alt="Preview"
-                  className="w-full h-28 rounded-lg object-cover border border-slate-200"
+                  className="w-full h-28 rounded-lg object-cover border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800"
                 />
               </div>
             )}
@@ -422,7 +429,9 @@ export const AdminBannersPage = () => {
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">Badge Text</label>
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                Badge Text
+              </label>
               <Input
                 type="text"
                 value={formData.badgeText}
@@ -433,7 +442,9 @@ export const AdminBannersPage = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">Target Link URL</label>
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                Target Link URL
+              </label>
               <Input
                 type="text"
                 value={formData.linkUrl}
@@ -446,7 +457,9 @@ export const AdminBannersPage = () => {
 
           <div className="grid grid-cols-2 gap-3 items-center">
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">Display Order</label>
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                Display Order
+              </label>
               <Input
                 type="number"
                 min="0"
@@ -462,18 +475,18 @@ export const AdminBannersPage = () => {
                 id="bannerActiveCheck"
                 checked={formData.isActive}
                 onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                className="w-4 h-4 text-brand-600 rounded border-slate-300 focus:ring-brand-500"
+                className="w-4 h-4 text-brand-600 rounded border-slate-300 dark:border-slate-700 dark:bg-slate-800 focus:ring-brand-500"
               />
               <label
                 htmlFor="bannerActiveCheck"
-                className="text-xs font-bold text-slate-800 cursor-pointer"
+                className="text-xs font-bold text-slate-800 dark:text-slate-200 cursor-pointer"
               >
                 Publish on Storefront
               </label>
             </div>
           </div>
 
-          <div className="pt-4 border-t border-slate-200 flex items-center justify-end gap-2">
+          <div className="pt-4 border-t border-slate-200 dark:border-slate-700 flex items-center justify-end gap-2">
             <Button type="button" variant="outline" size="sm" onClick={() => setIsModalOpen(false)}>
               Cancel
             </Button>

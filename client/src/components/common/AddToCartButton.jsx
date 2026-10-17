@@ -43,7 +43,7 @@ export const AddToCartButton = ({
       <span
         className={cn(
           'inline-flex items-center justify-center font-bold text-xs uppercase tracking-wider rounded-xl',
-          'bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed select-none px-3 py-1.5',
+          'bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 border border-slate-200 dark:border-slate-700 cursor-not-allowed select-none px-3 py-1.5',
           className
         )}
       >
@@ -62,7 +62,7 @@ export const AddToCartButton = ({
         aria-label={`Add ${variant?.unit || 'item'} to cart`}
         className={cn(
           'inline-flex items-center justify-center font-extrabold uppercase tracking-wider rounded-xl',
-          'border border-brand-600 bg-emerald-50 text-brand-700 hover:bg-brand-600 hover:text-white',
+          'border border-brand-600 bg-emerald-50 dark:bg-brand-950/60 text-brand-700 dark:text-brand-300 hover:bg-brand-600 hover:text-white dark:hover:bg-brand-600 dark:hover:text-white',
           'transition-all duration-150 shadow-sm active:scale-95 focus:outline-none focus:ring-2 focus:ring-brand-500',
           size === 'sm' && 'px-3 py-1 text-xs min-h-[34px]',
           size === 'md' && 'px-4 py-1.5 text-xs min-h-[38px]',

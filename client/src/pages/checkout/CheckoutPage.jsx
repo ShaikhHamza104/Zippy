@@ -231,18 +231,20 @@ export const CheckoutPage = () => {
         {/* Left Column: Address & Payment Selection */}
         <div className="lg:col-span-2 space-y-6">
           {/* 1. Delivery Address Selection */}
-          <div className="bg-white rounded-3xl border border-slate-100 p-6 shadow-xs space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 p-6 shadow-xs space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
               <div className="flex items-center gap-2">
-                <span className="p-1.5 bg-brand-50 text-brand-700 rounded-lg">
+                <span className="p-1.5 bg-brand-50 dark:bg-brand-950/60 text-brand-700 dark:text-brand-300 rounded-lg">
                   <MapPin className="w-4 h-4" />
                 </span>
-                <h2 className="text-base font-black text-slate-900">1. Delivery Address</h2>
+                <h2 className="text-base font-black text-slate-900 dark:text-slate-100">
+                  1. Delivery Address
+                </h2>
               </div>
               <button
                 type="button"
                 onClick={() => setIsAddressModalOpen(true)}
-                className="text-xs font-bold text-brand-700 hover:underline flex items-center gap-1"
+                className="text-xs font-bold text-brand-700 dark:text-brand-400 hover:underline flex items-center gap-1"
               >
                 <Plus className="w-3.5 h-3.5" />
                 Add New Address
@@ -250,10 +252,12 @@ export const CheckoutPage = () => {
             </div>
 
             {isLoadingAddresses ? (
-              <div className="h-20 bg-slate-100 animate-pulse rounded-2xl" />
+              <div className="h-20 bg-slate-100 dark:bg-slate-800 animate-pulse rounded-2xl" />
             ) : addresses.length === 0 ? (
-              <div className="p-6 text-center border-2 border-dashed border-slate-200 rounded-2xl">
-                <p className="text-xs text-slate-500 mb-3">No delivery address saved yet.</p>
+              <div className="p-6 text-center border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-2xl">
+                <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">
+                  No delivery address saved yet.
+                </p>
                 <Button variant="primary" size="sm" onClick={() => setIsAddressModalOpen(true)}>
                   Add Delivery Address
                 </Button>
@@ -268,20 +272,22 @@ export const CheckoutPage = () => {
                       onClick={() => setSelectedAddressId(addr.id)}
                       className={`p-4 rounded-2xl border cursor-pointer transition-all ${
                         isSelected
-                          ? 'border-brand-600 bg-emerald-50/50 ring-2 ring-brand-500/20'
-                          : 'border-slate-200 bg-white hover:border-slate-300'
+                          ? 'border-brand-600 bg-emerald-50/50 dark:bg-brand-950/40 ring-2 ring-brand-500/20'
+                          : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-slate-300 dark:hover:border-slate-600'
                       }`}
                     >
                       <div className="flex items-center justify-between mb-1">
-                        <span className="text-xs font-black text-slate-900">{addr.fullName}</span>
+                        <span className="text-xs font-black text-slate-900 dark:text-slate-100">
+                          {addr.fullName}
+                        </span>
                         {isSelected && (
                           <CheckCircle2 className="w-4 h-4 text-brand-600 fill-brand-600 text-white" />
                         )}
                       </div>
-                      <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
+                      <p className="text-xs text-slate-600 dark:text-slate-300 line-clamp-2 leading-relaxed">
                         {addr.addressLine1}, {addr.city} - {addr.pincode}
                       </p>
-                      <span className="text-[11px] text-slate-400 block mt-1">
+                      <span className="text-[11px] text-slate-400 dark:text-slate-400 block mt-1">
                         Phone: {addr.phone}
                       </span>
                     </div>
@@ -292,12 +298,14 @@ export const CheckoutPage = () => {
           </div>
 
           {/* 2. Payment Method Selection */}
-          <div className="bg-white rounded-3xl border border-slate-100 p-6 shadow-xs space-y-4">
-            <div className="flex items-center gap-2 pb-3 border-b border-slate-100">
-              <span className="p-1.5 bg-amber-50 text-amber-700 rounded-lg">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 p-6 shadow-xs space-y-4">
+            <div className="flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-slate-800">
+              <span className="p-1.5 bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 rounded-lg">
                 <CreditCard className="w-4 h-4" />
               </span>
-              <h2 className="text-base font-black text-slate-900">2. Payment Method</h2>
+              <h2 className="text-base font-black text-slate-900 dark:text-slate-100">
+                2. Payment Method
+              </h2>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -305,21 +313,21 @@ export const CheckoutPage = () => {
                 onClick={() => setPaymentMethod('COD')}
                 className={`p-4 rounded-2xl border cursor-pointer transition-all flex items-start gap-3 ${
                   paymentMethod === 'COD'
-                    ? 'border-brand-600 bg-emerald-50/50 ring-2 ring-brand-500/20'
-                    : 'border-slate-200 bg-white hover:border-slate-300'
+                    ? 'border-brand-600 bg-emerald-50/50 dark:bg-brand-950/40 ring-2 ring-brand-500/20'
+                    : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-slate-300 dark:hover:border-slate-600'
                 }`}
               >
-                <Banknote className="w-5 h-5 text-brand-600 mt-0.5 shrink-0" />
+                <Banknote className="w-5 h-5 text-brand-600 dark:text-brand-400 mt-0.5 shrink-0" />
                 <div className="flex-1">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-black text-slate-900">
+                    <span className="text-xs font-black text-slate-900 dark:text-slate-100">
                       Cash on Delivery (COD)
                     </span>
                     {paymentMethod === 'COD' && (
                       <CheckCircle2 className="w-4 h-4 text-brand-600 fill-brand-600 text-white" />
                     )}
                   </div>
-                  <p className="text-[11px] text-slate-500 mt-0.5">
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
                     Pay with Cash or UPI upon 10-minute order arrival.
                   </p>
                 </div>
@@ -329,19 +337,21 @@ export const CheckoutPage = () => {
                 onClick={() => setPaymentMethod('RAZORPAY')}
                 className={`p-4 rounded-2xl border cursor-pointer transition-all flex items-start gap-3 ${
                   paymentMethod === 'RAZORPAY'
-                    ? 'border-brand-600 bg-emerald-50/50 ring-2 ring-brand-500/20'
-                    : 'border-slate-200 bg-white hover:border-slate-300'
+                    ? 'border-brand-600 bg-emerald-50/50 dark:bg-brand-950/40 ring-2 ring-brand-500/20'
+                    : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-slate-300 dark:hover:border-slate-600'
                 }`}
               >
-                <CreditCard className="w-5 h-5 text-sky-600 mt-0.5 shrink-0" />
+                <CreditCard className="w-5 h-5 text-sky-600 dark:text-sky-400 mt-0.5 shrink-0" />
                 <div className="flex-1">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-black text-slate-900">Online Payment / UPI</span>
+                    <span className="text-xs font-black text-slate-900 dark:text-slate-100">
+                      Online Payment / UPI
+                    </span>
                     {paymentMethod === 'RAZORPAY' && (
                       <CheckCircle2 className="w-4 h-4 text-brand-600 fill-brand-600 text-white" />
                     )}
                   </div>
-                  <p className="text-[11px] text-slate-500 mt-0.5">
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
                     Credit/Debit Cards, UPI, NetBanking via Razorpay.
                   </p>
                 </div>
@@ -351,56 +361,64 @@ export const CheckoutPage = () => {
         </div>
 
         {/* Right Column: Order Bill Breakdown & CTA */}
-        <div className="bg-white rounded-3xl border border-slate-100 p-6 shadow-xs space-y-5 sticky top-24">
-          <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-            <h3 className="text-base font-black text-slate-900">Order Summary</h3>
-            <span className="text-xs font-bold text-slate-500">
+        <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 p-6 shadow-xs space-y-5 sticky top-24">
+          <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+            <h3 className="text-base font-black text-slate-900 dark:text-slate-100">
+              Order Summary
+            </h3>
+            <span className="text-xs font-bold text-slate-500 dark:text-slate-400">
               {totalItemCount} {totalItemCount === 1 ? 'item' : 'items'}
             </span>
           </div>
 
           {/* Item Thumbnails Preview */}
-          <div className="max-h-48 overflow-y-auto divide-y divide-slate-100 pr-1 space-y-2">
+          <div className="max-h-48 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-800 pr-1 space-y-2">
             {items.map((it) => (
               <div key={it.variantSku} className="pt-2 flex items-center justify-between text-xs">
                 <div className="flex items-center gap-2 truncate max-w-[200px]">
-                  <span className="font-bold text-slate-800 truncate">{it.name}</span>
-                  <span className="text-slate-400 shrink-0">x{it.quantity}</span>
+                  <span className="font-bold text-slate-800 dark:text-slate-200 truncate">
+                    {it.name}
+                  </span>
+                  <span className="text-slate-400 dark:text-slate-500 shrink-0">
+                    x{it.quantity}
+                  </span>
                 </div>
-                <span className="font-black text-slate-900">₹{it.price * it.quantity}</span>
+                <span className="font-black text-slate-900 dark:text-slate-100">
+                  ₹{it.price * it.quantity}
+                </span>
               </div>
             ))}
           </div>
 
           {/* Pricing Details */}
-          <div className="space-y-2 text-xs text-slate-600 pt-3 border-t border-slate-100">
+          <div className="space-y-2 text-xs text-slate-600 dark:text-slate-300 pt-3 border-t border-slate-100 dark:border-slate-800">
             <div className="flex justify-between">
-              <span>Items Total (MRP)</span>
-              <span className="font-medium text-slate-800">₹{totalMrp}</span>
+              <span className="text-slate-600 dark:text-slate-400">Items Total (MRP)</span>
+              <span className="font-medium text-slate-800 dark:text-slate-200">₹{totalMrp}</span>
             </div>
 
             {totalMrp > subtotal && (
-              <div className="flex justify-between text-brand-700 font-semibold">
+              <div className="flex justify-between text-brand-700 dark:text-brand-400 font-semibold">
                 <span>Product Savings</span>
                 <span>-₹{totalMrp - subtotal}</span>
               </div>
             )}
 
             {discount > 0 && (
-              <div className="flex justify-between text-brand-700 font-semibold">
+              <div className="flex justify-between text-brand-700 dark:text-brand-400 font-semibold">
                 <span>Coupon ({coupon?.code})</span>
                 <span>-₹{discount}</span>
               </div>
             )}
 
             <div className="flex justify-between">
-              <span>Delivery Fee</span>
-              <span className="font-medium text-slate-800">
+              <span className="text-slate-600 dark:text-slate-400">Delivery Fee</span>
+              <span className="font-medium text-slate-800 dark:text-slate-200">
                 {isFreeDelivery ? 'FREE' : `₹${deliveryFee}`}
               </span>
             </div>
 
-            <div className="pt-3 border-t border-slate-200 flex justify-between items-center text-base font-black text-slate-900">
+            <div className="pt-3 border-t border-slate-200 dark:border-slate-700 flex justify-between items-center text-base font-black text-slate-900 dark:text-slate-100">
               <span>To Pay</span>
               <span>₹{grandTotal}</span>
             </div>
