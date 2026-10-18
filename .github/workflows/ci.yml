@@ -152,8 +152,11 @@ jobs:
       - name: Run Prisma Schema Deploy Migrations
         run: pnpm --filter @zippy/server prisma:deploy
 
-      - name: Execute Full Vitest Test Suite (Server + Client)
-        run: pnpm test
+      - name: Execute Server Vitest Suite
+        run: pnpm --filter @zippy/server test
+
+      - name: Execute Client Vitest Suite
+        run: pnpm --filter @zippy/client test
 
   # ----------------------------------------------------------------------------
   # Job 4: Client Production Bundle Compilation
