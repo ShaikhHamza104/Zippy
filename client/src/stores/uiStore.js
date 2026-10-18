@@ -9,9 +9,6 @@ const getInitialTheme = () => {
   try {
     const saved = localStorage.getItem(SAVED_THEME_KEY);
     if (saved === 'dark' || saved === 'light') return saved;
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      return 'dark';
-    }
   } catch {
     // Ignore
   }
