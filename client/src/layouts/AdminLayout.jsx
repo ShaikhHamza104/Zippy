@@ -79,20 +79,20 @@ export const AdminLayout = () => {
 
       {/* Sidebar Navigation */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 w-64 bg-slate-900 text-white flex flex-col justify-between transition-transform duration-200 ease-in-out lg:translate-x-0 lg:static lg:inset-auto ${
+        className={`fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-slate-200 text-slate-800 flex flex-col justify-between transition-transform duration-200 ease-in-out lg:translate-x-0 lg:static lg:inset-auto ${
           isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
         <div>
           {/* Logo & Close */}
-          <div className="h-16 flex items-center justify-between px-6 border-b border-slate-800">
+          <div className="h-16 flex items-center justify-between px-6 border-b border-slate-200">
             <Link to="/admin" className="flex items-center gap-2">
               <span className="w-8 h-8 rounded-lg bg-brand-600 text-white flex items-center justify-center font-black">
                 <Zap className="w-5 h-5 fill-current" />
               </span>
-              <span className="text-xl font-black tracking-tight text-white">
+              <span className="text-xl font-black tracking-tight text-slate-900">
                 Zippy<span className="text-brand-500">.</span>
-                <span className="text-xs font-bold uppercase tracking-wider text-amber-400 ml-1.5 px-1.5 py-0.5 rounded bg-amber-400/10 border border-amber-400/20">
+                <span className="text-xs font-bold uppercase tracking-wider text-amber-700 ml-1.5 px-1.5 py-0.5 rounded bg-amber-50 border border-amber-200">
                   Admin
                 </span>
               </span>
@@ -101,7 +101,7 @@ export const AdminLayout = () => {
             <button
               type="button"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="p-1 text-slate-400 hover:text-white lg:hidden"
+              className="p-1 text-slate-400 hover:text-slate-700 lg:hidden"
               aria-label="Close sidebar"
             >
               <X className="w-5 h-5" />
@@ -122,7 +122,7 @@ export const AdminLayout = () => {
                     `flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-colors ${
                       isActive
                         ? 'bg-brand-600 text-white shadow-sm'
-                        : 'text-slate-400 hover:text-white hover:bg-slate-800/80'
+                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                     }`
                   }
                 >
@@ -135,28 +135,28 @@ export const AdminLayout = () => {
         </div>
 
         {/* Footer Admin Identity & Quick Signout */}
-        <div className="p-4 border-t border-slate-800 space-y-3">
+        <div className="p-4 border-t border-slate-200 space-y-3 bg-slate-50/70">
           <Link
             to="/"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold text-slate-300 hover:text-white hover:bg-slate-800 transition-colors"
+            className="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:text-slate-900 hover:bg-slate-200/60 transition-colors"
           >
             <span className="flex items-center gap-2">
-              <ExternalLink className="w-3.5 h-3.5 text-brand-400" />
+              <ExternalLink className="w-3.5 h-3.5 text-brand-600" />
               View Storefront
             </span>
-            <span className="text-[10px] bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded">
+            <span className="text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200 px-1.5 py-0.5 rounded font-bold">
               Live
             </span>
           </Link>
 
-          <div className="pt-2 border-t border-slate-800 flex items-center justify-between gap-2">
+          <div className="pt-2 border-t border-slate-200 flex items-center justify-between gap-2">
             <div className="min-w-0">
-              <div className="text-xs font-bold text-white truncate">
+              <div className="text-xs font-bold text-slate-900 truncate">
                 {user?.name || 'Administrator'}
               </div>
-              <div className="text-[10px] text-amber-400 font-semibold uppercase tracking-wider">
+              <div className="text-[10px] text-amber-700 font-extrabold uppercase tracking-wider">
                 {user?.role}
               </div>
             </div>
@@ -165,7 +165,7 @@ export const AdminLayout = () => {
               type="button"
               onClick={handleLogout}
               aria-label="Admin Sign Out"
-              className="p-1.5 text-slate-400 hover:text-red-400 hover:bg-slate-800 rounded-lg transition-colors"
+              className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
               title="Sign Out"
             >
               <LogOut className="w-4 h-4" />
