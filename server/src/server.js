@@ -2,7 +2,7 @@ import app from './app.js';
 import { env } from './config/env.js';
 import { logger } from './config/logger.js';
 import { connectMongoDB, disconnectMongoDB } from './database/mongo.js';
-import { prisma } from './database/prisma.js';
+import { connectPrisma, disconnectPrisma } from './database/prisma.js';
 
 let server;
 
@@ -10,7 +10,7 @@ let server;
 const startServer = async () => {
   try {
     await connectMongoDB();
-    await prisma.$connect();
+    await connectPrisma();
     logger.info('Database connections established (MySQL Prisma & MongoDB Mongoose)');
 
     server = app.listen(env.PORT, () => {
@@ -44,7 +44,7 @@ const gracefulShutdown = (signal) => {
     }
     try {
       await disconnectMongoDB();
-      await prisma.$disconnect();
+      await disconnectPrisma();
       logger.info('Database connections closed cleanly.');
     } catch (dbErr) {
       logger.error({ dbErr }, 'Error closing database connections during shutdown');

@@ -24,4 +24,26 @@ if (env.NODE_ENV === 'development') {
   globalForPrisma.prisma = prisma;
 }
 
+export const connectPrisma = async (retryCount = 5, retryDelayMs = 2500) => {
+  for (let attempt = 1; attempt <= retryCount; attempt++) {
+    try {
+      logger.info(`Connecting to MySQL Prisma (attempt ${attempt}/${retryCount})...`);
+      await prisma.$connect();
+      logger.info('Connected to MySQL Prisma successfully');
+      return;
+    } catch (err) {
+      logger.error({ err, attempt }, `Failed to connect to MySQL Prisma on attempt ${attempt}`);
+      if (attempt === retryCount) {
+        throw new Error(`Prisma connection failed after ${retryCount} attempts: ${err.message}`);
+      }
+      await new Promise((resolve) => setTimeout(resolve, retryDelayMs));
+    }
+  }
+};
+
+export const disconnectPrisma = async () => {
+  await prisma.$disconnect();
+  logger.info('Disconnected from MySQL Prisma');
+};
+
 export default prisma;
