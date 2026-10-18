@@ -1,0 +1,35 @@
+services:
+  - type: web
+    name: zippy-ecom
+    runtime: node
+    plan: free
+    region: singapore
+    buildCommand: pnpm install && pnpm build
+    startCommand: pnpm start
+    envVars:
+      - key: NODE_VERSION
+        value: 22.14.0
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        value: mysql://3AuZxjWdv6CYP9S.root:aApOPNHqYZWNMV8g@gateway01.ap-southeast-1.prod.aws.tidbcloud.com:4000/zippy_production?sslaccept=strict
+      - key: MONGODB_URI
+        value: mongodb+srv://zippy_admin:vS9yAfRETOQiVa62@zippy-cluster.6nzwch9.mongodb.net/zippy_production?retryWrites=true&w=majority
+      - key: CLIENT_URL
+        value: https://www.zippyecom.me
+      - key: CORS_ORIGIN
+        value: https://www.zippyecom.me,https://zippyecom.me
+      - key: JWT_ACCESS_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: JWT_RESET_PASSWORD_SECRET
+        generateValue: true
+      - key: JWT_EMAIL_VERIFICATION_SECRET
+        generateValue: true
+      - key: SUPER_ADMIN_NAME
+        value: Hamza Shaikh
+      - key: SUPER_ADMIN_EMAIL
+        value: admin@zippyecom.me
+      - key: SUPER_ADMIN_PASSWORD
+        value: ZippyAdmin2026#Secure
