@@ -34,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup pnpm Package Manager
         uses: pnpm/action-setup@v4
@@ -61,7 +61,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup pnpm Package Manager
         uses: pnpm/action-setup@v4
@@ -130,7 +130,7 @@ jobs:
 
     steps:
       - name: Checkout Code Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup pnpm Package Manager
         uses: pnpm/action-setup@v4
@@ -164,7 +164,7 @@ jobs:
     needs: [lint]
     steps:
       - name: Checkout Code Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup pnpm Package Manager
         uses: pnpm/action-setup@v4
@@ -201,7 +201,7 @@ jobs:
       url: https://zippy.yourdomain.com
     steps:
       - name: Checkout Code Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Display Deployment Metadata
         run: |
