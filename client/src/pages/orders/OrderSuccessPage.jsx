@@ -2,7 +2,7 @@
 import React from 'react';
 import { useParams, useLocation, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { CheckCircle2, Clock, MapPin, ArrowRight, Zap } from 'lucide-react';
+import { CheckCircle2, MapPin, ArrowRight, Zap } from 'lucide-react';
 import { apiFetch } from '../../services/api.js';
 import { Button, Skeleton } from '../../components/ui/index.js';
 

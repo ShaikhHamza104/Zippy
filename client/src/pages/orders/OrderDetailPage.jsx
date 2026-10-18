@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { CheckCircle2, MapPin, XCircle, ArrowLeft, ShoppingBag, Star } from 'lucide-react';
+import { MapPin, XCircle, ArrowLeft, ShoppingBag, Star } from 'lucide-react';
 import { apiFetch } from '../../services/api.js';
 import { useUIStore } from '../../stores/uiStore.js';
 import { Button, Badge, Skeleton, Modal } from '../../components/ui/index.js';
