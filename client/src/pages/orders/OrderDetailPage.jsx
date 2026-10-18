@@ -219,7 +219,7 @@ export const OrderDetailPage = () => {
                           {productName}
                         </h4>
                       )}
-                      <span className="text-slate-400 dark:text-slate-400 font-medium block">
+                      <span className="text-slate-600 dark:text-slate-300 font-medium block">
                         {it.unit ? `${it.unit} • ` : ''}₹{price} each
                       </span>
                       {productId && (
@@ -235,7 +235,7 @@ export const OrderDetailPage = () => {
                   </div>
 
                   <div className="text-right">
-                    <span className="text-slate-500 dark:text-slate-400 font-semibold block">
+                    <span className="text-slate-600 dark:text-slate-400 font-semibold block">
                       Qty: {quantity}
                     </span>
                     <span className="font-black text-slate-900 dark:text-slate-100 text-sm">
@@ -252,7 +252,7 @@ export const OrderDetailPage = () => {
         <div className="space-y-4">
           {/* Delivery Address Snapshot */}
           <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 p-5 shadow-xs space-y-2">
-            <h3 className="text-xs font-black uppercase tracking-wider text-slate-400 dark:text-slate-400 flex items-center gap-1.5">
+            <h3 className="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
               <MapPin className="w-3.5 h-3.5 text-brand-600 dark:text-brand-400" />
               Delivery Address
             </h3>
@@ -261,7 +261,7 @@ export const OrderDetailPage = () => {
                 {deliveryAddress.fullName || order.user?.name}
               </p>
             )}
-            <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+            <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
               {[
                 deliveryAddress.addressLine1 || deliveryAddress.line1,
                 deliveryAddress.addressLine2 || deliveryAddress.line2,
@@ -269,7 +269,9 @@ export const OrderDetailPage = () => {
                 .filter(Boolean)
                 .join(', ')}
               {deliveryAddress.landmark && (
-                <span className="block text-slate-400">Near: {deliveryAddress.landmark}</span>
+                <span className="block text-slate-600 dark:text-slate-400">
+                  Near: {deliveryAddress.landmark}
+                </span>
               )}
               {(deliveryAddress.city || deliveryAddress.state || deliveryAddress.pincode) && (
                 <>
@@ -280,32 +282,32 @@ export const OrderDetailPage = () => {
               )}
             </p>
             {(deliveryAddress.phone || order.user?.phone) && (
-              <p className="text-[11px] text-slate-400 dark:text-slate-400 pt-1">
+              <p className="text-[11px] text-slate-600 dark:text-slate-400 pt-1 font-semibold">
                 Phone: {deliveryAddress.phone || order.user?.phone}
               </p>
             )}
           </div>
 
           {/* Bill Summary */}
-          <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 p-5 shadow-xs space-y-2.5 text-xs text-slate-600 dark:text-slate-300">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 p-5 shadow-xs space-y-2.5 text-xs text-slate-700 dark:text-slate-300">
             <h3 className="font-black text-slate-900 dark:text-slate-100 pb-1 border-b border-slate-100 dark:border-slate-800">
               Payment Breakdown
             </h3>
             <div className="flex justify-between">
               <span className="text-slate-600 dark:text-slate-400">Subtotal</span>
-              <span className="font-medium text-slate-800 dark:text-slate-200">
+              <span className="font-bold text-slate-900 dark:text-slate-100">
                 ₹{order.subtotal}
               </span>
             </div>
             {Number(order.discountAmount) > 0 && (
-              <div className="flex justify-between text-brand-700 font-semibold">
+              <div className="flex justify-between text-brand-700 font-bold">
                 <span>Discount</span>
                 <span>-₹{order.discountAmount}</span>
               </div>
             )}
             <div className="flex justify-between">
               <span className="text-slate-600 dark:text-slate-400">Delivery Fee</span>
-              <span className="font-medium text-slate-800 dark:text-slate-200">
+              <span className="font-bold text-slate-900 dark:text-slate-100">
                 {Number(order.deliveryFee) === 0 ? 'FREE' : `₹${order.deliveryFee}`}
               </span>
             </div>
@@ -313,9 +315,9 @@ export const OrderDetailPage = () => {
               <span>Total Paid</span>
               <span>₹{order.totalAmount}</span>
             </div>
-            <div className="pt-1 text-[11px] text-slate-400 dark:text-slate-400 flex items-center justify-between">
+            <div className="pt-1 text-[11px] text-slate-600 dark:text-slate-400 flex items-center justify-between">
               <span>Method:</span>
-              <span className="font-bold uppercase text-slate-700 dark:text-slate-300">
+              <span className="font-black uppercase text-slate-900 dark:text-slate-100">
                 {order.payment?.method || order.paymentMethod || 'COD'}
               </span>
             </div>

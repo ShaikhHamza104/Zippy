@@ -1,5 +1,5 @@
 // client/src/components/cart/CartDrawer.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ShoppingBag, X, Tag, ArrowRight, Sparkles, Truck, CheckCircle2 } from 'lucide-react';
 import { useCart } from '../../hooks/useCart.js';
@@ -29,6 +29,53 @@ export const CartDrawer = () => {
   const [couponInput, setCouponInput] = useState('');
   const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
 
+  const pushedRef = React.useRef(false);
+
+  const handleClose = useCallback(() => {
+    toggleCartDrawer(false);
+  }, [toggleCartDrawer]);
+
+  // Support phone hardware/gesture back button & escape key
+  useEffect(() => {
+    if (!isCartDrawerOpen) return;
+
+    pushedRef.current = false;
+    if (typeof window !== 'undefined' && window.history?.pushState) {
+      window.history.pushState({ cartDrawerOpen: true }, '');
+      pushedRef.current = true;
+    }
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        toggleCartDrawer(false);
+      }
+    };
+
+    const handlePopState = () => {
+      pushedRef.current = false;
+      toggleCartDrawer(false);
+    };
+
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('popstate', handlePopState);
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = 'unset';
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('popstate', handlePopState);
+
+      if (
+        pushedRef.current &&
+        typeof window !== 'undefined' &&
+        window.history?.state?.cartDrawerOpen
+      ) {
+        pushedRef.current = false;
+        window.history.back();
+      }
+    };
+  }, [isCartDrawerOpen, toggleCartDrawer]);
+
   if (!isCartDrawerOpen) return null;
 
   const freeDeliveryThreshold = 199;
@@ -48,7 +95,7 @@ export const CartDrawer = () => {
   };
 
   const handleCheckoutClick = () => {
-    toggleCartDrawer(false);
+    handleClose();
     navigate('/checkout');
   };
 
@@ -62,12 +109,12 @@ export const CartDrawer = () => {
       {/* Backdrop */}
       <div
         className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity"
-        onClick={() => toggleCartDrawer(false)}
+        onClick={handleClose}
         aria-hidden="true"
       />
 
-      <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
-        <div className="w-screen max-w-md bg-white dark:bg-slate-900 border-l border-transparent dark:border-slate-800 shadow-2xl flex flex-col">
+      <div className="fixed inset-y-0 right-0 max-w-full flex sm:pl-10 w-full sm:w-auto">
+        <div className="w-full sm:w-screen sm:max-w-md bg-white dark:bg-slate-900 border-l border-transparent dark:border-slate-800 shadow-2xl flex flex-col">
           {/* Header */}
           <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 sticky top-0 z-10">
             <div className="flex items-center gap-2">
@@ -81,7 +128,7 @@ export const CartDrawer = () => {
                 >
                   My Cart
                 </h2>
-                <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+                <p className="text-xs text-slate-600 dark:text-slate-400 font-semibold">
                   {totalItemCount} {totalItemCount === 1 ? 'item' : 'items'} in basket
                 </p>
               </div>
@@ -89,9 +136,9 @@ export const CartDrawer = () => {
 
             <button
               type="button"
-              onClick={() => toggleCartDrawer(false)}
+              onClick={handleClose}
               aria-label="Close cart drawer"
-              className="p-2 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
+              className="p-2 text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 rounded-xl transition-colors"
             >
               <X className="w-5 h-5" />
             </button>

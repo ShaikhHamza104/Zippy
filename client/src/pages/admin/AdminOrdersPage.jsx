@@ -322,8 +322,8 @@ export const AdminOrdersPage = () => {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
-              <thead>
-                <tr className="bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 font-extrabold uppercase tracking-wider whitespace-nowrap">
+              <thead className="hidden sm:table-header-group">
+                <tr className="bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-extrabold uppercase tracking-wider whitespace-nowrap">
                   <th className="px-5 py-3.5">Order #</th>
                   <th className="px-5 py-3.5">Date</th>
                   <th className="px-5 py-3.5">Customer</th>
@@ -334,7 +334,7 @@ export const AdminOrdersPage = () => {
                   <th className="px-5 py-3.5 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800 font-medium text-slate-700 dark:text-slate-300">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800 font-medium text-slate-700 dark:text-slate-300 block sm:table-row-group">
                 {orders.map((order) => {
                   const statusConfig = STATUS_BADGE_VARIANTS[order.status] || {
                     variant: 'neutral',
@@ -347,52 +347,74 @@ export const AdminOrdersPage = () => {
                   return (
                     <tr
                       key={order.id}
-                      className="hover:bg-slate-50/70 dark:hover:bg-slate-800/60 transition-colors whitespace-nowrap"
+                      className="block sm:table-row p-4 sm:p-0 hover:bg-slate-50/70 dark:hover:bg-slate-800/60 transition-colors border-b sm:border-b-0 border-slate-100 dark:border-slate-800 space-y-2.5 sm:space-y-0"
                     >
                       {/* Order Number */}
-                      <td className="px-5 py-3.5 font-mono font-bold text-slate-900 dark:text-slate-100 whitespace-nowrap">
-                        {order.orderNumber}
+                      <td className="flex sm:table-cell items-center justify-between sm:px-5 sm:py-3.5 font-mono font-bold text-slate-900 dark:text-slate-100 whitespace-nowrap">
+                        <span className="sm:hidden text-[10px] font-bold text-slate-400 uppercase">
+                          Order
+                        </span>
+                        <span>{order.orderNumber}</span>
                       </td>
 
                       {/* Date */}
-                      <td className="px-5 py-3.5 whitespace-nowrap text-slate-500 dark:text-slate-400">
-                        {new Date(order.createdAt).toLocaleDateString('en-IN', {
-                          month: 'short',
-                          day: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        })}
+                      <td className="flex sm:table-cell items-center justify-between sm:px-5 sm:py-3.5 whitespace-nowrap text-slate-600 dark:text-slate-400">
+                        <span className="sm:hidden text-[10px] font-bold text-slate-400 uppercase">
+                          Date
+                        </span>
+                        <span>
+                          {new Date(order.createdAt).toLocaleDateString('en-IN', {
+                            month: 'short',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                          })}
+                        </span>
                       </td>
 
                       {/* Customer */}
-                      <td className="px-5 py-3.5">
-                        <div className="font-bold text-slate-900 dark:text-slate-100">
-                          {order.user?.name || 'Customer'}
-                        </div>
-                        <div className="text-[11px] text-slate-400 dark:text-slate-500">
-                          {order.user?.phone || order.user?.email}
+                      <td className="flex sm:table-cell flex-col sm:flex-row justify-between sm:px-5 sm:py-3.5">
+                        <span className="sm:hidden text-[10px] font-bold text-slate-400 uppercase mb-0.5">
+                          Customer
+                        </span>
+                        <div>
+                          <div className="font-bold text-slate-900 dark:text-slate-100">
+                            {order.user?.name || 'Customer'}
+                          </div>
+                          <div className="text-[11px] text-slate-500 dark:text-slate-400">
+                            {order.user?.phone || order.user?.email}
+                          </div>
                         </div>
                       </td>
 
                       {/* Items Count */}
-                      <td className="px-5 py-3.5 whitespace-nowrap">
+                      <td className="flex sm:table-cell items-center justify-between sm:px-5 sm:py-3.5 whitespace-nowrap">
+                        <span className="sm:hidden text-[10px] font-bold text-slate-400 uppercase">
+                          Items
+                        </span>
                         <span className="font-bold text-slate-800 dark:text-slate-200">
                           {order.items?.length || 0} items
                         </span>
                       </td>
 
                       {/* Amount */}
-                      <td className="px-5 py-3.5 whitespace-nowrap font-bold text-slate-900 dark:text-slate-100">
-                        ₹{Number(order.totalAmount).toLocaleString('en-IN')}
+                      <td className="flex sm:table-cell items-center justify-between sm:px-5 sm:py-3.5 whitespace-nowrap font-bold text-slate-900 dark:text-slate-100">
+                        <span className="sm:hidden text-[10px] font-bold text-slate-400 uppercase">
+                          Total Amount
+                        </span>
+                        <span>₹{Number(order.totalAmount).toLocaleString('en-IN')}</span>
                       </td>
 
                       {/* Payment */}
-                      <td className="px-5 py-3.5 whitespace-nowrap">
+                      <td className="flex sm:table-cell items-center justify-between sm:px-5 sm:py-3.5 whitespace-nowrap">
+                        <span className="sm:hidden text-[10px] font-bold text-slate-400 uppercase">
+                          Payment
+                        </span>
                         <span
                           className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-bold ${
                             order.payment?.status === 'SUCCESS'
-                              ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800'
-                              : 'bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800'
+                              ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800'
+                              : 'bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800'
                           }`}
                         >
                           <span>{order.payment?.method || 'COD'}</span>
@@ -404,7 +426,10 @@ export const AdminOrdersPage = () => {
                       </td>
 
                       {/* Fulfillment Status */}
-                      <td className="px-5 py-3.5 whitespace-nowrap">
+                      <td className="flex sm:table-cell items-center justify-between sm:px-5 sm:py-3.5 whitespace-nowrap">
+                        <span className="sm:hidden text-[10px] font-bold text-slate-400 uppercase">
+                          Status
+                        </span>
                         <Badge
                           variant={statusConfig.variant}
                           size="sm"
@@ -415,27 +440,27 @@ export const AdminOrdersPage = () => {
                       </td>
 
                       {/* Actions */}
-                      <td className="px-5 py-3.5 text-right whitespace-nowrap">
+                      <td className="pt-2 sm:pt-0 sm:px-5 sm:py-3.5 text-right whitespace-nowrap border-t sm:border-t-0 border-slate-100 dark:border-slate-800">
                         <div className="flex items-center justify-end gap-1.5">
                           <button
                             type="button"
                             onClick={() => handleOpenDetailModal(order.id)}
-                            className="p-1.5 text-slate-600 dark:text-slate-400 hover:text-brand-600 dark:hover:text-emerald-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors font-bold text-xs inline-flex items-center gap-1"
+                            className="p-1.5 text-slate-700 dark:text-slate-300 hover:text-brand-600 dark:hover:text-emerald-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors font-bold text-xs inline-flex items-center gap-1 flex-1 sm:flex-none justify-center"
                             title="View Full Order Details"
                           >
                             <Eye className="w-3.5 h-3.5" />
-                            <span className="hidden sm:inline">Details</span>
+                            <span>Details</span>
                           </button>
 
                           {allowedTransitions.length > 0 && (
                             <button
                               type="button"
                               onClick={() => handleOpenStatusModal(order)}
-                              className="p-1.5 text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors font-bold text-xs inline-flex items-center gap-1"
+                              className="p-1.5 text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors font-bold text-xs inline-flex items-center gap-1 flex-1 sm:flex-none justify-center"
                               title="Update Fulfillment Status"
                             >
                               <ArrowRight className="w-3.5 h-3.5" />
-                              <span className="hidden sm:inline">Update</span>
+                              <span>Update</span>
                             </button>
                           )}
                         </div>
@@ -450,7 +475,7 @@ export const AdminOrdersPage = () => {
 
         {/* Pagination Controls */}
         {pagination.totalPages > 1 && (
-          <div className="px-6 py-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 flex items-center justify-between text-xs text-slate-600 dark:text-slate-400">
+          <div className="px-4 sm:px-6 py-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-700 dark:text-slate-300">
             <div>
               Showing page{' '}
               <strong className="font-bold text-slate-900 dark:text-slate-100">
@@ -496,29 +521,31 @@ export const AdminOrdersPage = () => {
         maxWidth="max-w-2xl"
       >
         {isLoadingDetail || !detailData ? (
-          <div className="p-6 space-y-4 animate-pulse">
+          <div className="p-4 sm:p-6 space-y-4 animate-pulse">
             <Skeleton className="h-20 w-full rounded-xl" />
             <Skeleton className="h-40 w-full rounded-xl" />
           </div>
         ) : (
-          <div className="space-y-5 p-6 max-h-[80vh] overflow-y-auto text-xs text-slate-700 dark:text-slate-300">
+          <div className="space-y-4 p-4 sm:p-6 max-h-[82vh] overflow-y-auto text-xs text-slate-800 dark:text-slate-200">
             {/* Customer & Status Header */}
-            <div className="p-4 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 grid grid-cols-2 sm:grid-cols-3 gap-3">
+            <div className="p-3.5 sm:p-4 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 grid grid-cols-1 sm:grid-cols-3 gap-3.5">
               <div>
-                <span className="text-[10px] font-bold text-slate-400 dark:text-slate-400 uppercase">
+                <span className="text-[10px] font-extrabold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
                   Customer
                 </span>
-                <div className="font-extrabold text-slate-900 dark:text-slate-100 text-sm mt-0.5">
-                  {detailData.user?.name}
+                <div className="font-black text-slate-900 dark:text-slate-100 text-sm mt-0.5">
+                  {detailData.user?.name || 'Customer'}
                 </div>
-                <div className="text-slate-500 dark:text-slate-400">{detailData.user?.phone}</div>
-                <div className="text-slate-400 dark:text-slate-500 truncate">
+                <div className="text-slate-700 dark:text-slate-300 font-semibold mt-0.5">
+                  {detailData.user?.phone || 'No phone'}
+                </div>
+                <div className="text-slate-600 dark:text-slate-400 break-all text-[11px]">
                   {detailData.user?.email}
                 </div>
               </div>
 
               <div>
-                <span className="text-[10px] font-bold text-slate-400 dark:text-slate-400 uppercase">
+                <span className="text-[10px] font-extrabold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
                   Fulfillment
                 </span>
                 <div className="mt-1">
@@ -529,21 +556,25 @@ export const AdminOrdersPage = () => {
                     {detailData.status}
                   </Badge>
                 </div>
-                <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
+                <div className="text-[11px] text-slate-600 dark:text-slate-400 font-medium mt-1">
                   {new Date(detailData.createdAt).toLocaleString('en-IN')}
                 </div>
               </div>
 
               <div>
-                <span className="text-[10px] font-bold text-slate-400 dark:text-slate-400 uppercase">
+                <span className="text-[10px] font-extrabold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
                   Payment
                 </span>
-                <div className="font-bold text-slate-900 dark:text-slate-100 mt-0.5">
-                  {detailData.payment?.method} ({detailData.payment?.status})
+                <div className="font-black text-slate-900 dark:text-slate-100 mt-0.5">
+                  {detailData.payment?.method || 'COD'} ({detailData.payment?.status || 'PENDING'})
                 </div>
-                <div className="text-[11px] text-slate-500 dark:text-slate-400">
+                <div className="text-[11px] text-slate-600 dark:text-slate-400 font-medium mt-0.5">
                   Transaction:{' '}
-                  <span className="font-mono">{detailData.payment?.id?.substring(0, 8)}...</span>
+                  <span className="font-mono text-slate-800 dark:text-slate-200 font-bold">
+                    {detailData.payment?.id
+                      ? `${detailData.payment.id.substring(0, 10)}...`
+                      : 'N/A'}
+                  </span>
                 </div>
               </div>
             </div>
@@ -563,13 +594,14 @@ export const AdminOrdersPage = () => {
                     })()
                   : rawAddr;
               return (
-                <div className="p-4 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 space-y-1">
-                  <div className="flex items-center gap-1.5 font-bold text-slate-800 dark:text-slate-200">
-                    <MapPin className="w-3.5 h-3.5 text-brand-600 dark:text-emerald-400" />
+                <div className="p-3.5 sm:p-4 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 space-y-1">
+                  <div className="flex items-center gap-1.5 font-black text-slate-900 dark:text-slate-100 text-xs">
+                    <MapPin className="w-4 h-4 text-brand-600 dark:text-emerald-400 shrink-0" />
                     <span>Delivery Address ({address?.type || 'Home'})</span>
                   </div>
-                  <p className="text-slate-600 dark:text-slate-300">
+                  <p className="text-slate-700 dark:text-slate-300 font-medium text-xs leading-relaxed">
                     {[
+                      address?.fullName || address?.name,
                       address?.addressLine1 || address?.line1,
                       address?.addressLine2 || address?.line2,
                     ]
@@ -586,18 +618,23 @@ export const AdminOrdersPage = () => {
                       </>
                     ) : null}
                   </p>
+                  {(address?.phone || detailData.user?.phone) && (
+                    <p className="text-[11px] text-slate-600 dark:text-slate-400 font-medium pt-0.5">
+                      Contact: {address?.phone || detailData.user?.phone}
+                    </p>
+                  )}
                 </div>
               );
             })()}
 
-            {/* Line Items Table */}
+            {/* Line Items */}
             <div>
-              <h3 className="font-black text-slate-800 dark:text-slate-200 mb-2 uppercase tracking-wider text-[11px]">
+              <h3 className="font-black text-slate-900 dark:text-slate-100 mb-2 uppercase tracking-wider text-[11px]">
                 Order Items ({detailData.items?.length || 0})
               </h3>
               <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
                 <table className="w-full text-left text-xs border-collapse">
-                  <thead className="bg-slate-50 dark:bg-slate-800 text-slate-500 dark:text-slate-400 font-bold border-b border-slate-200 dark:border-slate-700">
+                  <thead className="hidden sm:table-header-group bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold border-b border-slate-200 dark:border-slate-700">
                     <tr>
                       <th className="px-4 py-2.5">Item</th>
                       <th className="px-4 py-2.5">Price</th>
@@ -605,7 +642,7 @@ export const AdminOrdersPage = () => {
                       <th className="px-4 py-2.5 text-right">Subtotal</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                  <tbody className="divide-y divide-slate-100 dark:divide-slate-800 block sm:table-row-group">
                     {detailData.items?.map((item) => {
                       const itemName =
                         item.nameSnapshot || item.productName || item.name || 'Grocery Item';
@@ -619,22 +656,33 @@ export const AdminOrdersPage = () => {
                       return (
                         <tr
                           key={item.id}
-                          className="hover:bg-slate-50/50 dark:hover:bg-slate-800/40"
+                          className="block sm:table-row p-3 sm:px-4 sm:py-2.5 hover:bg-slate-50/50 dark:hover:bg-slate-800/40 space-y-1 sm:space-y-0"
                         >
-                          <td className="px-4 py-2.5">
+                          <td className="block sm:table-cell pb-1 sm:pb-0">
                             <div className="font-bold text-slate-900 dark:text-slate-100">
                               {itemName}
                             </div>
-                            <div className="text-[10px] text-slate-400 dark:text-slate-500 font-mono">
-                              MongoID: {item.mongoProductId || item.productId}
+                            <div className="text-[10px] text-slate-500 dark:text-slate-400 font-mono">
+                              ID: {item.mongoProductId || item.productId}
                             </div>
                           </td>
-                          <td className="px-4 py-2.5 font-bold">
-                            ₹{itemPrice.toLocaleString('en-IN')}
+                          <td className="flex sm:table-cell items-center justify-between sm:px-4 sm:py-2.5 font-bold text-slate-800 dark:text-slate-200">
+                            <span className="sm:hidden text-[10px] font-bold text-slate-400 uppercase">
+                              Unit Price
+                            </span>
+                            <span>₹{itemPrice.toLocaleString('en-IN')}</span>
                           </td>
-                          <td className="px-4 py-2.5 font-bold">{item.quantity}</td>
-                          <td className="px-4 py-2.5 text-right font-black text-slate-900 dark:text-slate-100">
-                            ₹{itemSubtotal.toLocaleString('en-IN')}
+                          <td className="flex sm:table-cell items-center justify-between sm:px-4 sm:py-2.5 font-bold text-slate-900 dark:text-slate-100">
+                            <span className="sm:hidden text-[10px] font-bold text-slate-400 uppercase">
+                              Quantity
+                            </span>
+                            <span>{item.quantity}</span>
+                          </td>
+                          <td className="flex sm:table-cell items-center justify-between sm:px-4 sm:py-2.5 font-black text-slate-900 dark:text-slate-100 sm:text-right">
+                            <span className="sm:hidden text-[10px] font-bold text-slate-400 uppercase">
+                              Subtotal
+                            </span>
+                            <span>₹{itemSubtotal.toLocaleString('en-IN')}</span>
                           </td>
                         </tr>
                       );
@@ -645,23 +693,27 @@ export const AdminOrdersPage = () => {
             </div>
 
             {/* Financial Summary */}
-            <div className="p-4 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 space-y-1.5 font-medium">
-              <div className="flex justify-between text-slate-600 dark:text-slate-400">
+            <div className="p-3.5 sm:p-4 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 space-y-1.5 font-medium">
+              <div className="flex justify-between text-slate-700 dark:text-slate-300">
                 <span>Subtotal</span>
-                <span>₹{Number(detailData.subtotal).toLocaleString('en-IN')}</span>
+                <span className="font-bold">
+                  ₹{Number(detailData.subtotal).toLocaleString('en-IN')}
+                </span>
               </div>
-              <div className="flex justify-between text-slate-600 dark:text-slate-400">
+              <div className="flex justify-between text-slate-700 dark:text-slate-300">
                 <span>Delivery Fee</span>
-                <span>₹{Number(detailData.deliveryFee).toLocaleString('en-IN')}</span>
+                <span className="font-bold">
+                  ₹{Number(detailData.deliveryFee).toLocaleString('en-IN')}
+                </span>
               </div>
               {Number(detailData.discountAmount || 0) > 0 && (
-                <div className="flex justify-between text-emerald-600 dark:text-emerald-400 font-bold">
+                <div className="flex justify-between text-emerald-700 dark:text-emerald-400 font-bold">
                   <span>Coupon Discount</span>
                   <span>-₹{Number(detailData.discountAmount).toLocaleString('en-IN')}</span>
                 </div>
               )}
               <div className="pt-2 border-t border-slate-200 dark:border-slate-700 flex justify-between font-black text-slate-900 dark:text-slate-100 text-sm">
-                <span>Total Paid</span>
+                <span>Total Amount</span>
                 <span>₹{Number(detailData.totalAmount).toLocaleString('en-IN')}</span>
               </div>
             </div>
@@ -670,11 +722,23 @@ export const AdminOrdersPage = () => {
             {detailData.status === 'CANCELLED' && (
               <div className="p-3 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900 rounded-xl text-rose-800 dark:text-rose-300 space-y-0.5">
                 <span className="font-bold block">Cancellation Note:</span>
-                <p className="text-[11px]">
+                <p className="text-[11px] font-medium">
                   {detailData.cancellationReason || 'No reason provided.'}
                 </p>
               </div>
             )}
+
+            {/* Prominent Modal Bottom Close Button */}
+            <div className="pt-2">
+              <Button
+                type="button"
+                variant="secondary"
+                className="w-full py-2.5 text-xs font-bold justify-center"
+                onClick={() => setIsDetailModalOpen(false)}
+              >
+                Close Details
+              </Button>
+            </div>
           </div>
         )}
       </Modal>

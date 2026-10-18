@@ -1,5 +1,5 @@
 // client/src/components/ui/Modal.jsx
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import { X } from 'lucide-react';
 import { cn } from '../../utils/cn.js';
 
@@ -13,23 +13,51 @@ export const Modal = ({
   className,
 }) => {
   const modalRef = useRef(null);
+  const pushedRef = useRef(false);
 
-  // Close on Escape key press
+  // Safe close handler that coordinates with browser history
+  const handleClose = useCallback(() => {
+    onClose();
+  }, [onClose]);
+
+  // Handle Escape key and mobile phone back-button (popstate)
   useEffect(() => {
+    if (!isOpen) return;
+
+    pushedRef.current = false;
+    // Push history entry on open so mobile back button closes modal rather than leaving page
+    if (typeof window !== 'undefined' && window.history?.pushState) {
+      window.history.pushState({ zippyModal: true }, '');
+      pushedRef.current = true;
+    }
+
     const handleKeyDown = (e) => {
-      if (e.key === 'Escape' && isOpen) {
+      if (e.key === 'Escape') {
         onClose();
       }
     };
 
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-      window.addEventListener('keydown', handleKeyDown);
-    }
+    const handlePopState = () => {
+      // Browser already navigated back in history
+      pushedRef.current = false;
+      onClose();
+    };
+
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('popstate', handlePopState);
+    window.addEventListener('keydown', handleKeyDown);
 
     return () => {
       document.body.style.overflow = 'unset';
       window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('popstate', handlePopState);
+
+      // If modal was dismissed via close button or backdrop rather than phone back button,
+      // pop the pushed entry to keep browser history cleanly synchronized
+      if (pushedRef.current && typeof window !== 'undefined' && window.history?.state?.zippyModal) {
+        pushedRef.current = false;
+        window.history.back();
+      }
     };
   }, [isOpen, onClose]);
 
@@ -37,7 +65,7 @@ export const Modal = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto"
+      className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-6 overflow-y-auto"
       role="dialog"
       aria-modal="true"
       aria-labelledby={title ? 'modal-title' : undefined}
@@ -45,8 +73,8 @@ export const Modal = ({
     >
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-slate-900/50 dark:bg-slate-950/70 backdrop-blur-sm transition-opacity"
-        onClick={onClose}
+        className="fixed inset-0 bg-slate-900/60 dark:bg-slate-950/75 backdrop-blur-xs transition-opacity"
+        onClick={handleClose}
         aria-hidden="true"
       />
 
@@ -54,24 +82,27 @@ export const Modal = ({
       <div
         ref={modalRef}
         className={cn(
-          'relative w-full max-h-[90vh] flex flex-col bg-white dark:bg-slate-900 rounded-2xl shadow-floating border border-transparent dark:border-slate-800 overflow-hidden z-10',
+          'relative w-full max-h-[92vh] sm:max-h-[90vh] flex flex-col bg-white dark:bg-slate-900 rounded-2xl shadow-floating border border-slate-200 dark:border-slate-800 overflow-hidden z-10 my-auto',
           'transform transition-all duration-200 ease-out',
           maxWidth,
           className
         )}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-5 border-b border-slate-100 dark:border-slate-800 shrink-0">
-          <div>
+        <div className="flex items-center justify-between p-3.5 sm:p-5 border-b border-slate-100 dark:border-slate-800 shrink-0 gap-3">
+          <div className="min-w-0 flex-1">
             {title && (
-              <h2 id="modal-title" className="text-lg font-bold text-slate-900 dark:text-slate-100">
+              <h2
+                id="modal-title"
+                className="text-base sm:text-lg font-black text-slate-900 dark:text-slate-100 truncate"
+              >
                 {title}
               </h2>
             )}
             {description && (
               <p
                 id="modal-description"
-                className="text-xs text-slate-500 dark:text-slate-400 mt-0.5"
+                className="text-xs text-slate-600 dark:text-slate-400 mt-0.5 line-clamp-2"
               >
                 {description}
               </p>
@@ -79,16 +110,16 @@ export const Modal = ({
           </div>
           <button
             type="button"
-            onClick={onClose}
+            onClick={handleClose}
             aria-label="Close dialog"
-            className="p-2 -mr-2 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
+            className="p-2 text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 rounded-xl transition-colors shrink-0"
           >
-            <X className="w-5 h-5" aria-hidden="true" />
+            <X className="w-4 h-4 sm:w-5 sm:h-5" aria-hidden="true" />
           </button>
         </div>
 
         {/* Content */}
-        <div className="p-5 overflow-y-auto">{children}</div>
+        <div className="p-3.5 sm:p-6 overflow-y-auto flex-1">{children}</div>
       </div>
     </div>
   );

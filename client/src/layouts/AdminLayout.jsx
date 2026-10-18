@@ -1,6 +1,6 @@
 // client/src/layouts/AdminLayout.jsx
-import React, { useState, Suspense } from 'react';
-import { NavLink, Outlet, Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useCallback, Suspense } from 'react';
+import { NavLink, Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard,
   Package,
@@ -46,9 +46,35 @@ const AdminLoadingFallback = () => (
 
 export const AdminLayout = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, clearAuth } = useAuthStore();
   const { addToast } = useUIStore();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Close mobile sidebar immediately on route change
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [location.pathname]);
+
+  const closeMobileMenu = useCallback(() => {
+    setIsMobileMenuOpen(false);
+  }, []);
+
+  // Close mobile sidebar on Escape key
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isMobileMenuOpen]);
 
   const handleLogout = async () => {
     try {
@@ -67,12 +93,12 @@ export const AdminLayout = () => {
   };
 
   return (
-    <div className="min-h-screen flex bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors overflow-x-hidden w-full max-w-full">
+    <div className="min-h-screen flex bg-slate-50 text-slate-900 transition-colors overflow-x-hidden w-full max-w-full">
       {/* Mobile Sidebar Overlay */}
       {isMobileMenuOpen && (
         <div
           className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-40 lg:hidden"
-          onClick={() => setIsMobileMenuOpen(false)}
+          onClick={closeMobileMenu}
           aria-hidden="true"
         />
       )}
@@ -100,7 +126,7 @@ export const AdminLayout = () => {
 
             <button
               type="button"
-              onClick={() => setIsMobileMenuOpen(false)}
+              onClick={closeMobileMenu}
               className="p-1 text-slate-400 hover:text-slate-700 lg:hidden"
               aria-label="Close sidebar"
             >
@@ -117,7 +143,7 @@ export const AdminLayout = () => {
                   key={item.name}
                   to={item.to}
                   end={item.end}
-                  onClick={() => setIsMobileMenuOpen(false)}
+                  onClick={closeMobileMenu}
                   className={({ isActive }) =>
                     `flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-colors ${
                       isActive
@@ -177,26 +203,26 @@ export const AdminLayout = () => {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 w-full max-w-full overflow-hidden">
         {/* Top Header */}
-        <header className="h-16 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-4 sm:px-6 flex items-center justify-between sticky top-0 z-30 shadow-xs transition-colors">
+        <header className="h-16 bg-white border-b border-slate-200 px-4 sm:px-6 flex items-center justify-between sticky top-0 z-30 shadow-xs transition-colors">
           <div className="flex items-center gap-3">
             <button
               type="button"
               onClick={() => setIsMobileMenuOpen(true)}
-              className="p-2 -ml-2 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white rounded-lg lg:hidden"
+              className="p-2 -ml-2 text-slate-600 hover:text-slate-900 rounded-lg lg:hidden"
               aria-label="Open sidebar menu"
             >
               <Menu className="w-5 h-5" />
             </button>
-            <span className="text-xs font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400 hidden sm:inline">
+            <span className="text-xs font-extrabold uppercase tracking-wider text-slate-500 hidden sm:inline">
               Zippy Backoffice Control Center
             </span>
           </div>
 
           <div className="flex items-center gap-3">
-            <span className="text-xs font-bold text-slate-600 dark:text-slate-300 hidden md:inline">
-              Logged in as <strong className="text-slate-900 dark:text-white">{user?.email}</strong>
+            <span className="text-xs font-bold text-slate-600 hidden md:inline">
+              Logged in as <strong className="text-slate-900">{user?.email}</strong>
             </span>
-            <span className="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-brand-50 dark:bg-brand-950/50 text-brand-700 dark:text-brand-300 border border-brand-200 dark:border-brand-800">
+            <span className="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-brand-50 text-brand-700 border border-brand-200">
               {user?.role || 'ADMIN'}
             </span>
           </div>

@@ -67,7 +67,7 @@ export const OrdersListPage = () => {
                     {ord.status.replace(/_/g, ' ')}
                   </Badge>
                 </div>
-                <span className="text-xs text-slate-400 dark:text-slate-500 font-medium">
+                <span className="text-xs text-slate-600 dark:text-slate-400 font-semibold">
                   {new Date(ord.createdAt).toLocaleDateString('en-IN', {
                     day: 'numeric',
                     month: 'short',
@@ -93,13 +93,13 @@ export const OrdersListPage = () => {
                         {img ? (
                           <img src={img} alt="" className="w-full h-full object-contain" />
                         ) : (
-                          <ShoppingBag className="w-5 h-5 text-slate-300 dark:text-slate-600" />
+                          <ShoppingBag className="w-5 h-5 text-slate-400 dark:text-slate-500" />
                         )}
                       </div>
                     );
                   })}
                   {ord.items?.length > 4 && (
-                    <span className="text-xs font-bold text-slate-400 dark:text-slate-500 px-1">
+                    <span className="text-xs font-bold text-slate-600 dark:text-slate-300 px-1">
                       +{ord.items.length - 4} more
                     </span>
                   )}
