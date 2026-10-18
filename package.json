@@ -6,7 +6,8 @@
     "dev": "concurrently -n \"SERVER,CLIENT\" -c \"cyan.bold,green.bold\" \"pnpm --filter @zippy/server dev\" \"pnpm --filter @zippy/client dev\"",
     "dev:server": "pnpm --filter @zippy/server dev",
     "dev:client": "pnpm --filter @zippy/client dev",
-    "build": "pnpm --filter @zippy/client build",
+    "build": "pnpm --filter @zippy/server prisma:generate && pnpm --filter @zippy/client build",
+    "start": "pnpm --filter @zippy/server start",
     "lint": "pnpm -r lint",
     "test": "pnpm -r test",
     "test:coverage": "pnpm -r test:coverage",
@@ -27,8 +28,8 @@
     "prettier": "^3.5.1"
   },
   "engines": {
-    "node": ">=24.0.0",
-    "pnpm": ">=12.0.0"
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
   },
   "type": "module"
 }

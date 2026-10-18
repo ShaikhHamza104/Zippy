@@ -1,3 +1,6 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
@@ -16,6 +19,9 @@ import v1Routes from './routes/v1/index.js';
 import swaggerUi from 'swagger-ui-express';
 import { swaggerSpec } from './docs/swagger.js';
 import { UPLOAD_ROOT } from './services/storage.service.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 
@@ -47,8 +53,13 @@ app.use(
   })
 );
 
-// Security headers with cross-origin resource policy allowing media assets
-app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
+// Security headers with cross-origin resource policy allowing media assets and SPA scripts
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+    contentSecurityPolicy: false,
+  })
+);
 
 // CORS configuration
 const allowedOrigins = [
@@ -123,6 +134,23 @@ if (isSwaggerEnabled) {
     })
   );
   app.get('/api/docs.json', (_req, res) => res.json(swaggerSpec));
+}
+
+// Serve production static frontend build when present in production mode
+const clientDist = path.resolve(__dirname, '../../client/dist');
+if (env.NODE_ENV === 'production' && fs.existsSync(clientDist)) {
+  app.use(express.static(clientDist, { maxAge: '1d' }));
+  app.get('*', (req, res, next) => {
+    if (
+      req.path.startsWith('/api') ||
+      req.path.startsWith('/uploads') ||
+      req.path.startsWith('/health') ||
+      req.path.startsWith('/ready')
+    ) {
+      return next();
+    }
+    res.sendFile(path.join(clientDist, 'index.html'));
+  });
 }
 
 // 404 Not Found handler
