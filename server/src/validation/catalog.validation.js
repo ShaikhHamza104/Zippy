@@ -1,12 +1,15 @@
 // server/src/validation/catalog.validation.js
 import { z } from 'zod';
 
+const emptyToUndefined = (val) =>
+  val === '' || val === undefined || val === null ? undefined : val;
+
 export const productQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(100).default(20),
-  category: z.string().trim().optional(),
-  minPrice: z.coerce.number().min(0).optional(),
-  maxPrice: z.coerce.number().min(0).optional(),
+  category: z.preprocess(emptyToUndefined, z.string().trim().optional()),
+  minPrice: z.preprocess(emptyToUndefined, z.coerce.number().min(0).optional()),
+  maxPrice: z.preprocess(emptyToUndefined, z.coerce.number().min(0).optional()),
   inStock: z
     .preprocess((val) => {
       if (val === 'true' || val === true) return true;
@@ -14,8 +17,8 @@ export const productQuerySchema = z.object({
       return undefined;
     }, z.boolean().optional())
     .optional(),
-  brand: z.string().trim().optional(),
-  rating: z.coerce.number().min(1).max(5).optional(),
+  brand: z.preprocess(emptyToUndefined, z.string().trim().optional()),
+  rating: z.preprocess(emptyToUndefined, z.coerce.number().min(1).max(5).optional()),
   sort: z
     .enum(['price_asc', 'price_desc', 'rating', 'newest', 'popular', 'relevance'])
     .default('newest'),
@@ -29,9 +32,9 @@ export const searchQuerySchema = z.object({
     .max(100, 'Search query cannot exceed 100 characters'),
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(100).default(20),
-  category: z.string().trim().optional(),
-  minPrice: z.coerce.number().min(0).optional(),
-  maxPrice: z.coerce.number().min(0).optional(),
+  category: z.preprocess(emptyToUndefined, z.string().trim().optional()),
+  minPrice: z.preprocess(emptyToUndefined, z.coerce.number().min(0).optional()),
+  maxPrice: z.preprocess(emptyToUndefined, z.coerce.number().min(0).optional()),
   sort: z.enum(['relevance', 'price_asc', 'price_desc', 'rating', 'newest']).default('relevance'),
 });
 
