@@ -16,7 +16,7 @@ import { useAuthStore } from '../../stores/authStore.js';
 import { useUIStore } from '../../stores/uiStore.js';
 import { useCart } from '../../hooks/useCart.js';
 import { apiFetch } from '../../services/api.js';
-import { ThemeToggle } from './ThemeToggle.jsx';
+// Theme toggle preserved in ThemeToggle.jsx & uiStore.js for future use
 
 export const Header = () => {
   const navigate = useNavigate();
@@ -228,9 +228,6 @@ export const Header = () => {
 
           {/* Action Buttons */}
           <div className="flex items-center gap-2 sm:gap-3">
-            {/* Theme Toggle (Mobile + Desktop) */}
-            <ThemeToggle />
-
             {/* Admin Portal Shortcut if Admin */}
             {isAdmin && (
               <Link

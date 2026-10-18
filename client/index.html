@@ -9,16 +9,12 @@
     <!-- Preconnect & DNS-Prefetch for Fast CDN and Font Loading -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <!-- Zero-FOUC Dark/Light Theme Initialization Script (Light Mode Default) -->
+    <!-- Zero-FOUC Light Theme Initialization Script -->
     <script>
       (function () {
         try {
-          var saved = localStorage.getItem('zippy_theme');
-          if (saved === 'dark') {
-            document.documentElement.classList.add('dark');
-          } else {
-            document.documentElement.classList.remove('dark');
-          }
+          localStorage.removeItem('zippy_theme');
+          document.documentElement.classList.remove('dark');
         } catch (e) {}
       })();
     </script>

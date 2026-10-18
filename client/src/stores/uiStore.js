@@ -5,13 +5,6 @@ const SAVED_PINCODE_KEY = 'zippy_delivery_pincode';
 const SAVED_THEME_KEY = 'zippy_theme';
 
 const getInitialTheme = () => {
-  if (typeof window === 'undefined') return 'light';
-  try {
-    const saved = localStorage.getItem(SAVED_THEME_KEY);
-    if (saved === 'dark' || saved === 'light') return saved;
-  } catch {
-    // Ignore
-  }
   return 'light';
 };
 
