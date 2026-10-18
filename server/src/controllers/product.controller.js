@@ -23,34 +23,37 @@ export const getProducts = async (req, res, next) => {
     const filter = { isAvailable: true };
 
     // 1. Category Filter (supports either slug or ObjectId)
-    if (category) {
-      if (mongoose.isValidObjectId(category)) {
-        filter.categoryId = category;
+    if (category && category !== 'all' && category.trim() !== '') {
+      const trimmedCat = category.trim();
+      if (mongoose.isValidObjectId(trimmedCat)) {
+        filter.categoryId = trimmedCat;
       } else {
         // Resolve slug to category ID or match categorySlug directly
-        filter.categorySlug = category.toLowerCase().trim();
+        filter.categorySlug = trimmedCat.toLowerCase();
       }
     }
 
-    // 2. Price Range Filter
-    if (minPrice !== undefined || maxPrice !== undefined) {
+    // 2. Price Range Filter (safely parse and prevent empty string -> 0 bug)
+    const hasMin = minPrice !== undefined && minPrice !== '' && !isNaN(Number(minPrice));
+    const hasMax = maxPrice !== undefined && maxPrice !== '' && !isNaN(Number(maxPrice));
+    if (hasMin || hasMax) {
       filter.primaryPrice = {};
-      if (minPrice !== undefined) filter.primaryPrice.$gte = Number(minPrice);
-      if (maxPrice !== undefined) filter.primaryPrice.$lte = Number(maxPrice);
+      if (hasMin) filter.primaryPrice.$gte = Number(minPrice);
+      if (hasMax) filter.primaryPrice.$lte = Number(maxPrice);
     }
 
-    // 3. In-Stock Filter
-    if (inStock === true) {
+    // 3. In-Stock Filter (support boolean and string 'true')
+    if (inStock === true || inStock === 'true') {
       filter.totalStock = { $gt: 0 };
     }
 
     // 4. Brand Filter
-    if (brand) {
+    if (brand && brand.trim() !== '') {
       filter.brand = { $regex: new RegExp(`^${brand.trim()}$`, 'i') };
     }
 
     // 5. Minimum Rating Filter
-    if (rating !== undefined) {
+    if (rating !== undefined && rating !== '' && !isNaN(Number(rating))) {
       filter.ratingAverage = { $gte: Number(rating) };
     }
 

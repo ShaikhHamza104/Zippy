@@ -7,6 +7,7 @@ import { RouteErrorBoundary } from './components/common/RouteErrorBoundary.jsx';
 
 const RootLayout = lazy(() => import('./layouts/RootLayout.jsx'));
 const HomePage = lazy(() => import('./pages/HomePage.jsx'));
+const CategoriesPage = lazy(() => import('./pages/CategoriesPage.jsx'));
 const ProductsPage = lazy(() => import('./pages/ProductsPage.jsx'));
 const ProductDetailPage = lazy(() => import('./pages/ProductDetailPage.jsx'));
 const SearchPage = lazy(() => import('./pages/SearchPage.jsx'));
@@ -50,7 +51,7 @@ export const router = createBrowserRouter(
         },
         {
           path: 'categories',
-          element: <ProductsPage />,
+          element: <CategoriesPage />,
         },
         {
           path: 'categories/:slug',

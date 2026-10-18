@@ -8,6 +8,8 @@ import { AddToCartButton } from '../src/components/common/AddToCartButton.jsx';
 import { ProductCard } from '../src/components/product/ProductCard.jsx';
 import { CartDrawer } from '../src/components/cart/CartDrawer.jsx';
 import { PincodeModal } from '../src/components/common/PincodeModal.jsx';
+import { CategoriesPage } from '../src/pages/CategoriesPage.jsx';
+import { ProductsPage } from '../src/pages/ProductsPage.jsx';
 import { useUIStore } from '../src/stores/uiStore.js';
 import * as useCartModule from '../src/hooks/useCart.js';
 import * as apiModule from '../src/services/api.js';
@@ -284,6 +286,108 @@ describe('Phase 8: Customer UI Components and Flows', () => {
 
       await waitFor(() => {
         expect(screen.getByText(/Zippy Koramangala Dark Store/i)).toBeInTheDocument();
+      });
+    });
+  });
+
+  describe('CategoriesPage & Mobile Filtering', () => {
+    it('renders categories explorer and filters categories by search input', async () => {
+      vi.spyOn(apiModule, 'apiFetch').mockResolvedValue({
+        success: true,
+        data: {
+          categories: [
+            {
+              _id: 'cat-1',
+              name: 'Fresh Fruits',
+              slug: 'fresh-fruits',
+              icon: '🍎',
+              productCount: 12,
+            },
+            { _id: 'cat-2', name: 'Dairy & Eggs', slug: 'dairy-eggs', icon: '🥛', productCount: 8 },
+          ],
+        },
+      });
+
+      render(
+        <QueryClientProvider client={queryClient}>
+          <BrowserRouter>
+            <CategoriesPage />
+          </BrowserRouter>
+        </QueryClientProvider>
+      );
+
+      expect(screen.getByText('Explore All Categories')).toBeInTheDocument();
+
+      await waitFor(() => {
+        expect(screen.getByText('Fresh Fruits')).toBeInTheDocument();
+        expect(screen.getByText('Dairy & Eggs')).toBeInTheDocument();
+        expect(screen.getByText('12 items')).toBeInTheDocument();
+      });
+
+      // Filter by typing 'fruits'
+      const searchInput = screen.getByPlaceholderText(/search categories/i);
+      fireEvent.change(searchInput, { target: { value: 'Fruits' } });
+
+      expect(screen.getByText('Fresh Fruits')).toBeInTheDocument();
+      expect(screen.queryByText('Dairy & Eggs')).not.toBeInTheDocument();
+    });
+
+    it('renders mobile filter toolbar and opens filter drawer', async () => {
+      vi.spyOn(apiModule, 'apiFetch').mockImplementation((url) => {
+        if (url.includes('/categories')) {
+          return Promise.resolve({
+            success: true,
+            data: {
+              categories: [
+                { _id: 'cat-1', name: 'Fresh Fruits', slug: 'fresh-fruits', icon: '🍎' },
+              ],
+            },
+          });
+        }
+        return Promise.resolve({
+          success: true,
+          data: {
+            products: [
+              {
+                _id: 'prod-1',
+                name: 'Shimla Apples',
+                slug: 'shimla-apples',
+                primaryPrice: 120,
+                mrp: 140,
+                variants: [{ sku: 'app-1kg', unit: '1 kg', price: 120, stock: 10 }],
+                totalStock: 10,
+                isAvailable: true,
+                ratingAverage: 4.8,
+              },
+            ],
+          },
+          pagination: { total: 1, totalPages: 1 },
+        });
+      });
+
+      render(
+        <QueryClientProvider client={queryClient}>
+          <BrowserRouter>
+            <ProductsPage />
+          </BrowserRouter>
+        </QueryClientProvider>
+      );
+
+      await waitFor(() => {
+        expect(screen.getByText('Shimla Apples')).toBeInTheDocument();
+      });
+
+      // Mobile Filters button exists
+      const filterBtn = screen.getByRole('button', { name: /filters/i });
+      expect(filterBtn).toBeInTheDocument();
+
+      // Click to open mobile filter modal
+      fireEvent.click(filterBtn);
+
+      await waitFor(() => {
+        expect(screen.getByText('Filter & Refine Products')).toBeInTheDocument();
+        expect(screen.getAllByText(/price range/i).length).toBeGreaterThanOrEqual(1);
+        expect(screen.getAllByText(/in-stock items only/i).length).toBeGreaterThanOrEqual(1);
       });
     });
   });
