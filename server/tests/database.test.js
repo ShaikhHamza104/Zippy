@@ -30,7 +30,7 @@ describe('Database Layer Verification (Prisma & Mongoose)', () => {
       });
 
       expect(admin).toBeDefined();
-      expect(admin?.email).toBe('admin@zippy.com');
+      expect(admin?.email).toBe(process.env.SUPER_ADMIN_EMAIL || 'admin@zippy.com');
       expect(admin?.role).toBe('SUPER_ADMIN');
     });
 
